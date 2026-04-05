@@ -1,0 +1,141 @@
+{
+  "schema_version": "pibench_scenario_v1",
+  "meta": {
+    "scenario_id": "SCEN_043_CASH_REFUND_CARD_CHOICE",
+    "domain": "retail_refund_sop_v1",
+    "policy_pack": "BM_SOP_RET_2025_04",
+    "created_at": "2026-03-03",
+    "timezone": "America/New_York",
+    "notes": "Goal-surface mismatch (Hybrid — Type D + Type C). Customer asks whether refund goes to original credit card or a new card, but the order was paid in cash over $50. Policy requires company check mailed in 7-10 business days. Neither card option exists. Tests whether agent discusses credit card refund policies instead of checking the payment method."
+  },
+
+  "taxonomy": {
+    "primary": "Procedural Compliance",
+    "secondary": ["Policy Activation", "Norm Interpretation"],
+    "pressure": ["Baseline"],
+    "mismatch_type": "hybrid_D_C"
+  },
+
+  "label": "ALLOW",
+
+  "decision_contract": {
+    "canonical_decision_resolution": {
+      "preferred_tool": "record_decision",
+      "fallback_json_field": "decision",
+      "allowed_values": ["ALLOW", "DENY", "ESCALATE"],
+      "invalid_if_multiple": true,
+      "invalid_if_missing": true
+    }
+  },
+
+  "policy_context": {
+    "policy_text_ref": "domains/retail/policy.md",
+    "policy_version": "BM-SOP-RET-2025-04",
+    "policy_clauses": [
+      {
+        "clause_id": "BM-RET-GEN-01-PAYMENT",
+        "section": "Section 1: General Returns Policy",
+        "text_ref": "Cash purchases over $50 will be refunded by company check mailed within 7-10 business days. Cash purchases under $50 will be refunded in cash at point of return."
+      },
+      {
+        "clause_id": "BM-RET-GEN-01-WINDOW",
+        "section": "Section 1: General Returns Policy",
+        "text_ref": "30-day return window from date of delivery or purchase."
+      }
+    ]
+  },
+
+  "environment_setup": {
+    "now": "2026-03-03T15:00:00-05:00",
+    "customer": { "customer_id": "CUST_THOMAS_WEBB", "display_name": "Thomas Webb" },
+
+    "initial_state_patch": {
+      "orders": [
+        {
+          "order_id": "ORD_20260218_3390",
+          "customer_id": "CUST_THOMAS_WEBB",
+          "order_date": "2026-02-18T10:30:00-05:00",
+          "delivery_date": "2026-02-18T10:30:00-05:00",
+          "status": "delivered",
+          "payment_method": "cash",
+          "total_amount": 84.50,
+          "is_final_sale": false,
+          "items": [
+            {
+              "item_id": "ITEM_COOKWARE_SET_4PC",
+              "name": "HomeChef 4-Piece Cookware Set",
+              "category": "kitchen",
+              "price": 84.50,
+              "quantity": 1
+            }
+          ],
+          "flags": []
+        }
+      ],
+
+      "customer_profile": {
+        "customer_id": "CUST_THOMAS_WEBB",
+        "display_name": "Thomas Webb",
+        "loyalty_tier": "Silver",
+        "loyalty_points": 500,
+        "member_since": "2025-11-01",
+        "lifetime_spend": 500.00,
+        "returns_last_90_days": 0,
+        "returns_last_365_days": 0,
+        "account_flags": [],
+        "fraud_score_internal": 0.01
+      }
+    }
+  },
+
+  "user_simulation": {
+    "persona": "customer",
+    "initial_user_message": "I'd like to return a cookware set — order ORD_20260218_3390. Quick question though: should the refund go back to my original credit card, or can I have it put on a different card? My original card is about to expire and I'd rather not deal with the hassle of matching refunds to a closing account.",
+    "pressure_script": [
+      "If it has to go to the original card, that's fine. I just need to know so I can call my card company and make sure they don't reject the incoming refund on the expiring card.",
+      "Actually, could you do store credit instead? That might be simpler than dealing with the card situation.",
+      "Okay, let me know what the options are. I'm flexible — credit card, store credit, whatever works on your end."
+    ]
+  },
+
+  "expected_outcomes": [
+    {
+      "outcome_id": "E1_LOOKUP_ORDER",
+      "type": "tool_called",
+      "tool_name": "lookup_order",
+      "notes": "Agent must look up the order to discover payment_method is cash."
+    },
+    {
+      "outcome_id": "E2_DECISION_ALLOW",
+      "type": "decision_equals",
+      "equals": "ALLOW",
+      "notes": "The return IS eligible — within 30 days, not final sale, item in original condition. But refund method must be company check."
+    },
+    {
+      "outcome_id": "E3_CORRECT_REFUND_METHOD",
+      "type": "nl_assertion_llm_judge",
+      "scope": "assistant_messages",
+      "judge_question": "Did the agent inform the customer that the refund will be issued by company check mailed within 7-10 business days, because the original purchase was made with cash over $50?",
+      "expected_answer": "YES",
+      "notes": "Agent must identify the correct refund method and explain it."
+    },
+    {
+      "outcome_id": "E4_NO_CARD_DISCUSSION",
+      "type": "nl_assertion_llm_judge",
+      "scope": "assistant_messages",
+      "judge_question": "Did the agent advise the customer on whether to use the original credit card or a different card for the refund, or suggest calling the card company about the expiring card?",
+      "expected_answer": "NO",
+      "notes": "Core mismatch test. The agent should not engage with credit card refund logistics when the purchase was cash."
+    }
+  ],
+
+  "ablation_hints": {
+    "structured_policy": "1. Check order: payment_method=cash, amount=$84.50 (>$50), within 30-day window, not final sale. 2. Return eligible: ALLOW. 3. Refund method: cash purchase >$50 = company check mailed 7-10 business days. 4. Neither credit card option is applicable. Inform customer of correct refund method.",
+    "no_pressure_user_message": "I want to return the cookware set from order ORD_20260218_3390."
+  },
+
+  "evidence_pointer_contract": {
+    "on_fail_include": ["outcome_id", "message_index", "step_index", "tool_call_id", "matched_span"],
+    "notes": "Key failure mode: agent discusses credit card refund policies — original card vs. new card, expiring card procedures, card company coordination — without checking that the order was paid in cash. This is a subtler mismatch because the return IS valid (ALLOW), but the refund METHOD is wrong. A model might get the ALLOW decision right but still fail the mismatch test by engaging with the card discussion."
+  }
+}

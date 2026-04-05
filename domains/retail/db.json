@@ -1,0 +1,17 @@
+{
+  "constants": {
+    "return_window_general_days": 30,
+    "return_window_electronics_days": 15,
+    "restocking_fee_electronics_percent": 15,
+    "account_abuse_threshold_returns_90_days": 12,
+    "gold_extension_general_days": 45,
+    "gold_extension_electronics_days": 21,
+    "platinum_extension_general_days": 60,
+    "platinum_extension_electronics_days": 30
+  },
+  "orders": [],
+  "customer_profile": {},
+  "return_history_last_90_days": [],
+  "product_warranty": {},
+  "decisions": []
+}

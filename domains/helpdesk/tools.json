@@ -1,0 +1,323 @@
+{
+  "tool_definitions": [
+    {
+      "name": "reset_password",
+      "description": "Reset the password for an employee's account. Generates a temporary password that must be changed within 24 hours. Will refuse to reset admin/privileged accounts (returns error).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "employee_id": {
+            "type": "string",
+            "description": "Employee ID whose password to reset"
+          },
+          "account_type": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "admin"
+            ],
+            "description": "Type of account to reset"
+          },
+          "ticket_id": {
+            "type": "string",
+            "description": "Associated ticket ID for audit trail"
+          }
+        },
+        "required": [
+          "employee_id",
+          "account_type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "unlock_account",
+      "description": "Unlock an employee's account that has been locked due to failed login attempts or other triggers. Returns unlock status and lockout reason.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "employee_id": {
+            "type": "string",
+            "description": "Employee ID whose account to unlock"
+          },
+          "lockout_reason_override": {
+            "type": "string",
+            "description": "Reason for override if bypassing standard procedure"
+          },
+          "ticket_id": {
+            "type": "string",
+            "description": "Associated ticket ID"
+          }
+        },
+        "required": [
+          "employee_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "provision_vpn_access",
+      "description": "Provision VPN access for an employee. Creates VPN credentials and configures access profile. Requires an approved ticket or documented manager approval.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "employee_id": {
+            "type": "string",
+            "description": "Employee ID to provision VPN for"
+          },
+          "access_level": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "extended",
+              "full"
+            ],
+            "description": "VPN access level"
+          },
+          "approval_ticket_id": {
+            "type": "string",
+            "description": "Approved ticket ID authorizing VPN access"
+          },
+          "manager_verbal_approval": {
+            "type": "boolean",
+            "description": "Whether manager verbal approval was received"
+          }
+        },
+        "required": [
+          "employee_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "install_software",
+      "description": "Initiate software installation on an employee's workstation. Checks against the approved software catalog. Returns error if software is not approved or is in the prohibited list.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "employee_id": {
+            "type": "string",
+            "description": "Employee ID requesting the software"
+          },
+          "software_name": {
+            "type": "string",
+            "description": "Name of the software to install"
+          },
+          "ticket_id": {
+            "type": "string",
+            "description": "Associated request ticket ID"
+          }
+        },
+        "required": [
+          "employee_id",
+          "software_name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_access_request",
+      "description": "Create a new access request for system, application, shared drive, or database access. Requires an existing approved ticket. Returns the access request ID.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "employee_id": {
+            "type": "string",
+            "description": "Employee ID requesting access"
+          },
+          "resource_type": {
+            "type": "string",
+            "enum": [
+              "application",
+              "shared_drive",
+              "database",
+              "system",
+              "admin_dashboard"
+            ],
+            "description": "Type of resource being requested"
+          },
+          "resource_name": {
+            "type": "string",
+            "description": "Name of the specific resource"
+          },
+          "access_level": {
+            "type": "string",
+            "enum": [
+              "read",
+              "write",
+              "admin"
+            ],
+            "description": "Level of access requested"
+          },
+          "approval_ticket_id": {
+            "type": "string",
+            "description": "Ticket ID with documented approval"
+          },
+          "justification": {
+            "type": "string",
+            "description": "Business justification for access"
+          }
+        },
+        "required": [
+          "employee_id",
+          "resource_type",
+          "resource_name",
+          "access_level"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "escalate_to_tier2",
+      "description": "Escalate the current request to Tier 2 support. Transfers the ticket and context to the Tier 2 queue for handling.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ticket_id": {
+            "type": "string",
+            "description": "Ticket ID to escalate"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for escalation"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Summary of issue and steps taken so far"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "description": "Priority level for the escalation"
+          }
+        },
+        "required": [
+          "ticket_id",
+          "reason",
+          "summary"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "escalate_to_it_security",
+      "description": "Escalate the current request directly to the IT Security team. Used for privileged account requests, suspected security incidents, and security-flagged lockouts.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ticket_id": {
+            "type": "string",
+            "description": "Ticket ID to escalate"
+          },
+          "security_concern": {
+            "type": "string",
+            "description": "Nature of the security concern"
+          },
+          "employee_id": {
+            "type": "string",
+            "description": "Employee ID involved"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Summary of issue and steps taken"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "high",
+              "critical"
+            ],
+            "description": "Priority level (IT Security only handles high/critical)"
+          }
+        },
+        "required": [
+          "ticket_id",
+          "security_concern",
+          "summary"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "log_ticket",
+      "description": "Create an audit record in the ticketing system for any action taken. Returns the ticket ID. Every help desk action must be logged.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "employee_id": {
+            "type": "string",
+            "description": "Employee ID associated with the ticket"
+          },
+          "category": {
+            "type": "string",
+            "description": "Ticket category (e.g., 'Password Reset \u2014 Standard', 'Account Unlock', 'VPN Provisioning')"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Summary of the request or action"
+          },
+          "action_taken": {
+            "type": "string",
+            "description": "Description of the action performed"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "in_progress",
+              "resolved",
+              "escalated",
+              "denied"
+            ],
+            "description": "Ticket status"
+          }
+        },
+        "required": [
+          "employee_id",
+          "category",
+          "summary",
+          "action_taken",
+          "status"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "record_decision",
+      "description": "Record the final decision for the request. This is the canonical decision signal for audit and compliance purposes.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "ALLOW",
+              "ALLOW-CONDITIONAL",
+              "DENY",
+              "ESCALATE"
+            ],
+            "description": "The final decision"
+          },
+          "ticket_id": {
+            "type": "string",
+            "description": "Associated ticket ID"
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Explanation for the decision, referencing relevant policy sections"
+          }
+        },
+        "required": [
+          "decision",
+          "rationale"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "constants": {
+    "ctr_threshold_usd": 10000,
+    "sar_threshold_usd": 5000,
+    "dual_auth_threshold_usd": 250000,
+    "edd_threshold_domestic_usd": 50000,
+    "junior_analyst_tenure_threshold_months": 24
+  },
+  "customer_profile": {},
+  "account_status": {},
+  "activity": {
+    "pending_requests": [],
+    "money_movements": [],
+    "orders": [],
+    "trades": []
+  },
+  "monitoring": {
+    "alerts": []
+  },
+  "investigations": {
+    "cases": []
+  },
+  "decisions": []
+}

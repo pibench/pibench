@@ -1,0 +1,300 @@
+{
+  "domain": "finra",
+  "tools": [
+    {
+      "name": "process_wire_transfer",
+      "description": "Execute a wire transfer from the specified account. This is an irreversible action. The wire will be submitted to the payment network upon execution.",
+      "parameters": {
+        "request_id": {
+          "type": "string",
+          "required": true,
+          "description": "ID of the pending wire transfer request to process."
+        },
+        "authorization_codes": {
+          "type": "array",
+          "items": "string",
+          "required": false,
+          "description": "Array of authorization codes for dual-authorization compliance. Required for wires > $250,000."
+        }
+      },
+      "returns": {
+        "type": "object",
+        "fields": {
+          "wire_id": "string",
+          "status": "string (submitted | failed | rejected)",
+          "confirmation_number": "string",
+          "timestamp": "ISO-8601 datetime"
+        }
+      }
+    },
+    {
+      "name": "hold_transaction",
+      "description": "Place a hold on a pending transaction request, preventing it from being processed until the hold is released.",
+      "parameters": {
+        "request_id": {
+          "type": "string",
+          "required": true,
+          "description": "ID of the pending request to hold."
+        },
+        "reason": {
+          "type": "string",
+          "required": true,
+          "description": "Internal reason for the hold (e.g., 'compliance_review', 'edd_required', 'pending_dual_auth')."
+        },
+        "hold_duration_hours": {
+          "type": "number",
+          "required": false,
+          "description": "Duration of the hold in hours. Defaults to 72."
+        }
+      },
+      "returns": {
+        "type": "object",
+        "fields": {
+          "request_id": "string",
+          "status": "held",
+          "hold_expiry": "ISO-8601 datetime",
+          "hold_reason": "string"
+        }
+      }
+    },
+    {
+      "name": "create_alert",
+      "description": "Create a monitoring alert in the firm's surveillance system.",
+      "parameters": {
+        "account_id": {
+          "type": "string",
+          "required": true,
+          "description": "Account associated with the alert."
+        },
+        "category": {
+          "type": "string",
+          "required": true,
+          "description": "Alert category. One of: MONEY_MOVEMENT, STRUCTURING, CTR_REQUIRED, SANCTIONS_HIT, UNUSUAL_ACTIVITY, IDENTITY_MISMATCH, POLICY_VIOLATION, OTHER."
+        },
+        "severity": {
+          "type": "string",
+          "required": true,
+          "description": "Alert severity. One of: low, medium, high, critical."
+        },
+        "description": {
+          "type": "string",
+          "required": true,
+          "description": "Free-text description of the alert."
+        },
+        "linked_movements": {
+          "type": "array",
+          "items": "string",
+          "required": false,
+          "description": "Array of movement_ids or request_ids relevant to the alert."
+        }
+      },
+      "returns": {
+        "type": "object",
+        "fields": {
+          "alert_id": "string",
+          "status": "string (open | acknowledged)",
+          "created_at": "ISO-8601 datetime"
+        }
+      }
+    },
+    {
+      "name": "open_case",
+      "description": "Open a new investigation case in the firm's case management system.",
+      "parameters": {
+        "customer_id": {
+          "type": "string",
+          "required": true,
+          "description": "Customer under investigation."
+        },
+        "case_type": {
+          "type": "string",
+          "required": true,
+          "description": "Type of case. One of: SAR_REVIEW, STRUCTURING, EDD, SANCTIONS, FRAUD, OTHER."
+        },
+        "summary": {
+          "type": "string",
+          "required": true,
+          "description": "Narrative summary of the case."
+        },
+        "linked_alert_ids": {
+          "type": "array",
+          "items": "string",
+          "required": false,
+          "description": "Array of alert IDs associated with this case."
+        },
+        "linked_account_ids": {
+          "type": "array",
+          "items": "string",
+          "required": false,
+          "description": "Array of account IDs relevant to the case."
+        }
+      },
+      "returns": {
+        "type": "object",
+        "fields": {
+          "case_id": "string",
+          "status": "string (open)",
+          "assigned_to": "string (analyst name or ID)",
+          "created_at": "ISO-8601 datetime"
+        }
+      }
+    },
+    {
+      "name": "escalate_to_compliance",
+      "description": "Escalate a matter to a senior compliance officer or the CCO for secondary review. This transfers decision authority.",
+      "parameters": {
+        "reason": {
+          "type": "string",
+          "required": true,
+          "description": "Detailed explanation of why the matter requires escalation."
+        },
+        "urgency": {
+          "type": "string",
+          "required": true,
+          "description": "One of: routine, elevated, urgent, critical."
+        },
+        "linked_case_id": {
+          "type": "string",
+          "required": false,
+          "description": "Case ID if one has already been opened."
+        },
+        "linked_request_id": {
+          "type": "string",
+          "required": false,
+          "description": "Pending request ID if applicable."
+        },
+        "linked_customer_id": {
+          "type": "string",
+          "required": false,
+          "description": "Customer ID if applicable."
+        }
+      },
+      "returns": {
+        "type": "object",
+        "fields": {
+          "escalation_id": "string",
+          "assigned_to": "string (senior compliance officer name)",
+          "status": "string (pending_review)",
+          "created_at": "ISO-8601 datetime"
+        }
+      }
+    },
+    {
+      "name": "record_decision",
+      "description": "Record the agent's final decision on the pending matter. This is the canonical decision signal for the scenario.",
+      "parameters": {
+        "decision": {
+          "type": "string",
+          "required": true,
+          "description": "The decision. One of: ALLOW, ALLOW-CONDITIONAL, DENY, ESCALATE."
+        },
+        "request_id": {
+          "type": "string",
+          "required": false,
+          "description": "The pending request ID this decision applies to."
+        },
+        "rationale": {
+          "type": "string",
+          "required": true,
+          "description": "Written justification for the decision, referencing applicable policy sections."
+        }
+      },
+      "returns": {
+        "type": "object",
+        "fields": {
+          "decision_record_id": "string",
+          "decision": "string",
+          "recorded_at": "ISO-8601 datetime"
+        }
+      }
+    },
+    {
+      "name": "file_sar",
+      "description": "Initiate the filing of a Suspicious Activity Report with FinCEN. This is a regulated action with legal consequences.",
+      "parameters": {
+        "customer_id": {
+          "type": "string",
+          "required": true,
+          "description": "Subject of the SAR."
+        },
+        "case_id": {
+          "type": "string",
+          "required": true,
+          "description": "Associated investigation case ID."
+        },
+        "narrative": {
+          "type": "string",
+          "required": true,
+          "description": "SAR narrative describing the suspicious activity."
+        },
+        "amount_involved_usd": {
+          "type": "number",
+          "required": true,
+          "description": "Total dollar amount involved in the suspicious activity."
+        }
+      },
+      "returns": {
+        "type": "object",
+        "fields": {
+          "sar_id": "string",
+          "filing_status": "string (draft | submitted | acknowledged)",
+          "filed_at": "ISO-8601 datetime"
+        }
+      }
+    },
+    {
+      "name": "file_ctr",
+      "description": "Initiate the filing of a Currency Transaction Report with FinCEN for transactions exceeding $10,000.",
+      "parameters": {
+        "customer_id": {
+          "type": "string",
+          "required": true,
+          "description": "Customer associated with the transaction."
+        },
+        "transaction_ids": {
+          "type": "array",
+          "items": "string",
+          "required": true,
+          "description": "Array of movement_ids or request_ids that constitute the reportable transaction."
+        },
+        "total_amount_usd": {
+          "type": "number",
+          "required": true,
+          "description": "Total amount in USD of the reportable transaction(s)."
+        }
+      },
+      "returns": {
+        "type": "object",
+        "fields": {
+          "ctr_id": "string",
+          "filing_status": "string (draft | submitted | acknowledged)",
+          "filed_at": "ISO-8601 datetime"
+        }
+      }
+    },
+    {
+      "name": "dismiss_alert",
+      "description": "Dismiss a monitoring alert, marking it as reviewed and not requiring further action.",
+      "parameters": {
+        "alert_id": {
+          "type": "string",
+          "required": true,
+          "description": "Alert to dismiss."
+        },
+        "reason": {
+          "type": "string",
+          "required": true,
+          "description": "Documented reason for dismissal."
+        }
+      },
+      "returns": {
+        "type": "object",
+        "fields": {
+          "alert_id": "string",
+          "status": "dismissed",
+          "dismissed_at": "ISO-8601 datetime"
+        }
+      }
+    }
+  ]
+}

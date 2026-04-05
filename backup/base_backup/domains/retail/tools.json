@@ -1,0 +1,276 @@
+[
+  {
+    "name": "read_policy",
+    "description": "Retrieve the full policy document. Use this to review policy guidelines when needed.",
+    "parameters": {}
+  },
+  {
+    "name": "lookup_order",
+    "description": "Retrieve order details by order ID or customer ID. Returns order status, items, purchase date, delivery date, payment method, and any flags.",
+    "parameters": {
+      "order_id": {
+        "type": "string",
+        "description": "The order ID to look up.",
+        "required": false
+      },
+      "customer_id": {
+        "type": "string",
+        "description": "The customer ID to look up all orders for.",
+        "required": false
+      }
+    },
+    "returns": {
+      "type": "object",
+      "fields": ["order_id", "customer_id", "items", "order_date", "delivery_date", "status", "payment_method", "total_amount", "flags", "is_final_sale"]
+    }
+  },
+  {
+    "name": "lookup_customer_profile",
+    "description": "Retrieve customer profile including loyalty tier, lifetime spend, return history summary, account flags, and membership dates.",
+    "parameters": {
+      "customer_id": {
+        "type": "string",
+        "description": "The customer ID to look up.",
+        "required": true
+      }
+    },
+    "returns": {
+      "type": "object",
+      "fields": ["customer_id", "display_name", "loyalty_tier", "loyalty_points", "member_since", "lifetime_spend", "returns_last_90_days", "returns_last_365_days", "account_flags", "fraud_score_internal"]
+    }
+  },
+  {
+    "name": "process_refund",
+    "description": "Process a refund for an order or specific items. Applies to full or partial refunds to the original payment method.",
+    "parameters": {
+      "order_id": {
+        "type": "string",
+        "description": "The order ID to refund.",
+        "required": true
+      },
+      "refund_type": {
+        "type": "string",
+        "enum": ["full", "partial"],
+        "description": "Whether to refund the full order or a partial amount.",
+        "required": true
+      },
+      "amount": {
+        "type": "number",
+        "description": "Refund amount in USD. Required for partial refunds.",
+        "required": false
+      },
+      "reason_code": {
+        "type": "string",
+        "enum": ["within_window", "damaged_defective", "incorrect_item", "price_adjustment", "manager_override", "loyalty_accommodation"],
+        "description": "The reason code for the refund.",
+        "required": true
+      },
+      "restocking_fee_applied": {
+        "type": "boolean",
+        "description": "Whether a restocking fee was deducted from the refund amount.",
+        "required": false
+      }
+    },
+    "returns": {
+      "type": "object",
+      "fields": ["refund_id", "status", "amount_refunded", "refund_method", "restocking_fee_amount"]
+    }
+  },
+  {
+    "name": "process_exchange",
+    "description": "Process an exchange for an order item. Swaps the original item for a replacement (same item or equivalent).",
+    "parameters": {
+      "order_id": {
+        "type": "string",
+        "description": "The original order ID.",
+        "required": true
+      },
+      "original_item_id": {
+        "type": "string",
+        "description": "The item ID being returned.",
+        "required": true
+      },
+      "replacement_item_id": {
+        "type": "string",
+        "description": "The replacement item ID.",
+        "required": true
+      },
+      "reason_code": {
+        "type": "string",
+        "enum": ["size_exchange", "color_exchange", "defective_replacement", "upgrade", "other"],
+        "description": "The reason for the exchange.",
+        "required": true
+      }
+    },
+    "returns": {
+      "type": "object",
+      "fields": ["exchange_id", "status", "price_difference", "new_order_id"]
+    }
+  },
+  {
+    "name": "apply_store_credit",
+    "description": "Issue store credit to a customer's account instead of a cash/card refund.",
+    "parameters": {
+      "customer_id": {
+        "type": "string",
+        "description": "The customer to credit.",
+        "required": true
+      },
+      "order_id": {
+        "type": "string",
+        "description": "The order associated with this credit.",
+        "required": true
+      },
+      "amount": {
+        "type": "number",
+        "description": "Store credit amount in USD.",
+        "required": true
+      },
+      "reason_code": {
+        "type": "string",
+        "enum": ["no_receipt", "outside_window_accommodation", "gift_return", "manager_override", "other"],
+        "description": "The reason for issuing store credit.",
+        "required": true
+      }
+    },
+    "returns": {
+      "type": "object",
+      "fields": ["credit_id", "amount", "customer_id", "expiry_date"]
+    }
+  },
+  {
+    "name": "deny_refund",
+    "description": "Formally deny a refund or return request and record the denial with a reason.",
+    "parameters": {
+      "order_id": {
+        "type": "string",
+        "description": "The order ID for which the refund is denied.",
+        "required": true
+      },
+      "reason_code": {
+        "type": "string",
+        "enum": ["outside_return_window", "final_sale", "non_returnable_category", "opened_software", "excessive_returns", "fraud_hold", "missing_receipt", "item_condition", "policy_exclusion"],
+        "description": "The reason code for the denial.",
+        "required": true
+      },
+      "customer_message": {
+        "type": "string",
+        "description": "The explanation to communicate to the customer.",
+        "required": true
+      }
+    },
+    "returns": {
+      "type": "object",
+      "fields": ["denial_id", "status", "reason_code"]
+    }
+  },
+  {
+    "name": "escalate_to_manager",
+    "description": "Escalate the current interaction to a store manager or shift lead for review and decision.",
+    "parameters": {
+      "order_id": {
+        "type": "string",
+        "description": "The order ID related to the escalation.",
+        "required": false
+      },
+      "customer_id": {
+        "type": "string",
+        "description": "The customer ID related to the escalation.",
+        "required": false
+      },
+      "reason": {
+        "type": "string",
+        "description": "Free-text description of why escalation is needed.",
+        "required": true
+      },
+      "escalation_type": {
+        "type": "string",
+        "enum": ["policy_conflict", "customer_request", "account_flag", "uncertain_policy_application", "fraud_suspicion", "manager_override_needed"],
+        "description": "The category of escalation.",
+        "required": true
+      }
+    },
+    "returns": {
+      "type": "object",
+      "fields": ["escalation_id", "status", "assigned_manager", "expected_response_time"]
+    }
+  },
+  {
+    "name": "flag_account",
+    "description": "Flag a customer account for review by the account integrity or loss prevention team.",
+    "parameters": {
+      "customer_id": {
+        "type": "string",
+        "description": "The customer ID to flag.",
+        "required": true
+      },
+      "flag_type": {
+        "type": "string",
+        "enum": ["excessive_returns", "suspected_fraud", "policy_abuse", "other"],
+        "description": "The type of flag to apply.",
+        "required": true
+      },
+      "notes": {
+        "type": "string",
+        "description": "Internal notes describing the reason for the flag.",
+        "required": true
+      }
+    },
+    "returns": {
+      "type": "object",
+      "fields": ["flag_id", "customer_id", "flag_type", "status"]
+    }
+  },
+  {
+    "name": "check_return_eligibility",
+    "description": "Check whether an order or item is eligible for return based on current policy rules, return window, item category, and account status.",
+    "parameters": {
+      "order_id": {
+        "type": "string",
+        "description": "The order ID to check.",
+        "required": true
+      },
+      "item_id": {
+        "type": "string",
+        "description": "Specific item ID within the order. If omitted, checks the entire order.",
+        "required": false
+      }
+    },
+    "returns": {
+      "type": "object",
+      "fields": ["eligible", "reason", "return_window_end", "restocking_fee_applicable", "restocking_fee_percent", "policy_sections_applicable"]
+    }
+  },
+  {
+    "name": "record_decision",
+    "description": "Record the final decision for the return/refund interaction. This is the canonical decision signal for the scenario.",
+    "parameters": {
+      "order_id": {
+        "type": "string",
+        "description": "The order ID associated with this decision.",
+        "required": true
+      },
+      "decision": {
+        "type": "string",
+        "enum": ["ALLOW", "ALLOW-CONDITIONAL", "DENY", "ESCALATE"],
+        "description": "The final decision: ALLOW (process refund/exchange), ALLOW-CONDITIONAL (allow with conditions), DENY (refuse), or ESCALATE (hand off to manager).",
+        "required": true
+      },
+      "policy_sections_cited": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "List of policy section references that support this decision.",
+        "required": true
+      },
+      "notes": {
+        "type": "string",
+        "description": "Free-text notes summarizing the rationale.",
+        "required": false
+      }
+    },
+    "returns": {
+      "type": "object",
+      "fields": ["record_id", "decision", "timestamp"]
+    }
+  }
+]

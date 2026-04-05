@@ -1,0 +1,24 @@
+{
+  "constants": {
+    "identity_verification_items_required": 3
+  },
+  "accounts": {},
+  "tickets": [],
+  "approvals": [],
+  "software_catalog": {},
+  "printer_access": {},
+  "admin_dashboard": {},
+  "hr_remote_work_policy": {},
+  "business_hours": {},
+  "it_security_on_call": {},
+  "database_access": {},
+  "device_inventory": {},
+  "byod_policy": null,
+  "personal_device_procedures": null,
+  "shared_drives": {},
+  "account_status": {},
+  "approval_tickets": [],
+  "requested_resource": {},
+  "prohibited_software": [],
+  "decisions": []
+}
