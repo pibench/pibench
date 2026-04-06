@@ -8,3 +8,8 @@ reports/
 .claude/
 AGENTS.md
 CLAUDE.md
+
+# Ignore docs and non-essential folders
+docs/
+backup/
+scratchpad/
