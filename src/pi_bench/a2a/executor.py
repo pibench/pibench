@@ -11,6 +11,7 @@ import asyncio
 import json
 import logging
 import time
+from dataclasses import dataclass
 from typing import Any
 
 from typing_extensions import override
@@ -18,13 +19,27 @@ from typing_extensions import override
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
 from a2a.server.tasks import TaskUpdater
-from a2a.types import DataPart, Part, TextPart
+from a2a.types import DataPart, Part, TaskState, TextPart
 from a2a.utils import new_agent_text_message, new_task
 
 from pi_bench.a2a.assessment import run_assessment
 from pi_bench.a2a.results import to_agentbeats_results
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class AgentBeatsEnvelope:
+    """Normalized AgentBeats assessment request.
+
+    This wrapper keeps AgentBeats-specific request shapes out of the core
+    assessment runner. The runner still receives only a purple URL and config.
+    """
+
+    purple_url: str
+    agent_id: str
+    domain: str
+    config: dict[str, Any]
 
 
 class PIBenchExecutor(AgentExecutor):
@@ -35,6 +50,9 @@ class PIBenchExecutor(AgentExecutor):
     returns AgentBeats-formatted results as an artifact.
     """
 
+    def __init__(self, concurrency: int = 1) -> None:
+        self.concurrency = max(1, int(concurrency))
+
     @override
     async def execute(
         self,
@@ -43,18 +61,22 @@ class PIBenchExecutor(AgentExecutor):
     ) -> None:
         """Handle an incoming assessment request.
 
-        Expected input (as a data part in the message):
+        Expected input (as a data or text part in the message):
             {
                 "participants": {
-                    "agent": {"url": "<purple_agent_url>", "id": "<agent_id>"}
+                    "agent": "<purple_agent_url>"
                 },
                 "config": {
                     "domain": "policy_compliance",
-                    "scenarios_dir": "scenarios",
-                    "max_steps": 50,
+                    "scenario_scope": "all",
+                    "max_steps": 40,
+                    "user_model": "gpt-5.4",
                     "seed": 42
                 }
             }
+
+        For local tests, participants.agent may also be an object:
+            {"url": "<purple_agent_url>", "id": "<agent_id>"}
         """
         msg = context.message
         if not msg:
@@ -76,11 +98,12 @@ class PIBenchExecutor(AgentExecutor):
 
         try:
             request_data = _extract_request_data(context)
-            purple_info = request_data.get("participants", {}).get("agent", {})
-            purple_url = purple_info.get("url", "")
-            agent_id = purple_info.get("id", "unknown")
+            envelope = _parse_agentbeats_envelope(
+                request_data,
+                server_concurrency=self.concurrency,
+            )
 
-            if not purple_url:
+            if not envelope.purple_url:
                 await updater.failed(
                     new_agent_text_message(
                         "No purple agent URL provided",
@@ -90,27 +113,35 @@ class PIBenchExecutor(AgentExecutor):
                 )
                 return
 
-            config = request_data.get("config", {})
-            domain = config.pop("domain", "policy_compliance")
-
             logger.info(
-                "Starting assessment for agent %s at %s (all domains)",
-                agent_id, purple_url,
+                "Starting assessment for agent %s at %s (concurrency=%d)",
+                envelope.agent_id,
+                envelope.purple_url,
+                envelope.config["concurrency"],
             )
 
             t0 = time.monotonic()
 
-            scenario_results = await asyncio.to_thread(
-                run_assessment,
-                purple_url=purple_url,
-                config=config,
+            assessment_task = asyncio.create_task(
+                asyncio.to_thread(
+                    run_assessment,
+                    purple_url=envelope.purple_url,
+                    config=envelope.config,
+                )
+            )
+            scenario_results = await _await_with_heartbeat(
+                assessment_task=assessment_task,
+                updater=updater,
+                context_id=context_id,
+                task_id=task.id,
+                started_at=t0,
             )
 
             elapsed = time.monotonic() - t0
 
             agentbeats_results = to_agentbeats_results(
-                agent_id=agent_id,
-                domain=domain,
+                agent_id=envelope.agent_id,
+                domain=envelope.domain,
                 scenario_results=scenario_results,
                 time_used=elapsed,
             )
@@ -164,6 +195,39 @@ class PIBenchExecutor(AgentExecutor):
         )
 
 
+async def _await_with_heartbeat(
+    *,
+    assessment_task: asyncio.Task,
+    updater: TaskUpdater,
+    context_id: str,
+    task_id: str,
+    started_at: float,
+    interval_seconds: int = 60,
+) -> list[dict]:
+    """Wait for a long assessment while keeping streaming clients alive."""
+    while True:
+        done, _ = await asyncio.wait({assessment_task}, timeout=interval_seconds)
+        if done:
+            return await assessment_task
+
+        elapsed = int(time.monotonic() - started_at)
+        try:
+            await updater.update_status(
+                TaskState.working,
+                new_agent_text_message(
+                    json.dumps({
+                        "status": "working",
+                        "message": "PI-Bench assessment still running",
+                        "elapsed_seconds": elapsed,
+                    }),
+                    context_id=context_id,
+                    task_id=task_id,
+                ),
+            )
+        except Exception:
+            logger.warning("Failed to send assessment heartbeat", exc_info=True)
+
+
 def _extract_request_data(context: RequestContext) -> dict[str, Any]:
     """Extract assessment request data from the A2A RequestContext."""
     message = context.message
@@ -182,3 +246,101 @@ def _extract_request_data(context: RequestContext) -> dict[str, Any]:
                 continue
 
     return {}
+
+
+def _parse_agentbeats_envelope(
+    request_data: dict[str, Any],
+    *,
+    server_concurrency: int,
+) -> AgentBeatsEnvelope:
+    """Normalize AgentBeats and local assessment request shapes.
+
+    Supported participant forms:
+    - Official/AgentBeats style: {"participants": {"agent": "http://..."}}
+    - Local rich style: {"participants": {"agent": {"url": "http://...", "id": "..."}}}
+    - Direct style: {"purple_agent_url": "http://...", "purple_agent_id": "..."}
+    """
+    role, purple_url, agent_id = _extract_agent_participant(request_data)
+    config = dict(request_data.get("config", {}))
+    domain = str(config.pop("domain", "policy_compliance") or "policy_compliance")
+
+    config.setdefault("scenario_scope", "all")
+    config.setdefault("user_model", "gpt-5.4")
+    config.setdefault("max_steps", 40)
+    config.setdefault("seed", 42)
+
+    requested_concurrency = _positive_int(
+        config.get("concurrency", server_concurrency),
+        default=server_concurrency,
+    )
+    config["concurrency"] = min(requested_concurrency, max(1, int(server_concurrency)))
+
+    # This public AgentBeats wrapper supports full-set and domain runs. The
+    # lower-level assessment function keeps doing the actual validation.
+    scope = str(config.get("scenario_scope", "all")).strip().lower()
+    if scope not in {"all", "domain"}:
+        raise ValueError("scenario_scope must be 'all' or 'domain'")
+    config["scenario_scope"] = scope
+
+    if scope == "domain" and not config.get("scenario_domain"):
+        raise ValueError("scenario_domain is required when scenario_scope='domain'")
+
+    return AgentBeatsEnvelope(
+        purple_url=purple_url,
+        agent_id=agent_id or role,
+        domain=domain,
+        config=config,
+    )
+
+
+def _extract_agent_participant(request_data: dict[str, Any]) -> tuple[str, str, str]:
+    """Extract participant role, endpoint URL, and leaderboard id."""
+    participants = request_data.get("participants")
+    agentbeats_ids = request_data.get("agentbeats_ids", {})
+
+    if isinstance(participants, dict) and participants:
+        if "agent" in participants:
+            role = "agent"
+            participant = participants["agent"]
+        else:
+            role, participant = next(iter(participants.items()))
+
+        if isinstance(participant, str):
+            purple_url = participant
+            agent_id = _agentbeats_id_for(role, agentbeats_ids) or role
+            return role, purple_url.rstrip("/"), agent_id
+
+        if isinstance(participant, dict):
+            purple_url = str(
+                participant.get("url")
+                or participant.get("endpoint")
+                or participant.get("base_url")
+                or ""
+            )
+            agent_id = str(
+                participant.get("id")
+                or participant.get("agentbeats_id")
+                or _agentbeats_id_for(role, agentbeats_ids)
+                or role
+            )
+            return role, purple_url.rstrip("/"), agent_id
+
+    purple_url = str(request_data.get("purple_agent_url") or "")
+    agent_id = str(request_data.get("purple_agent_id") or request_data.get("agentbeats_id") or "agent")
+    return "agent", purple_url.rstrip("/"), agent_id
+
+
+def _agentbeats_id_for(role: str, agentbeats_ids: Any) -> str | None:
+    if isinstance(agentbeats_ids, dict):
+        value = agentbeats_ids.get(role)
+        if value:
+            return str(value)
+    return None
+
+
+def _positive_int(value: Any, *, default: int = 1) -> int:
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        return default
+    return max(1, parsed)

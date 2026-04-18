@@ -2,6 +2,9 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .DS_Store
+.env
+.env.*
+!.env.example
 reports/
 .venv/
 .gitnexus/
