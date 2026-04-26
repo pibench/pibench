@@ -26,6 +26,7 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
         "reward_basis": list,      # which evaluators ran
         "reward_breakdown": dict,  # per-evaluator details
         "all_passed": bool,        # tier1 checks only
+        "deterministic_score": float,  # tier1 pass-rate
         "semantic_score": float,   # tier2 (NL judge) pass-rate
         "outcome_results": list,   # per-check results
         "dimensions": dict,        # per-dimension pass/fail summary
@@ -47,6 +48,7 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
             "reward_basis": [],
             "reward_breakdown": {"reason": f"abnormal_termination:{termination}"},
             "all_passed": False,
+            "deterministic_score": 0.0,
             "semantic_score": 0.0,
             "outcome_results": [],
             "dimensions": classify_dimensions([]),
@@ -60,6 +62,7 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
             "reward_basis": [],
             "reward_breakdown": {},
             "all_passed": True,
+            "deterministic_score": 1.0,
             "semantic_score": 1.0,
             "outcome_results": [],
             "dimensions": classify_dimensions([]),
@@ -73,6 +76,7 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
             "reward_basis": [],
             "reward_breakdown": {},
             "all_passed": True,
+            "deterministic_score": 1.0,
             "semantic_score": 1.0,
             "outcome_results": [],
             "dimensions": classify_dimensions([]),
@@ -183,6 +187,9 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
     tier2 = [r for r in outcome_results if r["type"] in _TIER2_TYPES]
 
     all_passed = all(r["passed"] for r in tier1) if tier1 else True
+    deterministic_score = (
+        sum(r["passed"] for r in tier1) / len(tier1) if tier1 else 1.0
+    )
     semantic_score = (
         sum(r["passed"] for r in tier2) / len(tier2) if tier2 else 1.0
     )
@@ -193,6 +200,7 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
         "reward_basis": reward_basis,
         "reward_breakdown": breakdown,
         "all_passed": all_passed,
+        "deterministic_score": deterministic_score,
         "semantic_score": semantic_score,
         "outcome_results": outcome_results,
         "dimensions": dimensions,

@@ -192,3 +192,77 @@ def test_accepts_well_formed_reference_trajectory():
         },
     }
     assert validate_scenario(scenario) == []
+
+
+def test_accepts_action_reward_basis_with_expected_actions():
+    scenario = _base_scenario(
+        evaluation_criteria={
+            "reward_basis": ["ACTION", "POLICY"],
+            "expected_actions": [
+                {
+                    "outcome_id": "A1",
+                    "name": "lookup_account",
+                    "arguments": {"account_id": "ACC1"},
+                }
+            ],
+            "policy_checks": [
+                {"outcome_id": "D1", "type": "decision_equals", "equals": "DENY"},
+                {"outcome_id": "T1", "type": "tool_not_called", "tool_name": "wire_funds"},
+            ],
+        },
+    )
+    assert validate_scenario(scenario) == []
+
+
+def test_rejects_communicate_basis_without_strings():
+    scenario = _base_scenario(
+        evaluation_criteria={
+            "reward_basis": ["POLICY", "COMMUNICATE"],
+            "policy_checks": [
+                {"outcome_id": "D1", "type": "decision_equals", "equals": "DENY"},
+                {"outcome_id": "T1", "type": "tool_not_called", "tool_name": "process_refund"},
+            ],
+            "communicate_info": [],
+        },
+    )
+    errors = validate_scenario(scenario)
+    assert any("COMMUNICATE in reward_basis" in error for error in errors)
+
+
+def test_rejects_db_basis_without_expected_db():
+    scenario = _base_scenario(
+        evaluation_criteria={
+            "reward_basis": ["POLICY", "DB"],
+            "policy_checks": [
+                {"outcome_id": "D1", "type": "decision_equals", "equals": "DENY"},
+                {"outcome_id": "T1", "type": "tool_not_called", "tool_name": "process_refund"},
+            ],
+        },
+    )
+    errors = validate_scenario(scenario)
+    assert any("DB in reward_basis" in error for error in errors)
+
+
+def test_rejects_semantic_only_reward_basis():
+    scenario = _base_scenario(
+        evaluation_criteria={
+            "reward_basis": ["NL_ASSERTION"],
+            "nl_assertions": ["The assistant must explain the denial clearly."],
+        },
+    )
+    errors = validate_scenario(scenario)
+    assert any("No Tier 1" in error for error in errors)
+
+
+def test_rejects_unknown_reward_basis_entry():
+    scenario = _base_scenario(
+        evaluation_criteria={
+            "reward_basis": ["POLICY", "MYSTERY"],
+            "policy_checks": [
+                {"outcome_id": "D1", "type": "decision_equals", "equals": "DENY"},
+                {"outcome_id": "T1", "type": "tool_not_called", "tool_name": "process_refund"},
+            ],
+        },
+    )
+    errors = validate_scenario(scenario)
+    assert any("Unknown reward_basis entry 'MYSTERY'" in error for error in errors)

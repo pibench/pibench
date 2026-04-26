@@ -97,6 +97,7 @@ def build_report(
     """
     outcome_results = eval_result.get("outcome_results", [])
     all_passed = eval_result.get("all_passed", False)
+    deterministic_score = eval_result.get("deterministic_score", 1.0 if all_passed else 0.0)
     semantic_score = eval_result.get("semantic_score", 1.0)
 
     dimensions = eval_result.get("dimensions") or classify_dimensions(outcome_results)
@@ -121,6 +122,7 @@ def build_report(
         "label": label,
         "leaderboard_primary": leaderboard_primary,
         "all_passed": all_passed,
+        "deterministic_score": deterministic_score,
         "semantic_score": semantic_score,
         "summary": summary,
         "termination_reason": termination_reason,
@@ -143,6 +145,10 @@ def format_report(report: dict) -> str:
     lines.append(f"  Label: {report['label']}  Column: {report['leaderboard_primary']}")
     lines.append(f"  Termination: {report['termination_reason']}  Steps: {report['step_count']}")
     lines.append(f"  Checks: {report['passed_checks']}/{report['total_checks']} passed")
+    lines.append(
+        f"  Deterministic: {report.get('deterministic_score', 0.0):.2f}"
+        f"  Semantic: {report['semantic_score']:.2f}"
+    )
 
     # Tool call trajectory
     if report["tool_calls"]:
@@ -168,10 +174,6 @@ def format_report(report: dict) -> str:
             lines.append(f"    ✗ {oid}: {detail}")
             if notes:
                 lines.append(f"      Why: {notes}")
-
-    # Semantic score
-    if report["semantic_score"] < 1.0:
-        lines.append(f"\n  Semantic score: {report['semantic_score']:.2f}")
 
     return "\n".join(lines)
 

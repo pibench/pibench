@@ -15,6 +15,24 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 _VALID_LABELS = {"ALLOW", "ALLOW-CONDITIONAL", "DENY", "ESCALATE"}
+_VALID_REWARD_BASIS = {
+    "ACTION",
+    "COMMUNICATE",
+    "DB",
+    "ENV_ASSERTION",
+    "NL_ASSERTION",
+    "NL_JUDGE",
+    "POLICY",
+    "STATE_FIELD",
+}
+_HARD_REWARD_BASIS = {
+    "ACTION",
+    "COMMUNICATE",
+    "DB",
+    "ENV_ASSERTION",
+    "POLICY",
+    "STATE_FIELD",
+}
 
 _TIER1_TYPES = {
     "tool_called",
@@ -78,6 +96,10 @@ def _validate_evaluation_criteria(criteria: dict, label: str | None = None) -> l
         errors.append("Empty reward_basis in evaluation_criteria")
         return errors
 
+    unknown_basis = [basis for basis in reward_basis if basis not in _VALID_REWARD_BASIS]
+    for basis in unknown_basis:
+        errors.append(f"Unknown reward_basis entry '{basis}'")
+
     # Validate each reward_basis type has corresponding checks
     if "POLICY" in reward_basis:
         policy_checks = criteria.get("policy_checks", [])
@@ -116,13 +138,47 @@ def _validate_evaluation_criteria(criteria: dict, label: str | None = None) -> l
             for i, check in enumerate(nl_checks):
                 errors.extend(_validate_check(check, i))
 
-    # Must have at least one Tier 1 check across all check arrays
-    all_checks = (
-        criteria.get("policy_checks", [])
-        + criteria.get("state_field_checks", [])
-    )
-    tier1 = [c for c in all_checks if c.get("type", "") in _TIER1_TYPES]
-    if not tier1:
+    if "ACTION" in reward_basis:
+        expected_actions = criteria.get("expected_actions", [])
+        if not expected_actions:
+            errors.append("ACTION in reward_basis but no expected_actions defined")
+        elif not isinstance(expected_actions, list):
+            errors.append("expected_actions must be a list")
+        else:
+            for i, action in enumerate(expected_actions):
+                if not isinstance(action, dict):
+                    errors.append(f"expected_actions[{i}] must be an object")
+                    continue
+                if not action.get("name"):
+                    errors.append(f"expected_actions[{i}] missing required 'name'")
+
+    if "DB" in reward_basis:
+        expected_db = criteria.get("expected_db")
+        if not isinstance(expected_db, dict) or not expected_db:
+            errors.append("DB in reward_basis but expected_db is missing or empty")
+
+    if "COMMUNICATE" in reward_basis:
+        communicate_info = criteria.get("communicate_info", [])
+        if not isinstance(communicate_info, list) or not communicate_info:
+            errors.append("COMMUNICATE in reward_basis but no communicate_info defined")
+        elif not all(isinstance(item, str) and item.strip() for item in communicate_info):
+            errors.append("communicate_info must be a non-empty list of strings")
+
+    if "ENV_ASSERTION" in reward_basis:
+        env_assertions = criteria.get("env_assertions", [])
+        if not isinstance(env_assertions, list) or not env_assertions:
+            errors.append("ENV_ASSERTION in reward_basis but no env_assertions defined")
+        elif not all(isinstance(item, dict) for item in env_assertions):
+            errors.append("env_assertions must be a non-empty list of objects")
+
+    if "NL_ASSERTION" in reward_basis:
+        nl_assertions = criteria.get("nl_assertions", [])
+        if not isinstance(nl_assertions, list) or not nl_assertions:
+            errors.append("NL_ASSERTION in reward_basis but no nl_assertions defined")
+        elif not all(isinstance(item, str) and item.strip() for item in nl_assertions):
+            errors.append("nl_assertions must be a non-empty list of strings")
+
+    if not any(basis in _HARD_REWARD_BASIS for basis in reward_basis):
         errors.append("No Tier 1 (deterministic) checks — at least one required")
 
     return errors

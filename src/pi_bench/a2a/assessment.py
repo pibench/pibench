@@ -69,6 +69,7 @@ def _error_result(
         "error": error,
         "reward": 0.0,
         "all_passed": False,
+        "deterministic_score": 0.0,
         "semantic_score": 0.0,
         "outcome_results": [],
         "dimensions": {},
@@ -481,6 +482,7 @@ def _run_single_scenario(
     all_passed = eval_result["all_passed"]
     reward = eval_result.get("reward", 1.0 if all_passed else 0.0)
     outcome_results = eval_result["outcome_results"]
+    deterministic_score = eval_result.get("deterministic_score", 0.0)
     semantic_score = eval_result["semantic_score"]
     dimensions = eval_result.get("dimensions", {})
 
@@ -517,6 +519,7 @@ def _run_single_scenario(
         "decision_error": eval_result.get("decision_error"),
         "reward": reward,
         "all_passed": all_passed,
+        "deterministic_score": deterministic_score,
         "semantic_score": semantic_score,
         "outcome_results": outcome_results,
         "dimensions": dimensions,

@@ -324,6 +324,7 @@ def _run_one(
     sim["status"] = "completed"
     sim["reward"] = reward_info.get("reward")
     sim["all_passed"] = reward_info.get("all_passed")
+    sim["deterministic_score"] = reward_info.get("deterministic_score")
     sim["semantic_score"] = reward_info.get("semantic_score")
     sim["outcome_results"] = reward_info.get("outcome_results", [])
     sim["dimensions"] = reward_info.get("dimensions", {})
@@ -423,6 +424,7 @@ def _error_sim(
         "benchmark_version": __version__,
         "reward": 0.0,
         "all_passed": False,
+        "deterministic_score": 0.0,
         "semantic_score": 0.0,
         "outcome_results": [],
         "dimensions": {},
@@ -440,6 +442,7 @@ def _error_sim(
         "reward_info": {
             "reward": 0.0,
             "all_passed": False,
+            "deterministic_score": 0.0,
             "semantic_score": 0.0,
             "outcome_results": [],
             "dimensions": {},
@@ -472,6 +475,7 @@ def _emit_scenario_result(emitter: Any, sim: dict) -> None:
 
     emitter.on_scenario_end(sim.get("task_id", "?"), {
         "all_passed": reward.get("all_passed", False),
+        "deterministic_score": reward.get("deterministic_score", 0.0),
         "leaderboard_primary": sim.get("leaderboard_primary", ""),
         "label": sim.get("label", ""),
         "termination_reason": sim.get("termination_reason", ""),

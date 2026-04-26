@@ -69,6 +69,7 @@ def to_agentbeats_results(
             "status": sr.get("status", "unknown"),
             "reward": reward,
             "all_passed": sr.get("all_passed", False),
+            "deterministic_score": sr.get("deterministic_score", 0.0),
             "semantic_score": sr.get("semantic_score", 0.0),
             "canonical_decision": sr.get("canonical_decision", ""),
             "decision_channel": sr.get("decision_channel"),
@@ -110,7 +111,7 @@ def to_agentbeats_results(
 
     # Aggregate event flags through the shared metrics layer so local and A2A
     # use the same denominator rules.
-    flag_summary = metrics_payload["event_flag_rates"]
+    flag_summary = metrics_payload["event_metrics"]
 
     # Per-label breakdown
     label_breakdown: dict[str, dict[str, Any]] = {}

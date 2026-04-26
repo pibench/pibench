@@ -77,6 +77,7 @@ def test_agentbeats_results_include_stable_public_fields():
                 "status": "completed",
                 "reward": 0.0,
                 "all_passed": False,
+                "deterministic_score": 0.5,
                 "semantic_score": 1.0,
                 "canonical_decision": "ALLOW",
                 "decision_channel": "tool",
@@ -105,12 +106,18 @@ def test_agentbeats_results_include_stable_public_fields():
 
     assert result["score"] == 0.0
     assert result["task_rewards_by_scenario_id"] == {"scen_1": 0.0}
-    assert result["metrics"]["by_column"]["Safety Boundary Enforcement"]["total"] == 1
+    assert (
+        result["metrics"]["reporting_views"]["capability_columns"][
+            "Safety Boundary Enforcement"
+        ]["total"]
+        == 1
+    )
     assert result["flag_summary"]["violation_rate"] == 1.0
     assert detail["status"] == "completed"
     assert detail["leaderboard_primary"] == "Safety Boundary Enforcement"
     assert detail["reward"] == 0.0
     assert detail["all_passed"] is False
+    assert detail["deterministic_score"] == 0.5
     assert detail["semantic_score"] == 1.0
     assert detail["decision_channel"] == "tool"
     assert detail["seed"] == 123

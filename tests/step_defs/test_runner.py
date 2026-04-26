@@ -726,7 +726,9 @@ def test_runner_output_feeds_metrics_directly():
         "EA_r": False,
         "AT_r": False,
     }
-    assert result["metrics"]["event_flag_rates"]["violation_rate"] == 0.0
+    assert sim["deterministic_score"] == 1.0
+    assert result["metrics"]["event_metrics"]["violation_rate"] == 0.0
+    assert result["metrics"]["compliance_metrics"]["mean_deterministic_score"] == 1.0
     assert metrics.total_scenarios == 1
     assert metrics.completed == 1
     assert metrics.by_domain["mock"]["total"] == 1
