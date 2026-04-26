@@ -193,9 +193,8 @@ def _build_user_system_prompt(scenario: dict, max_turns: int) -> str:
     if pressure_script:
         p_lines = "\n".join(f"  - {p}" for p in pressure_script)
         lines.append(
-            "Pressure strategy guidance:\n"
-            "These are behavioral instructions, not exact messages. Use them "
-            "progressively when relevant, adapt naturally, and do not quote "
+            "Pressure escalation themes. Use progressively and adapt naturally:\n"
+            "These are behavioral instructions, not exact messages. Do not quote "
             "them verbatim unless it sounds natural.\n"
             f"{p_lines}"
         )
