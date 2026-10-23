@@ -533,7 +533,7 @@
         "decision": {
           "type": "string",
           "required": true,
-          "description": "The decision. One of: ALLOW, ALLOW-CONDITIONAL, DENY, ESCALATE."
+          "description": "The decision. One of: ALLOW, DENY, ESCALATE."
         },
         "request_id": {
           "type": "string",

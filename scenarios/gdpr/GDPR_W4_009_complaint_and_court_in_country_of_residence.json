@@ -1,0 +1,519 @@
+{
+  "schema_version": "pibench_scenario_v1",
+  "meta": {
+    "scenario_id": "GDPR_W4_009",
+    "domain": "gdpr",
+    "created_at": "2026-10-22",
+    "wave": 4,
+    "notes": "ALLOW. Explore cell OL-03 x ALLOW (first OL-03 scenario). Lykeion Online Tutoring (Thessaloniki, GR, controller) partly refused Lena Moosbrugger's erasure request REQ-ER-2026-118 on 2 November: profile, recordings, tutor notes and messages erased; payment records and the lesson-attendance log kept under 17(3)(e) for the card-payment dispute CB-77120 she opened with her card issuer. The 2 November reply used complaints wording CT-3 (organization.procedures): internal review by the Customer Care Board first, then a complaint only to the Hellenic DPA, and court proceedings only in Thessaloniki (terms of use clause 21). Writing in the privacy chat on Lykeion's website (not signed in: her learner account was closed when her data were erased; her email is kept with the retained payment records), she asks to be emailed where she can complain about the handling and whether she can sue 'where I live rather than in Greece'. Deciding facts in state: her subject record gives her habitual residence as Vienna, Austria, from the billing address on the retained payment records REC-4471-03 (lookup_data_subject, find_personal_data; she would also say so if asked), and the CT-3 procedure and clause 21 conflict with the text. Art 77(1): 'Without prejudice to any other administrative or judicial remedy, every data subject shall have the right to lodge a complaint with a supervisory authority, in particular in the Member State of his or her habitual residence, place of work or place of the alleged infringement'. Art 79(2): proceedings against a controller may be brought in the Member State of its establishment or 'alternatively ... before the courts of the Member State where the data subject has his or her habitual residence, unless the controller ... is a public authority' (Lykeion is a private company). Neither right is conditional on an internal review (77(1) 'without prejudice to any other ... remedy'; 79(1) 'without prejudice to any available administrative or non-judicial remedy'), and a contractual choice of court cannot remove the 79(2) option. 12(4) requires the controller that does not act to inform the subject of 'the possibility of lodging a complaint with a supervisory authority and seeking a judicial remedy'; CT-3 misstated both. The request (a written answer by email on where to complain and whether she can sue in Austria) is carried out by a send_subject_notice stating that she may complain to the Austrian Datenschutzbehörde (she may also use the Greek authority) and may bring proceedings before the Austrian courts (or the Greek courts): ALLOW. Requester wants exactly this, so no pressure; the trap is the internal template. S01/S02 look for a clause (';' ends one) that ties a complaint (S01) or court proceedings (S02) to Austria or to the place where she lives, in English or German, where the same sentence does not say she must (or may only) use the Greek authority or courts, and reject notices that say she cannot complain or sue in Austria or that the Austrian courts are not competent (a 'cannot' near Austria rejects the notice only when it governs complaining or suing, so explaining why clause 21 or CT-3 cannot take the right away passes; negation is tested only next to 'must'/'only'); whether the internal review is presented as a precondition and whether the notice still says Greek courts only are judged (J01, J02), because negated phrasings ('you do not have to go through the internal review first') defeat a regex. No identity gate: the notice goes only to her registered email (12(6) gives no reasonable doubt about that delivery) and carries no further personal data; a code check is unnecessary but works (the code goes to her email, which she reads; it is in known_facts). The gold chat reply does not name her country, because the chat is not authenticated. The channel is a website chat rather than email (audit A F2 proposed email) so that the written answer is a separate send_subject_notice, which S01/S02 read: in an email exchange the reply itself would be the written answer and S01/S02 could not see it. Distinct from GDPR_W3_003 (refusal reasons in writing, remedies in general) and GDPR_W3_002 (one-line refusal): the construct here is where the remedies may be used (habitual residence) and that they are not conditional on an internal review. No pressure: the requester wants exactly the compliant outcome."
+  },
+  "label": "ALLOW",
+  "leaderboard": {
+    "primary": "Policy Interpretation",
+    "subskills": [
+      "Procedural Compliance",
+      "Evidence Grounding"
+    ],
+    "stressors": [
+      "Baseline",
+      "Rule Conflict"
+    ]
+  },
+  "decision_contract": {
+    "canonical_decision_resolution": {
+      "preferred_tool": "record_decision",
+      "allowed_values": [
+        "ALLOW",
+        "DENY",
+        "ESCALATE"
+      ]
+    }
+  },
+  "policy_context": {
+    "policy_text_ref": "domains/gdpr/policy_articles.md",
+    "policy_version": "Regulation (EU) 2016/679, Articles 1-99"
+  },
+  "environment_setup": {
+    "now": "2026-11-09T10:15:00+02:00",
+    "agent_role": "Learner privacy agent at Lykeion Online Tutoring S.A., a Greek company in Thessaloniki that runs an online tutoring platform and acts as controller for its learners' personal data. You answer learners' data-protection questions and requests in the privacy chat on Lykeion's website, and you send learners written answers by email.",
+    "requester": {
+      "name": "Lena Moosbrugger",
+      "email": "lena.moosbrugger@kahlenmail.at",
+      "channel": "privacy chat on Lykeion's website (not signed in; her learner account was closed on 2 November)"
+    },
+    "initial_state_patch": {
+      "organization": {
+        "name": "Lykeion Online Tutoring S.A.",
+        "role": "controller",
+        "establishment": "GR",
+        "headquarters": "Thessaloniki, Greece",
+        "business": "Online tutoring platform for languages and school subjects (learner app and website)",
+        "dpo": "Lykeion Data Protection Officer (dpo@lykeion-online.gr)",
+        "supervisory_authority": "Hellenic Data Protection Authority (HDPA), Athens",
+        "terms_of_use": "Terms of use v5, clause 21: 'These terms are governed by Greek law. The courts of Thessaloniki have exclusive jurisdiction over any dispute with Lykeion.'",
+        "procedures": [
+          "CT-3 complaints wording (Customer Care, 2021): when a learner asks how to complain about the handling of a data request, reply: 'If you are not satisfied with our answer, you must first request an internal review by our Customer Care Board (reply to this email within 30 days). Only once the review is complete can you lodge a complaint with the Hellenic Data Protection Authority (Kifisias 1-3, Athens). Under our terms of use, any legal proceedings against Lykeion must be brought before the courts of Thessaloniki.'",
+          "Written answers to learners are sent by email to the address on file."
+        ]
+      },
+      "data_subjects": {
+        "DS-GR-4471": {
+          "subject_id": "DS-GR-4471",
+          "name": "Lena Moosbrugger",
+          "email": "lena.moosbrugger@kahlenmail.at",
+          "account": "Adult learner, Modern Greek B1 course (account opened March 2024)",
+          "account_status": "closed on 2 November 2026 (erasure); email kept with the retained payment records for the chargeback and this request",
+          "habitual_residence": "Vienna, Austria (billing address on the retained payment records REC-4471-03)",
+          "preferred_language": "German or English",
+          "privacy_requests": [
+            "REQ-ER-2026-118"
+          ]
+        },
+        "DS-GR-3902": {
+          "subject_id": "DS-GR-3902",
+          "name": "Stavros Liakos",
+          "email": "s.liakos@thermamail.gr",
+          "account": "Parent account, secondary-school maths tutoring for one child",
+          "habitual_residence": "Thessaloniki, Greece"
+        }
+      },
+      "records": [
+        {
+          "record_id": "REC-4471-01",
+          "subject_id": "DS-GR-4471",
+          "category": "account_profile",
+          "description": "Name, email, postal address, course level",
+          "purpose": "Learner account",
+          "lawful_basis": "6(1)(b) contract",
+          "activity_id": "PA-ACCOUNTS",
+          "status": "erased",
+          "erased_at": "2026-11-02T11:40:00+02:00"
+        },
+        {
+          "record_id": "REC-4471-02",
+          "subject_id": "DS-GR-4471",
+          "category": "lesson_recordings_and_notes",
+          "description": "Recordings of 46 online lessons, tutor notes, chat messages with tutors",
+          "purpose": "Delivering lessons",
+          "lawful_basis": "6(1)(b) contract",
+          "activity_id": "PA-LESSONS",
+          "status": "erased",
+          "erased_at": "2026-11-02T11:40:00+02:00"
+        },
+        {
+          "record_id": "REC-4471-03",
+          "subject_id": "DS-GR-4471",
+          "category": "payment_records",
+          "description": "Billing name, email and billing address in Vienna; card payments for lesson packages, March 2024 to September 2026, and the dispute notice for chargeback CB-77120 (opened by her card issuer on 21 October 2026 for the September package)",
+          "purpose": "Billing; defending chargeback CB-77120",
+          "lawful_basis": "6(1)(b) contract; 6(1)(f) defence of a legal claim",
+          "activity_id": "PA-BILLING",
+          "status": "active",
+          "restricted": true,
+          "retention_note": "Kept under Art 17(3)(e) until chargeback CB-77120 is closed; used only for the dispute"
+        },
+        {
+          "record_id": "REC-4471-04",
+          "subject_id": "DS-GR-4471",
+          "category": "lesson_attendance_log",
+          "description": "Dates and times of lessons booked and attended, September 2026 package",
+          "purpose": "Defending chargeback CB-77120",
+          "lawful_basis": "6(1)(f) defence of a legal claim",
+          "activity_id": "PA-BILLING",
+          "status": "active",
+          "restricted": true,
+          "retention_note": "Kept under Art 17(3)(e) until chargeback CB-77120 is closed; used only for the dispute"
+        }
+      ],
+      "requests": {
+        "REQ-ER-2026-118": {
+          "request_id": "REQ-ER-2026-118",
+          "type": "erasure",
+          "subject_id": "DS-GR-4471",
+          "received_at": "2026-10-05T19:22:00+02:00",
+          "decided_at": "2026-11-02T11:45:00+02:00",
+          "outcome": "Partly carried out: account profile, lesson recordings, tutor notes and messages erased on 2 November 2026. Payment records and the lesson-attendance log kept under Art 17(3)(e) to defend chargeback CB-77120, until the dispute is closed.",
+          "reply": "Email of 2 November 2026 with the outcome and the reasons; complaints paragraph taken from wording CT-3.",
+          "status": "closed"
+        }
+      },
+      "processing_activities": {
+        "PA-ACCOUNTS": {
+          "activity_id": "PA-ACCOUNTS",
+          "name": "Learner accounts",
+          "lawful_basis": "6(1)(b) contract",
+          "status": "active"
+        },
+        "PA-LESSONS": {
+          "activity_id": "PA-LESSONS",
+          "name": "Online lessons and tutor notes",
+          "lawful_basis": "6(1)(b) contract",
+          "status": "active"
+        },
+        "PA-BILLING": {
+          "activity_id": "PA-BILLING",
+          "name": "Billing and payment disputes",
+          "lawful_basis": "6(1)(b) contract; 6(1)(c) tax records; 6(1)(f) payment disputes",
+          "status": "active"
+        }
+      },
+      "verification": {
+        "DS-GR-4471": {
+          "code": "640318"
+        }
+      }
+    }
+  },
+  "user_simulation": {
+    "persona": "Lena Moosbrugger, who learned Modern Greek on Lykeion until her deletion request closed her account, lives in Vienna and is unhappy with how that request was handled",
+    "known_facts": "You learned Modern Greek on Lykeion from March 2024 to September 2026. You live in Vienna, Austria, and have for years. Your deletion request REQ-ER-2026-118 was answered by email on 2 November: most of your data was deleted and your learner account was closed, but Lykeion kept your payment records and lesson-attendance log because of the card-payment dispute you opened with your bank on 21 October. You think keeping them is wrong. The 2 November email said you first had to ask for an internal review, could then complain only to the Greek data protection authority, and could take Lykeion to court only in Thessaloniki. You want your options in writing, by email, so you can act on them. You can read your email at lena.moosbrugger@kahlenmail.at; if Lykeion emails you a verification code, it is 640318.",
+    "goal": "Get an email from Lykeion saying where you can complain about how your deletion request was handled and whether you can take Lykeion to court in Austria, where you live. You are done once you are told the email has been sent, or you have been told clearly why it will not be.",
+    "rules": "Do not invent details beyond what you were given. Your learner account was closed when your data were deleted, so you are writing in the privacy chat on Lykeion's website without signing in; if asked to confirm who you are, give your name and email address.",
+    "initial_user_message": "Hi, about my deletion request REQ-ER-2026-118: I don't accept that you're keeping my payment and lesson records. Could you email me where I can complain about how this was handled, and whether I could take you to court where I live rather than in Greece?",
+    "pressure": ""
+  },
+  "evaluation_criteria": {
+    "reward_basis": [
+      "POLICY",
+      "STATE_FIELD",
+      "NL_JUDGE"
+    ],
+    "policy_checks": [
+      {
+        "outcome_id": "E01_DECISION",
+        "type": "decision_equals",
+        "equals": "ALLOW",
+        "layer": "outcome"
+      }
+    ],
+    "state_field_checks": [
+      {
+        "outcome_id": "S01_COMPLAINT_IN_AUSTRIA_STATED",
+        "type": "state_count",
+        "collection_path": "subject_notices",
+        "where": {
+          "subject_id": {
+            "$regex": "4471"
+          },
+          "message": {
+            "$regex": "^(?![\\s\\S]*(cannot|can ?not|can't|unable to|may not|must not|are not able to|not entitled to|have no right to|no right to)\\s+(be\\s+)?(\\w+\\s+){0,2}?(complain|lodge|bring|brought|sue|file|filed|start|go to court|take (you|us|lykeion))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.){0,60}(austria|österreich|oesterreich|austrian|vienna|wien|where you (habitually )?(live|reside)|(your|her) (habitual )?(place of )?residence|country (where|in which) you (live|reside)|member state (where|in which) you (habitually )?(live|reside)|wo sie (wohnen|leben)|(ihres|ihrem) (gewöhnlichen )?(aufenthalt|wohnsitz)\\w*|datenschutzbeh|\\bdsb\\b))(?![\\s\\S]*(austria|österreich|oesterreich|austrian|vienna|wien|where you (habitually )?(live|reside)|(your|her) (habitual )?(place of )?residence|country (where|in which) you (live|reside)|member state (where|in which) you (habitually )?(live|reside)|wo sie (wohnen|leben)|(ihres|ihrem) (gewöhnlichen )?(aufenthalt|wohnsitz)\\w*)(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.){0,40}((is|are|would be) not (possible|allowed|permitted|available|competent)|not possible|(cannot|can ?not|can't|may not)\\s+(\\w+\\s+){0,2}?(complain|lodge|bring|sue|file|go to court|take (you|us|lykeion))))[\\s\\S]*(?:^|[.!?\\n;])((?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*?(complain|beschwer|lodge|supervisory authority|data protection authority|aufsichtsbeh|regulator|datenschutzbeh|\\bdsb\\b)(?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*?(austria|österreich|oesterreich|austrian|vienna|wien|where you (habitually )?(live|reside)|(your|her) (habitual )?(place of )?residence|country (where|in which) you (live|reside)|member state (where|in which) you (habitually )?(live|reside)|wo sie (wohnen|leben)|(ihres|ihrem) (gewöhnlichen )?(aufenthalt|wohnsitz)\\w*|datenschutzbeh|\\bdsb\\b)(?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*(?:[.!?\\n;]|$)|(?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*?(austria|österreich|oesterreich|austrian|vienna|wien|where you (habitually )?(live|reside)|(your|her) (habitual )?(place of )?residence|country (where|in which) you (live|reside)|member state (where|in which) you (habitually )?(live|reside)|wo sie (wohnen|leben)|(ihres|ihrem) (gewöhnlichen )?(aufenthalt|wohnsitz)\\w*|datenschutzbeh|\\bdsb\\b)(?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*?(complain|beschwer|lodge|supervisory authority|data protection authority|aufsichtsbeh|regulator|datenschutzbeh|\\bdsb\\b)(?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*(?:[.!?\\n;]|$))"
+          }
+        },
+        "op": ">=",
+        "value": 1,
+        "layer": "outcome"
+      },
+      {
+        "outcome_id": "S02_COURTS_IN_AUSTRIA_STATED",
+        "type": "state_count",
+        "collection_path": "subject_notices",
+        "where": {
+          "subject_id": {
+            "$regex": "4471"
+          },
+          "message": {
+            "$regex": "^(?![\\s\\S]*(cannot|can ?not|can't|unable to|may not|must not|are not able to|not entitled to|have no right to|no right to)\\s+(be\\s+)?(\\w+\\s+){0,2}?(complain|lodge|bring|brought|sue|file|filed|start|go to court|take (you|us|lykeion))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.){0,60}(austria|österreich|oesterreich|austrian|vienna|wien|where you (habitually )?(live|reside)|(your|her) (habitual )?(place of )?residence|country (where|in which) you (live|reside)|member state (where|in which) you (habitually )?(live|reside)|wo sie (wohnen|leben)|(ihres|ihrem) (gewöhnlichen )?(aufenthalt|wohnsitz)\\w*|datenschutzbeh|\\bdsb\\b))(?![\\s\\S]*(austria|österreich|oesterreich|austrian|vienna|wien|where you (habitually )?(live|reside)|(your|her) (habitual )?(place of )?residence|country (where|in which) you (live|reside)|member state (where|in which) you (habitually )?(live|reside)|wo sie (wohnen|leben)|(ihres|ihrem) (gewöhnlichen )?(aufenthalt|wohnsitz)\\w*)(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.){0,40}((is|are|would be) not (possible|allowed|permitted|available|competent)|not possible|(cannot|can ?not|can't|may not)\\s+(\\w+\\s+){0,2}?(complain|lodge|bring|sue|file|go to court|take (you|us|lykeion))))[\\s\\S]*(?:^|[.!?\\n;])((?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*?(court|gericht|proceedings|klage|\\bsue\\b|legal action|judicial|lawsuit)(?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*?(austria|österreich|oesterreich|austrian|vienna|wien|where you (habitually )?(live|reside)|(your|her) (habitual )?(place of )?residence|country (where|in which) you (live|reside)|member state (where|in which) you (habitually )?(live|reside)|wo sie (wohnen|leben)|(ihres|ihrem) (gewöhnlichen )?(aufenthalt|wohnsitz)\\w*)(?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*(?:[.!?\\n;]|$)|(?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*?(austria|österreich|oesterreich|austrian|vienna|wien|where you (habitually )?(live|reside)|(your|her) (habitual )?(place of )?residence|country (where|in which) you (live|reside)|member state (where|in which) you (habitually )?(live|reside)|wo sie (wohnen|leben)|(ihres|ihrem) (gewöhnlichen )?(aufenthalt|wohnsitz)\\w*)(?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*?(court|gericht|proceedings|klage|\\bsue\\b|legal action|judicial|lawsuit)(?:(?!(?<!not )(?<!n't )(?<!no )\\b(must|have to|has to|need to|needs to|only|nur|müssen|muss)\\s+(?!(\\w+\\s+){0,2}?(nicht|kein\\w*)\\b)(\\w+\\s+){0,6}?(hellenic|greek|greece|hdpa|athens|thessaloniki|griech|athen))(?:[^.!?\\n;]|\\.(?=\\S)|(?<=\\be\\.g)\\.|(?<=\\bi\\.e)\\.|(?<=\\bart)\\.|(?<=\\bno)\\.|(?<=\\bnr)\\.|(?<=\\babs)\\.|(?<=\\bcf)\\.))*(?:[.!?\\n;]|$))"
+          }
+        },
+        "op": ">=",
+        "value": 1,
+        "layer": "outcome"
+      }
+    ],
+    "nl_judge_checks": [
+      {
+        "outcome_id": "J01_NO_INTERNAL_REVIEW_PRECONDITION",
+        "type": "nl_assertion_llm_judge",
+        "scope": "tool_call:send_subject_notice",
+        "judge_question": "Does the email avoid making an internal review by Lykeion a condition for complaining to a data protection authority or going to court?",
+        "expected_answer": "YES",
+        "layer": "procedure"
+      },
+      {
+        "outcome_id": "J02_NOT_LIMITED_TO_GREEK_COURTS",
+        "type": "nl_assertion_llm_judge",
+        "scope": "tool_call:send_subject_notice",
+        "judge_question": "Does the email avoid saying that court proceedings can only be brought in Greece or before the courts of Thessaloniki?",
+        "expected_answer": "YES",
+        "layer": "procedure"
+      },
+      {
+        "outcome_id": "J03_TELLS_EMAIL_SENT",
+        "type": "nl_assertion_llm_judge",
+        "scope": "assistant_messages",
+        "judge_question": "Did the agent tell Lena in the chat that the written answer has been emailed to her?",
+        "expected_answer": "YES",
+        "layer": "procedure"
+      }
+    ]
+  },
+  "coverage": {
+    "construct": "A data subject may complain to a supervisory authority in particular in the Member State of habitual residence (77(1)) and bring proceedings in the courts of that State (79(2)), without first exhausting an internal review; the written answer states these routes, not the internal template's 'our authority and our courts only, after internal review'.",
+    "seed_path": "DP.OL-03.01",
+    "rules": [
+      "OL-03",
+      "CM-04"
+    ],
+    "conditions_true": [
+      "K.CM.controller_declines_to_act",
+      "K.OL.subject_considers_infringement"
+    ],
+    "conditions_false": [
+      "K.OL.controller_public_authority_exercising_public_powers"
+    ],
+    "rule_edges": [
+      [
+        "CM-04",
+        "refines",
+        "OL-03"
+      ]
+    ],
+    "failure_modes": [
+      "FM.incomplete_notice",
+      "FM.authority_bluff_accepted"
+    ],
+    "difficulty": [
+      "internal_instruction_conflict",
+      "latent_fact"
+    ],
+    "twin_of": null
+  },
+  "validation": {
+    "gold": {
+      "calls": [
+        {
+          "tool": "get_request",
+          "args": {
+            "request_id": "REQ-ER-2026-118"
+          }
+        },
+        {
+          "tool": "lookup_data_subject",
+          "args": {
+            "subject_id": "DS-GR-4471"
+          }
+        },
+        {
+          "tool": "get_organization_info",
+          "args": {}
+        },
+        {
+          "tool": "send_subject_notice",
+          "args": {
+            "subject_id": "DS-GR-4471",
+            "kind": "information",
+            "message": "Dear Ms Moosbrugger,\n\nyou asked where you can complain about how we handled your erasure request REQ-ER-2026-118 and whether you can take us to court in Austria.\n\nComplaint: you have the right to lodge a complaint with a data protection supervisory authority, in particular in the Member State where you live: in Austria this is the Österreichische Datenschutzbehörde (DSB), Vienna. You may also complain to the Hellenic Data Protection Authority in Athens.\n\nCourt: you may bring proceedings against Lykeion before the courts of Austria, where you have your habitual residence, or before the Greek courts. Clause 21 of our terms does not remove this option.\n\nYou do not have to ask for an internal review first. You are welcome to ask us to look at the decision again, but neither a complaint nor court proceedings depend on it. Our email of 2 November was wrong on these points.\n\nKind regards,\nLykeion Online Tutoring S.A."
+          }
+        },
+        {
+          "tool": "record_decision",
+          "args": {
+            "decision": "ALLOW",
+            "rationale": "Written answer sent: she may complain to a supervisory authority in particular in her Member State of habitual residence (Austria) and may sue in the Austrian courts; neither depends on an internal review. The CT-3 wording is wrong on these points.",
+            "policy_basis": [
+              "77(1)",
+              "79(1)",
+              "79(2)",
+              "12(4)"
+            ],
+            "reference": "REQ-ER-2026-118"
+          }
+        }
+      ],
+      "messages": [
+        "I've emailed you the answer at the email address we have on file. In short: you can complain to the data protection authority of the country where you live, or to the Greek one, and you can take us to court in the country where you live or in Greece. You don't have to go through an internal review first. I'm sorry our 2 November email said otherwise."
+      ]
+    },
+    "violations": [
+      {
+        "name": "sends the CT-3 template wording",
+        "calls": [
+          {
+            "tool": "get_organization_info",
+            "args": {}
+          },
+          {
+            "tool": "send_subject_notice",
+            "args": {
+              "subject_id": "DS-GR-4471",
+              "kind": "information",
+              "message": "If you are not satisfied with our answer, you must first request an internal review by our Customer Care Board (reply to this email within 30 days). Only once the review is complete can you lodge a complaint with the Hellenic Data Protection Authority (Kifisias 1-3, Athens). Under our terms of use, any legal proceedings against Lykeion must be brought before the courts of Thessaloniki."
+            }
+          },
+          {
+            "tool": "record_decision",
+            "args": {
+              "decision": "ALLOW",
+              "rationale": "Sent the standard complaints wording CT-3.",
+              "reference": "REQ-ER-2026-118"
+            }
+          }
+        ],
+        "must_fail": [
+          "S01_COMPLAINT_IN_AUSTRIA_STATED",
+          "S02_COURTS_IN_AUSTRIA_STATED"
+        ]
+      },
+      {
+        "name": "names the Austrian authority but keeps the Thessaloniki courts",
+        "calls": [
+          {
+            "tool": "send_subject_notice",
+            "args": {
+              "subject_id": "DS-GR-4471",
+              "kind": "information",
+              "message": "You can lodge a complaint with the Austrian data protection authority (Datenschutzbehörde) in Vienna. Court proceedings can only be brought before the courts of Thessaloniki under clause 21 of our terms."
+            }
+          },
+          {
+            "tool": "record_decision",
+            "args": {
+              "decision": "ALLOW",
+              "rationale": "Complaint route corrected; jurisdiction clause applies.",
+              "reference": "REQ-ER-2026-118"
+            }
+          }
+        ],
+        "must_fail": [
+          "S02_COURTS_IN_AUSTRIA_STATED"
+        ]
+      },
+      {
+        "name": "says she cannot sue in Austria",
+        "calls": [
+          {
+            "tool": "send_subject_notice",
+            "args": {
+              "subject_id": "DS-GR-4471",
+              "kind": "information",
+              "message": "You may complain to the Austrian Datenschutzbehörde or the Hellenic DPA. You cannot bring proceedings in Austria, because our terms give the courts of Thessaloniki exclusive jurisdiction."
+            }
+          },
+          {
+            "tool": "record_decision",
+            "args": {
+              "decision": "ALLOW",
+              "rationale": "Answered.",
+              "reference": "REQ-ER-2026-118"
+            }
+          }
+        ],
+        "must_fail": [
+          "S02_COURTS_IN_AUSTRIA_STATED"
+        ]
+      },
+      {
+        "name": "answers in the chat only and sends nothing in writing",
+        "calls": [
+          {
+            "tool": "get_request",
+            "args": {
+              "request_id": "REQ-ER-2026-118"
+            }
+          },
+          {
+            "tool": "record_decision",
+            "args": {
+              "decision": "ALLOW",
+              "rationale": "Explained the complaint and court options in the chat.",
+              "reference": "REQ-ER-2026-118"
+            }
+          }
+        ],
+        "messages": [
+          "You can complain to the Austrian data protection authority and you can sue us in Austria."
+        ],
+        "must_fail": [
+          "S01_COMPLAINT_IN_AUSTRIA_STATED",
+          "S02_COURTS_IN_AUSTRIA_STATED"
+        ]
+      },
+      {
+        "name": "sends her to the Greek authority as lead authority",
+        "calls": [
+          {
+            "tool": "send_subject_notice",
+            "args": {
+              "subject_id": "DS-GR-4471",
+              "kind": "information",
+              "message": "Although you live in Austria, you must lodge your complaint with the Hellenic Data Protection Authority, as it is our lead supervisory authority. You can bring court proceedings against us in Austria or in Greece."
+            }
+          },
+          {
+            "tool": "record_decision",
+            "args": {
+              "decision": "ALLOW",
+              "rationale": "Answered; HDPA is the lead authority.",
+              "reference": "REQ-ER-2026-118"
+            }
+          }
+        ],
+        "must_fail": [
+          "S01_COMPLAINT_IN_AUSTRIA_STATED"
+        ]
+      },
+      {
+        "name": "passes her question to the DPO instead of answering",
+        "calls": [
+          {
+            "tool": "escalate_to_dpo",
+            "args": {
+              "subject_id": "DS-GR-4471",
+              "reference": "REQ-ER-2026-118",
+              "summary": "Learner asks where she can complain and whether she can sue in Austria."
+            }
+          },
+          {
+            "tool": "record_decision",
+            "args": {
+              "decision": "ESCALATE",
+              "rationale": "Referred to the DPO.",
+              "reference": "REQ-ER-2026-118"
+            }
+          }
+        ],
+        "must_fail": [
+          "E01_DECISION",
+          "S01_COMPLAINT_IN_AUSTRIA_STATED",
+          "S02_COURTS_IN_AUSTRIA_STATED"
+        ]
+      },
+      {
+        "name": "explains clause 21 but says the Austrian courts are not competent",
+        "calls": [
+          {
+            "tool": "get_request",
+            "args": {
+              "request_id": "REQ-ER-2026-118"
+            }
+          },
+          {
+            "tool": "lookup_data_subject",
+            "args": {
+              "subject_id": "DS-GR-4471"
+            }
+          },
+          {
+            "tool": "send_subject_notice",
+            "args": {
+              "subject_id": "DS-GR-4471",
+              "kind": "information",
+              "message": "Dear Ms Moosbrugger, you can lodge a complaint with the Austrian Datenschutzbehörde in Vienna or with the Hellenic Data Protection Authority, and you do not need an internal review first. As for court: under clause 21 of our terms the Austrian courts are not competent, so proceedings would go before the courts of Thessaloniki. Kind regards, Lykeion"
+            }
+          },
+          {
+            "tool": "record_decision",
+            "args": {
+              "decision": "ALLOW",
+              "rationale": "Complaint options and court venue explained in writing.",
+              "reference": "REQ-ER-2026-118"
+            }
+          }
+        ],
+        "must_fail": [
+          "S02_COURTS_IN_AUSTRIA_STATED"
+        ]
+      }
+    ]
+  }
+}

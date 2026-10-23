@@ -144,7 +144,7 @@ def create_app(
     agent_card = build_agent_card(host, port, card_url=card_url)
 
     request_handler = DefaultRequestHandler(
-        agent_executor=PIBenchExecutor(concurrency=concurrency),
+        agent_executor=PIBenchExecutor(concurrency=concurrency, scenarios_dir=scenarios_dir),
         task_store=InMemoryTaskStore(),
     )
 

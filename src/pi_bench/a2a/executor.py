@@ -12,6 +12,7 @@ import json
 import logging
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from typing_extensions import override
@@ -50,8 +51,10 @@ class PIBenchExecutor(AgentExecutor):
     returns AgentBeats-formatted results as an artifact.
     """
 
-    def __init__(self, concurrency: int = 1) -> None:
+    def __init__(self, concurrency: int = 1, scenarios_dir: str | Path | None = None) -> None:
         self.concurrency = max(1, int(concurrency))
+        # The server's --scenarios-dir; used unless the request config sets its own.
+        self.scenarios_dir = str(scenarios_dir) if scenarios_dir else None
 
     @override
     async def execute(
@@ -102,6 +105,8 @@ class PIBenchExecutor(AgentExecutor):
                 request_data,
                 server_concurrency=self.concurrency,
             )
+            if self.scenarios_dir:
+                envelope.config.setdefault("scenarios_dir", self.scenarios_dir)
 
             if not envelope.purple_url:
                 await updater.failed(

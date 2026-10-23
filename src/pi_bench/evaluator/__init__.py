@@ -9,7 +9,12 @@ from pi_bench.evaluator.db import evaluate_db, evaluate_db_checks, evaluate_db_r
 from pi_bench.evaluator.env_assertion import evaluate_env_assertions, evaluate_env_assertions_rich
 from pi_bench.evaluator.nl_assertion import evaluate_nl_assertions, evaluate_nl_judge_checks
 from pi_bench.evaluator.policy import evaluate_policy, evaluate_policy_rich
-from pi_bench.evaluator.report import classify_dimensions
+from pi_bench.evaluator.report import (
+    classify_dimensions,
+    classify_layers,
+    is_unsafe_success,
+    layer_fields,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -28,8 +33,12 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
         "all_passed": bool,        # tier1 checks only
         "deterministic_score": float,  # tier1 pass-rate
         "semantic_score": float,   # tier2 (NL judge) pass-rate
-        "outcome_results": list,   # per-check results
+        "outcome_results": list,   # per-check results (each tagged with
+                                   # layer / layer_source; policy and state
+                                   # results also carry evidence)
         "dimensions": dict,        # per-dimension pass/fail summary
+        "layers": dict,            # tier1 outcome/procedure aggregation
+        "unsafe_success": bool,    # outcome layer passed, procedure failed
     }
 
     Dispatches to evaluators based on reward_basis list in evaluation_criteria.
@@ -52,6 +61,7 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
             "semantic_score": 0.0,
             "outcome_results": [],
             "dimensions": classify_dimensions([]),
+            **_layer_info([]),
             **decision_info,
         }
 
@@ -66,6 +76,7 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
             "semantic_score": 1.0,
             "outcome_results": [],
             "dimensions": classify_dimensions([]),
+            **_layer_info([]),
             **decision_info,
         }
 
@@ -80,6 +91,7 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
             "semantic_score": 1.0,
             "outcome_results": [],
             "dimensions": classify_dimensions([]),
+            **_layer_info([]),
             **decision_info,
         }
 
@@ -167,7 +179,10 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
                 judge_checks,
                 msgs,
                 cache=judge_cache,
+                trace=simulation.get("trace"),
             )
+            for check, res in zip(judge_checks, results):
+                res.update(layer_fields(check, res.get("type", "")))
             r = 1.0 if all(x["passed"] for x in results) else 0.0
             breakdown["NL_JUDGE"] = r
             rewards.append(r)
@@ -195,6 +210,12 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
     )
     dimensions = classify_dimensions(outcome_results)
 
+    # Every result carries a layer tag; evaluators that do not set one
+    # (ACTION, DB, COMMUNICATE, ENV_ASSERTION, NL_ASSERTION) get the default.
+    for res in outcome_results:
+        if "layer" not in res:
+            res.update(layer_fields(None, res.get("type", "")))
+
     return {
         "reward": 1.0 if all_passed else 0.0,
         "reward_basis": reward_basis,
@@ -204,6 +225,7 @@ def evaluate(task: dict, simulation: dict, domain: dict) -> dict:
         "semantic_score": semantic_score,
         "outcome_results": outcome_results,
         "dimensions": dimensions,
+        **_layer_info(tier1),
         **decision_info,
     }
 
@@ -217,6 +239,12 @@ __all__ = [
     "evaluate_nl_assertions",
     "evaluate_policy",
 ]
+
+
+def _layer_info(tier1_results: list[dict]) -> dict:
+    """Outcome/procedure aggregation over Tier-1 results + unsafe_success."""
+    layers = classify_layers(tier1_results)
+    return {"layers": layers, "unsafe_success": is_unsafe_success(layers)}
 
 
 def _resolve_decision(simulation: dict) -> CanonicalDecision | InvalidRun | None:

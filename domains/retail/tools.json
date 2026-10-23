@@ -331,11 +331,10 @@
         "type": "string",
         "enum": [
           "ALLOW",
-          "ALLOW-CONDITIONAL",
           "DENY",
           "ESCALATE"
         ],
-        "description": "The final decision: ALLOW (process refund/exchange), ALLOW-CONDITIONAL (allow with conditions), DENY (refuse), or ESCALATE (hand off to manager).",
+        "description": "The final decision: ALLOW (process refund/exchange), DENY (refuse), or ESCALATE (hand off to manager).",
         "required": true
       },
       "policy_sections_cited": {

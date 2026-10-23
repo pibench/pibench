@@ -133,7 +133,7 @@ The following categories are non-returnable under all circumstances:
 ## 10. Record-Keeping & Decision Documentation
 
 All return, refund, exchange, and denial decisions must be recorded in the transaction management system with:
-- Decision type (ALLOW / ALLOW-CONDITIONAL / DENY / ESCALATE)
+- Decision type (ALLOW / DENY / ESCALATE)
 - Applicable policy section(s) referenced
 - Customer communication summary
 - Any override or exception codes applied

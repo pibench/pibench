@@ -148,6 +148,7 @@ def run_assessment(
     retry_failed = _nonnegative_int(config.get("retry_failed", 0), name="retry_failed")
     user_url = config.get("user_url")
     user_model = config.get("user_model", "gpt-4.1-mini")
+    user_condition = config.get("user_condition")  # "neutral" | "stress" | None (legacy)
 
     # Discover all valid scenario files
     scenario_files = discover_scenarios(scenarios_dir)
@@ -175,6 +176,7 @@ def run_assessment(
         concurrency=concurrency,
         user_url=user_url,
         user_model=user_model,
+        user_condition=user_condition,
     )
 
     for _ in range(retry_failed):
@@ -200,6 +202,7 @@ def run_assessment(
                 concurrency=concurrency,
                 user_url=user_url,
                 user_model=user_model,
+                user_condition=user_condition,
             )
         )
 
@@ -224,6 +227,7 @@ def _run_work_items(
     concurrency: int,
     user_url: str | None,
     user_model: str,
+    user_condition: str | None = None,
 ) -> list[dict]:
     if concurrency <= 1 or len(work) <= 1:
         return [
@@ -237,6 +241,7 @@ def _run_work_items(
                 observer_mode=observer_mode,
                 user_url=user_url,
                 user_model=user_model,
+                user_condition=user_condition,
             )
             for scenario_path, trial, scenario_seed in work
         ]
@@ -255,6 +260,7 @@ def _run_work_items(
                 observer_mode=observer_mode,
                 user_url=user_url,
                 user_model=user_model,
+                user_condition=user_condition,
             ): (scenario_path, trial, scenario_seed)
             for scenario_path, trial, scenario_seed in work
         }
@@ -290,6 +296,7 @@ def _run_work_item(
     observer_mode: str,
     user_url: str | None,
     user_model: str,
+    user_condition: str | None = None,
 ) -> dict:
     try:
         result = _run_single_scenario(
@@ -302,6 +309,7 @@ def _run_work_item(
             observer_mode=observer_mode,
             user_url=user_url,
             user_model=user_model,
+            user_condition=user_condition,
         )
     except Exception as exc:
         logger.exception("Scenario %s trial %d failed", scenario_path.stem, trial)
@@ -370,6 +378,18 @@ def _public_result(result: dict) -> dict:
     return {k: v for k, v in result.items() if not k.startswith("_")}
 
 
+def _build_user(user_url: str | None, user_model: str, user_condition: str | None = None,
+                user_pushbacks: int | None = None):
+    """User simulator: remote A2A user, OmniGent ("omnigent:<model>"), or LiteLLM."""
+    if user_url:
+        return A2AUserAgent(user_url)
+    extra = {"max_pushbacks": int(user_pushbacks)} if user_pushbacks is not None else {}
+    if user_model.startswith("omnigent:"):
+        from pi_bench.users.omnigent_user import OmniGentUser
+        return OmniGentUser(model_name=user_model.split(":", 1)[1] or None, condition=user_condition, **extra)
+    return LiteLLMUser(model_name=user_model, condition=user_condition, **extra)
+
+
 def _run_single_scenario(
     scenario_path: Path,
     purple_url: str,
@@ -380,6 +400,7 @@ def _run_single_scenario(
     observer_mode: str = "audit_only",
     user_url: str | None = None,
     user_model: str = "gpt-4.1-mini",
+    user_condition: str | None = None,
 ) -> dict:
     """Run a single scenario against a purple agent via A2A.
 
@@ -426,7 +447,7 @@ def _run_single_scenario(
         )
     # Create the purple agent adapter
     agent = A2APurpleAgent(purple_url)
-    user = A2AUserAgent(user_url) if user_url else LiteLLMUser(model_name=user_model)
+    user = _build_user(user_url, user_model, user_condition)
 
     # Create trace and observer
     trace = TraceRecorder()
@@ -520,6 +541,8 @@ def _run_single_scenario(
         "reward": reward,
         "all_passed": all_passed,
         "deterministic_score": deterministic_score,
+        "layers": eval_result.get("layers"),
+        "unsafe_success": eval_result.get("unsafe_success"),
         "semantic_score": semantic_score,
         "outcome_results": outcome_results,
         "dimensions": dimensions,

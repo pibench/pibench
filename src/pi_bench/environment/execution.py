@@ -33,9 +33,25 @@ def make_tool_call(
     try:
         raw_result = tool_fn(env["db"], **arguments)
         content = _to_json_string(raw_result)
-        return {"id": call_id, "content": content, "requestor": requestor, "error": False}
+        # Handler-level errors: a tool that returns {"error": <truthy>, ...}
+        # reports a failed call. The content is passed through unchanged.
+        # It is flagged separately as "handler_error" so the trace records
+        # result_error=True, while "error" (which the orchestrator counts
+        # toward max_errors) keeps its previous meaning: execution failures.
+        return {
+            "id": call_id,
+            "content": content,
+            "requestor": requestor,
+            "error": False,
+            "handler_error": _is_handler_error(raw_result),
+        }
     except Exception as e:
         return _error_result(call_id, requestor, str(e))
+
+
+def _is_handler_error(raw_result: Any) -> bool:
+    """True when a tool handler returned a dict whose "error" key is truthy."""
+    return isinstance(raw_result, dict) and bool(raw_result.get("error"))
 
 
 def _resolve_tool(

@@ -14,7 +14,7 @@ from typing import Any
 
 from pi_bench.trace import TraceRecorder
 
-VALID_DECISIONS = frozenset({"ALLOW", "ALLOW-CONDITIONAL", "DENY", "ESCALATE"})
+VALID_DECISIONS = frozenset({"ALLOW", "DENY", "ESCALATE"})
 
 _FENCED_BLOCK_RE = re.compile(r"```(?:json)?\s*\n(.*?)\n```", re.DOTALL)
 
@@ -31,7 +31,7 @@ class InvalidRun:
 class CanonicalDecision:
     """A successfully resolved canonical decision."""
 
-    decision: str  # ALLOW, ALLOW-CONDITIONAL, DENY, ESCALATE
+    decision: str  # ALLOW, DENY, ESCALATE
     channel: str  # "tool" or "json"
 
 

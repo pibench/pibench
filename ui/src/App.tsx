@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 type Status = "verified" | "preview" | "community" | "incomplete";
 type Domain = "FINRA" | "Retail" | "Helpdesk";
-type DecisionLabel = "ALLOW" | "DENY" | "ESCALATE" | "ALLOW-CONDITIONAL";
+type DecisionLabel = "ALLOW" | "DENY" | "ESCALATE";
 type ChartMode = "risk" | "cost" | "reliability";
 
 type Model = {
@@ -1082,7 +1082,7 @@ function Bar({ value, color }: { value: number; color: string }) {
 function MethodologyPreview() {
   const items = [
     ["01", "Deterministic checks", "Tool calls, forbidden actions, ordering, and state changes gate pass/fail."],
-    ["02", "Canonical decision", "Each run resolves to ALLOW, DENY, ESCALATE, or ALLOW-CONDITIONAL."],
+    ["02", "Canonical decision", "Each run resolves to ALLOW, DENY, or ESCALATE."],
     ["03", "Repeatability", "PassAll@k and ViolationEver expose rare but consequential policy failures."],
     ["04", "Static prototype", "This website uses synthetic data only and does not run evaluations."],
   ];
@@ -1309,7 +1309,6 @@ function ScenariosPage() {
           <option value="ALLOW">ALLOW</option>
           <option value="DENY">DENY</option>
           <option value="ESCALATE">ESCALATE</option>
-          <option value="ALLOW-CONDITIONAL">ALLOW-CONDITIONAL</option>
         </select>
       </div>
       <div className="scenario-table table-shell">

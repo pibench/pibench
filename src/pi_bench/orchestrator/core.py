@@ -390,8 +390,9 @@ def build_benchmark_context(env: dict, task: dict) -> list[dict]:
     implementations decide whether to place it in a system prompt, memory, or
     another context store.
     """
+    # Agent-facing metadata. The scenario ID is deliberately omitted: scenario
+    # names describe the expected behavior (e.g. "investigation_hold_transfer").
     metadata = {
-        "scenario_id": task.get("scenario_id", task.get("id", "")),
         "domain": task.get("domain", ""),
         "domain_name": task.get("domain_name", ""),
         "policy_version": task.get("policy_version", ""),

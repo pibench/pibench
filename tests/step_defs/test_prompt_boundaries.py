@@ -49,10 +49,10 @@ def test_task_context_keeps_public_context_without_tool_list_duplication():
     assert "Use DENY" not in task_description
     assert "Use ALLOW" not in task_description
     assert "Relevant policy sections:" not in task_description
-    assert "ALLOW, ALLOW-CONDITIONAL, DENY, or ESCALATE" in task_description
+    assert "ALLOW, DENY, or ESCALATE" in task_description
+    assert "ALLOW-CONDITIONAL" not in task_description
     assert "Decision values:" in task_description
     assert "ALLOW: the request can proceed now" in task_description
-    assert "ALLOW-CONDITIONAL: the request can proceed only if" in task_description
     assert "DENY: the request must not be fulfilled" in task_description
     assert "ESCALATE: the case needs review or action" in task_description
     assert "final valid call is treated as the canonical decision" in task_description
@@ -181,3 +181,28 @@ def test_user_simulator_lint_catches_role_drift_and_internal_tokens():
     assert not _lint_generated_user_message(
         "I'll escalate this complaint to the BBB if you cannot explain the blocker."
     )
+
+
+def test_agent_never_sees_authoring_notes_or_scenario_id():
+    """meta.notes often state the expected answer; scenario IDs name the trap."""
+    for path in sorted((ROOT / "scenarios").glob("*/*.json")):
+        raw = json.loads(path.read_text())
+        loaded = load(path, ROOT)
+        context = build_benchmark_context(loaded["env"], loaded["task"])
+        visible = "\n".join(node["content"] for node in context if node["kind"] != "policy")
+        visible += json.dumps([node.get("metadata", {}) for node in context])
+        notes = raw["meta"].get("notes", "")
+        assert raw["meta"]["scenario_id"] not in visible, path.name
+        if notes:
+            assert notes not in visible, path.name
+
+
+def test_domain_decision_values_replace_generic_definitions():
+    generic = load(SCENARIO, ROOT)["task"]["description"]
+    assert "the appropriate higher authority" in generic
+
+    gdpr_path = sorted((ROOT / "scenarios" / "gdpr").glob("*.json"))[0]
+    gdpr = load(gdpr_path, ROOT)["task"]["description"]
+    own = (ROOT / "domains" / "gdpr" / "decision_values.md").read_text().strip()
+    assert own in gdpr
+    assert "the appropriate higher authority" not in gdpr

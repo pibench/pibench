@@ -20,14 +20,19 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import os
 import re
 
 import litellm
 
 logger = logging.getLogger(__name__)
 
-# Default judge model. Override via set_judge_model().
-_JUDGE_MODEL = "gpt-5.2"
+# Default judge model. Override via PI_BENCH_JUDGE_MODEL or set_judge_model().
+# "omnigent:<model>" runs the judge through a local OmniGent session (Claude via
+# the subscription-backed harness); any other value is a litellm model name.
+_DEFAULT_JUDGE_MODEL = "omnigent:claude-haiku-5-5"
+_JUDGE_MODEL = os.environ.get("PI_BENCH_JUDGE_MODEL") or _DEFAULT_JUDGE_MODEL
+_OMNIGENT_PREFIX = "omnigent:"
 
 _SYSTEM_PROMPT = """\
 You are a compliance auditor reviewing a customer service conversation.
@@ -66,6 +71,13 @@ def clear_judge_cache() -> None:
 
 def _call_judge(messages: list[dict]) -> str:
     """Make a single LLM judge call. Returns raw response text."""
+    if _JUDGE_MODEL.startswith(_OMNIGENT_PREFIX):
+        from pi_bench.omnigent.oneshot import complete_once
+
+        system = "\n\n".join(m["content"] for m in messages if m["role"] == "system")
+        user = "\n\n".join(m["content"] for m in messages if m["role"] != "system")
+        return complete_once(_JUDGE_MODEL[len(_OMNIGENT_PREFIX):], system, user, timeout=120.0).strip()
+
     kwargs = {
         "model": _JUDGE_MODEL,
         "messages": messages,
@@ -167,11 +179,18 @@ def _parse_judge_response(raw: str) -> tuple[str | None, str]:
     except (json.JSONDecodeError, AttributeError):
         pass
 
-    # Fallback: look for YES or NO in the raw text (word boundary match)
     upper = raw.upper()
-    if "\"YES\"" in upper or re.search(r'\bYES\b', upper):
-        return "YES", raw[:100]
-    if "\"NO\"" in upper or re.search(r'\bNO\b', upper):
-        return "NO", raw[:100]
+
+    # Fallback 1: an "answer": "YES"/"NO" field inside non-strict JSON
+    # (e.g. fenced in ```json ... ```), regardless of key order.
+    match = re.search(r'"ANSWER"\s*:\s*"\s*(YES|NO)\b', upper)
+    if match:
+        return match.group(1), raw[:100]
+
+    # Fallback 2: take the FIRST standalone YES/NO token in the raw text, so
+    # "NO. The agent never said yes" parses as NO (not YES).
+    match = re.search(r"\b(YES|NO)\b", upper)
+    if match:
+        return match.group(1), raw[:100]
 
     return None, raw[:100]

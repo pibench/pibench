@@ -6,6 +6,15 @@ from copy import deepcopy
 from typing import Any
 
 from pi_bench.environment import make_tool_call, get_db_hash
+from pi_bench.evaluator.matching import (
+    MISSING,
+    OperatorError,
+    is_operator_spec,
+    mapping_spec_errors,
+    match_mapping,
+    match_value,
+)
+from pi_bench.evaluator.report import layer_fields
 
 logger = logging.getLogger(__name__)
 
@@ -112,20 +121,42 @@ def evaluate_db_checks(
     state_field_outcomes: list[dict],
     env: dict,
 ) -> list[dict]:
-    """Check state_field outcomes against env["db"].
+    """Check state_field / state_count outcomes against env["db"].
 
-    Returns list of {outcome_id, type, passed, detail} dicts.
+    Returns list of {outcome_id, type, passed, detail, evidence, layer,
+    layer_source} dicts. State checks inspect the final DB, so evidence is
+    always [] (no trace step to point at).
     """
     results = []
     for outcome in state_field_outcomes:
-        passed, detail = _check_state_field(outcome, env)
+        if outcome.get("type") == "state_count":
+            check_type = "state_count"
+            passed, detail = _check_state_count(outcome, env)
+        else:
+            check_type = "state_field"
+            passed, detail = _check_state_field(outcome, env)
         results.append({
             "outcome_id": outcome.get("outcome_id", "unknown"),
-            "type": "state_field",
+            "type": check_type,
             "passed": passed,
             "detail": detail,
+            "evidence": [],
+            **layer_fields(outcome, check_type),
         })
     return results
+
+
+# Optional comparisons a state_field check may carry (all must hold).
+STATE_FIELD_COMPARISONS = ("equals", "not_equals", "exists", "in", "contains")
+
+STATE_COUNT_OPS = {
+    "==": lambda a, b: a == b,
+    "!=": lambda a, b: a != b,
+    ">=": lambda a, b: a >= b,
+    "<=": lambda a, b: a <= b,
+    ">": lambda a, b: a > b,
+    "<": lambda a, b: a < b,
+}
 
 
 def _check_state_field(outcome: dict, env: dict) -> tuple[bool, str]:
@@ -133,18 +164,116 @@ def _check_state_field(outcome: dict, env: dict) -> tuple[bool, str]:
 
     Supports bracket filter: collection[key=value].field
     Example: activity.pending_requests[request_id=REQ_010_1].status
+
+    Comparisons (all optional, ANDed): equals (literal or $-operator spec),
+    not_equals, exists (bool), in (list), contains. With only a literal
+    ``equals`` this is exactly the historical behavior.
     """
     field_path = outcome.get("field_path", "")
-    expected = outcome.get("equals")
     db = env.get("db", {})
 
     # B3: use sentinel to distinguish missing path from None value
     value = _navigate_db(db, field_path)
-    if value is _MISSING:
-        return False, f"state_field({field_path}): path not found in db"
+    present = value is not _MISSING
 
-    passed = value == expected
-    return passed, f"state_field({field_path}): expected={expected}, actual={value}"
+    used = [k for k in STATE_FIELD_COMPARISONS if k in outcome]
+    legacy = not used or (used == ["equals"] and not is_operator_spec(outcome["equals"]))
+    if legacy:
+        expected = outcome.get("equals")
+        if not present:
+            return False, f"state_field({field_path}): path not found in db"
+        passed = value == expected
+        return passed, f"state_field({field_path}): expected={expected}, actual={value}"
+
+    actual = value if present else None
+    failures: list[str] = []
+    try:
+        for key in used:
+            expected = outcome[key]
+            if key == "exists":
+                ok = present == bool(expected)
+            elif key == "equals" and is_operator_spec(expected):
+                ok = match_value(actual, expected, present=present)
+            elif not present:
+                ok = False
+            elif key == "equals":
+                ok = value == expected
+            elif key == "not_equals":
+                ok = value != expected
+            elif key == "in":
+                if not isinstance(expected, list):
+                    raise OperatorError("'in' requires a list")
+                ok = value in expected
+            else:  # contains
+                ok = match_value(value, {"$contains": expected})
+            if not ok:
+                failures.append(f"{key}={expected!r}")
+    except OperatorError as exc:
+        return False, f"state_field({field_path}): {exc}"
+
+    shown = value if present else "<missing>"
+    if failures:
+        return False, (
+            f"state_field({field_path}): failed {', '.join(failures)}; actual={shown}"
+        )
+    checks = ", ".join(f"{k}={outcome[k]!r}" for k in used)
+    return True, f"state_field({field_path}): {checks}; actual={shown}"
+
+
+def _check_state_count(outcome: dict, env: dict) -> tuple[bool, str]:
+    """Count items in the collection at collection_path that match ``where``.
+
+    The collection may be a list (items) or a dict (its values). A missing
+    collection counts as empty. ``where`` maps field (dotted paths allowed)
+    to a literal or $-operator spec; all must match.
+    """
+    path = outcome.get("collection_path", "")
+    where = outcome.get("where") or {}
+    op = outcome.get("op", "==")
+    target = outcome.get("value")
+    label = f"state_count({path}"
+    label += f", where={where})" if where else ")"
+
+    if op not in STATE_COUNT_OPS:
+        return False, f"{label}: unknown op {op!r} (allowed: {sorted(STATE_COUNT_OPS)})"
+    if isinstance(target, bool) or not isinstance(target, int):
+        return False, f"{label}: value must be an integer, got {target!r}"
+    if not isinstance(where, dict):
+        return False, f"{label}: where must be an object"
+    spec_errs = mapping_spec_errors(where)
+    if spec_errs:
+        return False, f"{label}: {'; '.join(spec_errs)}"
+
+    collection = _navigate_db(env.get("db", {}), path)
+    note = ""
+    if collection is _MISSING or collection is None:
+        items: list = []
+        note = " (collection missing; counted as empty)"
+    elif isinstance(collection, list):
+        items = collection
+    elif isinstance(collection, dict):
+        items = list(collection.values())
+    else:
+        return False, f"{label}: value at path is not a list or object"
+
+    try:
+        count = sum(
+            1 for item in items
+            if match_mapping(item, where, getter=_field_getter)
+        )
+    except OperatorError as exc:
+        return False, f"{label}: {exc}"
+
+    passed = STATE_COUNT_OPS[op](count, target)
+    return passed, f"{label}: count={count} {op} {target} -> {passed}{note}"
+
+
+def _field_getter(record: Any, field: str) -> Any:
+    """Resolve a (possibly dotted / bracketed) field inside a record."""
+    if not isinstance(record, dict):
+        return MISSING
+    value = _navigate_db(record, field)
+    return MISSING if value is _MISSING else value
 
 
 def _navigate_db(db: dict, path: str) -> Any:

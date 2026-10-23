@@ -1,0 +1,931 @@
+{
+ "derived": [],
+ "findings": [
+  {
+   "id": "F001",
+   "severity": "critical",
+   "problem": "Wrong polarity. These facts do not displace the rule (has_exception = \"the rule is displaced when the fact holds\"); they defeat the transfer route, i.e. the transfer must be DENIED. A generator reading has_exception as displacement would pr",
+   "decision": "applied with change",
+   "why_changed": "retyped to the new `blocked_by` edge (a defeater of the permission) instead of `triggered_by`",
+   "actions": [
+    "retyped XT-03 -has_exception-> K.XT.rights_or_remedies_unavailable to blocked_by",
+    "retyped XT-03 -has_exception-> K.XT.importer_commitments_missing to blocked_by",
+    "retyped XT-04 -has_exception-> K.XT.bcr_missing_required_content to blocked_by",
+    "retyped XT-04 -has_exception-> K.XT.recipient_not_bound_by_bcr to blocked_by",
+    "polarity of K.XT.rights_or_remedies_unavailable fixed to trigger",
+    "polarity of K.XT.importer_commitments_missing fixed to trigger",
+    "polarity of K.XT.bcr_missing_required_content fixed to trigger",
+    "polarity of K.XT.recipient_not_bound_by_bcr fixed to trigger"
+   ]
+  },
+  {
+   "id": "F002",
+   "severity": "critical",
+   "problem": "All thirteen rules bind the processor in the text (Arts 27(1), 30(2), 30(4), 31, 32(1), 32(4), 37(1), 38, 44, 46(1), 48, 49(6)) but carry obligated_party=C.controller and a single obligates->C.controller edge. For a benchmark whose agent ma",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge SB-01 -obligates-> C.processor",
+    "added edge SB-02 -obligates-> C.processor",
+    "added edge GP-05 -obligates-> C.processor",
+    "added edge GP-11 -obligates-> C.processor",
+    "added edge GP-12 -obligates-> C.processor",
+    "added edge GP-13 -obligates-> C.processor",
+    "added edge RA-06 -obligates-> C.processor",
+    "added edge RA-07 -obligates-> C.processor",
+    "added edge XT-01 -obligates-> C.processor",
+    "added edge XT-03 -obligates-> C.processor",
+    "added edge XT-05 -obligates-> C.processor",
+    "added edge XT-06 -obligates-> C.processor",
+    "added edge XT-08 -obligates-> C.processor",
+    "updated node SB-01 (obligated_party)",
+    "updated node SB-02 (obligated_party)",
+    "updated node GP-05 (obligated_party)",
+    "updated node GP-11 (obligated_party)",
+    "updated node GP-12 (obligated_party)",
+    "updated node GP-13 (obligated_party)",
+    "updated node RA-06 (obligated_party)",
+    "updated node RA-07 (obligated_party)",
+    "updated node XT-01 (obligated_party)",
+    "updated node XT-03 (obligated_party)",
+    "updated node XT-05 (obligated_party)",
+    "updated node XT-06 (obligated_party)",
+    "updated node XT-08 (obligated_party)"
+   ]
+  },
+  {
+   "id": "F003",
+   "severity": "major",
+   "problem": "Article 23(1) lets a legislative measure restrict Arts 12-22 and 34, and Art 5 only \"in so far as its provisions correspond to the rights and obligations provided for in Articles 12 to 22\". Integrity and confidentiality (5(1)(f)) correspond",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "removed edge OL-01 -overrides-> PF-06",
+    "removed edge OL-01 -overrides-> PF-02",
+    "removed edge OL-01 -overrides-> PF-03",
+    "updated edge OL-01 -overrides-> PF-01",
+    "updated edge OL-01 -overrides-> PF-04",
+    "updated edge OL-01 -overrides-> PF-05"
+   ]
+  },
+  {
+   "id": "F004",
+   "severity": "major",
+   "problem": "Art 89 derogations are mapped inconsistently and partly wrongly. (1) Art 15 (DR-01) is derogable under both 89(2) and 89(3) but is linked only by tension_with while Arts 16/18/19/20 get overrides. (2) Art 19 (DR-10) and Art 20 (DR-11) are d",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "retyped OL-05 -tension_with-> DR-01 to overrides",
+    "updated edge OL-05 -overrides-> DR-10",
+    "updated edge OL-05 -overrides-> DR-11",
+    "added edge OL-05 -overrides-> DR-02",
+    "added edge OL-05 -overrides-> DR-08",
+    "added edge OL-05 -overrides-> DR-09",
+    "added edge OL-05 -overrides-> DR-13",
+    "added edge OL-05 -overrides-> DR-15",
+    "added edge OL-05 -overrides-> DR-12"
+   ]
+  },
+  {
+   "id": "F005",
+   "severity": "major",
+   "problem": "DR-17 attaches the Art 22(3) safeguards (human intervention, point of view, contest) to all three 22(2) exceptions, but the text imposes them only for the contract (a) and explicit-consent (c) cases; for (b) the authorising law supplies the",
+   "decision": "applied with change",
+   "why_changed": "removed the 22(2)(b) trigger from DR-17 instead of splitting DR-17 into two rules",
+   "actions": [
+    "removed edge DR-17 -triggered_by-> K.DR.adm_authorised_by_law_with_safeguards"
+   ]
+  },
+  {
+   "id": "F006",
+   "severity": "major",
+   "problem": "Wrong polarity and wrong rule. A request arriving at the processor does not displace the controller's Art 15 duty; the processor must assist and the controller still answers. As an exception on DR-01 it would let a scenario treat non-respon",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "removed edge DR-01 -has_exception-> K.GP.rights_request_reaches_processor",
+    "added edge GP-09 -supports-> DR-01"
+   ]
+  },
+  {
+   "id": "F007",
+   "severity": "major",
+   "problem": "Art 6(3) is a precondition on bases (c) and (e), not an exception that displaces the lawful-basis requirement. Modelled as has_exception, the mere existence of a law \"laying down a basis\" reads as satisfying PF-08 independently of the (c)/(",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "retyped PF-08 -has_exception-> K.PF.basis_laid_down_in_law to triggered_by",
+    "polarity of K.PF.basis_laid_down_in_law fixed to state"
+   ]
+  },
+  {
+   "id": "F008",
+   "severity": "major",
+   "problem": "Same polarity inversion as F001 outside Chapter V routes: a 49(5) statutory limit and the 49(3) public-authority exclusion narrow the derogations (DENY), they do not displace XT-06/XT-07; an expired or withdrawn certification does not displ",
+   "decision": "applied with change",
+   "why_changed": "retyped to the new `blocked_by` edge instead of `triggered_by`",
+   "actions": [
+    "retyped XT-06 -has_exception-> K.XT.law_limits_category_transfer to blocked_by",
+    "retyped XT-06 -has_exception-> K.XT.public_authority_exercising_public_powers to blocked_by",
+    "retyped XT-07 -has_exception-> K.XT.public_authority_exercising_public_powers to blocked_by",
+    "retyped OL-02 -has_exception-> K.OL.certification_expired_or_withdrawn to blocked_by"
+   ]
+  },
+  {
+   "id": "F009",
+   "severity": "major",
+   "problem": "Scope labels are inconsistent for structurally identical rules. Art 10, like Art 9, is a GDPR default prohibition whose exceptions depend on law: an agent for a private controller must DENY criminal-offence processing unless an official-aut",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated node CS-09 (scope)",
+    "updated node CS-08 (scope)",
+    "set overlay on K.CS.authorised_by_law_with_safeguards",
+    "set overlay on K.CS.under_official_authority_control",
+    "set overlay on K.CS.handler_not_secrecy_bound"
+   ]
+  },
+  {
+   "id": "F010",
+   "severity": "major",
+   "problem": "DR-18 has_exception K.CS.exc_explicit_consent / K.CS.exc_substantial_public_interest_law, but 22(4) additionally requires suitable safeguards to be in place; the state node K.DR.adm_special_category_safeguards_in_place exists but is isolate",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge DR-18 -has_exception-> K.DR.adm_special_category_safeguards_in_place",
+    "added edge XT-06 -triggered_by-> K.XT.transfer_risks_disclosed",
+    "added edge XT-06 -triggered_by-> K.XT.subject_incapable_of_consent",
+    "added edge XT-06 -triggered_by-> K.XT.register_consultation_conditions_met",
+    "added edge XT-03 -triggered_by-> K.XT.sa_transfer_authorisation_obtained"
+   ]
+  },
+  {
+   "id": "F011",
+   "severity": "major",
+   "problem": "The applicability gate is missing. Nothing in the graph lets a scenario state whether GDPR applies at all: automated/filing-system processing (2(1)), the household exemption (2(2)(c)), establishment in the Union (3(1)), or targeting/monitor",
+   "decision": "applied with change",
+   "why_changed": "added SC-01 and its conditions; kept K.GP.not_established_in_union_art3_2 on GP-05 (it is the exact combined Art 27 test) and linked GP-05 depends_on SC-01",
+   "actions": [
+    "added node SC-01",
+    "added node K.SC.automated_or_filing_system",
+    "added node K.SC.purely_personal_or_household",
+    "added node K.SC.establishment_in_union",
+    "added node K.SC.offering_goods_or_services_to_union_subjects",
+    "added node K.SC.monitoring_behaviour_in_union",
+    "added edge SC-01 -triggered_by-> K.SC.automated_or_filing_system",
+    "added edge SC-01 -triggered_by-> K.SC.establishment_in_union",
+    "added edge SC-01 -triggered_by-> K.SC.offering_goods_or_services_to_union_subjects",
+    "added edge SC-01 -triggered_by-> K.SC.monitoring_behaviour_in_union",
+    "added edge SC-01 -has_exception-> K.SC.purely_personal_or_household",
+    "added edge SC-01 -applies_to-> C.filing_system",
+    "added edge SC-01 -applies_to-> C.personal_data",
+    "added edge GP-05 -depends_on-> SC-01",
+    "added edge PF-08 -depends_on-> SC-01"
+   ]
+  },
+  {
+   "id": "F012",
+   "severity": "major",
+   "problem": "Special-category processing needs an Art 9(2) condition and an Art 6(1) basis; the graph adds the dependency for Art 10 (CS-09 depends_on PF-08) but not for Art 9, so a scenario can treat explicit consent under 9(2)(a) as sufficient without",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge CS-07 -depends_on-> PF-08",
+    "removed 1 open question(s)"
+   ]
+  },
+  {
+   "id": "F013",
+   "severity": "major",
+   "problem": "The right to withdraw consent is a right node with no rule giving effect to it, so any coverage query \"which rules honour right X\" returns nothing for Art 7(3) even though CS-03 exists.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge CS-03 -gives_effect_to-> RT.withdraw_consent",
+    "added edge CS-03 -applies_to-> RT.withdraw_consent"
+   ]
+  },
+  {
+   "id": "F014",
+   "severity": "major",
+   "problem": "The 22(3) safeguard state and the \"token human review\" condition are isolated, so DR-16 cannot be triggered by a rubber-stamp review (a central failure mode the open_questions A3 entry itself names) and DR-17 cannot test whether safeguards ",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge DR-16 -triggered_by-> K.DR.human_involvement_nominal_only",
+    "added edge DR-17 -has_exception-> K.DR.adm_safeguards_in_place"
+   ]
+  },
+  {
+   "id": "F015",
+   "severity": "major",
+   "problem": "Six RA conditions that the text makes operative are not attached to any rule: the 36(3) consultation package, the 36(2) advice period and infringement advice, the 37(7) publication duty, the 37(5) qualification test and the 37(2) group-DPO ",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge RA-05 -triggered_by-> K.RA.consultation_package_incomplete",
+    "added edge RA-05 -triggered_by-> K.RA.consultation_awaiting_sa_response",
+    "added edge RA-05 -triggered_by-> K.RA.sa_advised_infringement",
+    "added edge RA-06 -triggered_by-> K.RA.dpo_contact_not_published",
+    "added edge RA-06 -triggered_by-> K.RA.dpo_candidate_lacks_expertise",
+    "added edge RA-06 -triggered_by-> K.RA.group_dpo_not_easily_accessible"
+   ]
+  },
+  {
+   "id": "F016",
+   "severity": "major",
+   "problem": "Each Art 17(3), 14(5) and 34(3) exception is modelled both as has_exception on the base rule and as triggered_by/has_exception on a separate \"exception rule\" that also overrides and refines the base rule. Coverage counting therefore counts ",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "retyped DR-05 -has_exception-> K.DR.archiving_research_statistics_impairment to triggered_by",
+    "retyped DR-05 -has_exception-> K.DR.legal_claims_establishment_exercise_defence to triggered_by",
+    "retyped DR-05 -has_exception-> K.DR.legal_obligation_to_retain to triggered_by",
+    "retyped DR-05 -has_exception-> K.DR.necessary_for_freedom_of_expression to triggered_by",
+    "retyped DR-05 -has_exception-> K.DR.public_health_interest to triggered_by",
+    "retyped DR-05 -has_exception-> K.PF.basis_public_task to triggered_by",
+    "removed edge DR-05 -overrides-> DR-04",
+    "removed edge CM-11 -overrides-> CM-09",
+    "removed edge CM-11 -overrides-> CM-10",
+    "removed edge CM-11 -overrides-> CM-08",
+    "edge not present (nothing to remove) DR-05 -has_exception-> K.DR.archiving_research_statistics_impairment",
+    "edge not present (nothing to remove) DR-05 -has_exception-> K.DR.legal_claims_establishment_exercise_defence",
+    "edge not present (nothing to remove) DR-05 -has_exception-> K.DR.legal_obligation_to_retain",
+    "edge not present (nothing to remove) DR-05 -has_exception-> K.DR.necessary_for_freedom_of_expression",
+    "edge not present (nothing to remove) DR-05 -has_exception-> K.DR.public_health_interest",
+    "edge not present (nothing to remove) DR-05 -has_exception-> K.PF.basis_public_task",
+    "removed edge CM-11 -has_exception-> K.CM.notice_impossible_or_disproportionate",
+    "removed edge CM-11 -has_exception-> K.CM.notice_would_seriously_impair_objectives",
+    "removed edge CM-11 -has_exception-> K.CM.obtaining_or_disclosure_laid_down_by_law",
+    "removed edge CM-11 -has_exception-> K.CM.professional_secrecy_obligation",
+    "removed edge CM-11 -has_exception-> K.CM.subject_already_has_information"
+   ]
+  },
+  {
+   "id": "F017",
+   "severity": "major",
+   "problem": "The same legal fact exists under two ids, usually one per fragment, which inflates condition counts and splits the edges that should converge on one fact: K.CS.relies_on_consent/K.CM.processing_based_on_consent; K.RA.dpo_designated/K.CM.dpo",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "merged K.CM.processing_based_on_consent into K.CS.relies_on_consent",
+    "merged K.CM.dpo_designated into K.RA.dpo_designated",
+    "merged K.DR.data_inaccurate into K.PF.data_inaccurate",
+    "merged K.GP.compliance_not_demonstrable into K.PF.compliance_not_demonstrable",
+    "merged K.OL.rights_request_not_acted_on into K.CM.controller_declines_to_act",
+    "merged K.DR.accuracy_contested_unverified into K.DR.accuracy_contested",
+    "merged K.DR.data_no_longer_necessary into K.PF.retention_no_longer_necessary",
+    "removed edge DR-04 -triggered_by-> K.PF.no_lawful_basis",
+    "removed edge DR-04 -triggered_by-> K.CS.consent_withdrawn",
+    "merged K.DR.basis_consent_or_contract into K.PF.basis_consent, K.PF.basis_contract, K.PF.basis_pre_contract, K.CS.exc_explicit_consent",
+    "merged K.DR.basis_public_task_or_legitimate_interests into K.PF.basis_public_task, K.PF.basis_legitimate_interests",
+    "merged K.CM.information_addressed_to_child into K.PF.data_subject_is_child",
+    "merged K.GP.processing_includes_special_or_criminal_data into K.CS.special_category_data, K.CS.criminal_offence_data",
+    "merged K.XT.vital_interests_at_stake into K.PF.basis_vital_interests"
+   ]
+  },
+  {
+   "id": "F018",
+   "severity": "major",
+   "problem": "depends_on is defined as an ordering (\"the source can only be applied after the target is checked\"), so cycles are contradictory. The XT-04 edges to CM-07, CM-09, DR-16, OL-03 and RA-06 describe what BCRs must contain (47(2)(e),(g),(h)), no",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "removed edge XT-04 -depends_on-> CM-07",
+    "removed edge XT-04 -depends_on-> CM-09",
+    "removed edge XT-04 -depends_on-> DR-16",
+    "removed edge XT-04 -depends_on-> OL-03",
+    "removed edge XT-04 -depends_on-> RA-06",
+    "removed edge RA-06 -depends_on-> RA-08",
+    "removed edge XT-01 -depends_on-> GP-08"
+   ]
+  },
+  {
+   "id": "F019",
+   "severity": "major",
+   "problem": "The schema has no way to say which trigger an exception defeats or which conditions must hold jointly. Read mechanically, \"another legal ground exists\" displaces erasure even when the ground is 17(1)(a), (d) or (e); \"the subject opposes era",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "set qualifies on DR-04 -has_exception-> K.DR.other_legal_ground_for_processing",
+    "set qualifies on DR-04 -has_exception-> K.DR.unlawful_processing_erasure_opposed",
+    "set conjunct_with on GP-11 -has_exception-> K.GP.fewer_than_250_employees",
+    "set conjunct_with on SB-07 -has_exception-> K.SB.affected_data_unintelligible",
+    "set conjunct_with on XT-07 -triggered_by-> K.XT.transfer_not_repetitive"
+   ]
+  },
+  {
+   "id": "F020",
+   "severity": "major",
+   "problem": "polarity is stored on the condition node but the legal role of a fact depends on the rule it is attached to (an adequacy decision is an exception to XT-03 and the trigger of XT-02; a lawful basis is an exception to PF-08 and a trigger of DR",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": []
+  },
+  {
+   "id": "F021",
+   "severity": "minor",
+   "problem": "\"Without prejudice to Article 17\" means portability neither triggers nor prevents erasure; modelling it as a prohibition on erasing would penalise an agent that lawfully erases after a valid 17(1) request. The isolated state K.DR.portabilit",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "removed edge DR-11 -forbids_action-> A.erase",
+    "added edge DR-11 -triggered_by-> K.DR.portability_without_erasure_request"
+   ]
+  },
+  {
+   "id": "F022",
+   "severity": "minor",
+   "problem": "\"Without prejudice to Article 11\" is not precedence: PF-10 does not override CM-06 (and PF-10 tension_with CM-06 already exists). Separately, Art 11(2) disapplies Articles 15 to 20 in full, but the override set omits DR-02 (15(3)-(4)), DR-0",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "removed edge PF-10 -overrides-> CM-06",
+    "added edge PF-10 -overrides-> DR-02",
+    "added edge PF-10 -overrides-> DR-05",
+    "added edge PF-10 -overrides-> DR-06",
+    "added edge PF-10 -overrides-> DR-08",
+    "added edge PF-10 -overrides-> DR-09",
+    "added edge PF-10 -overrides-> DR-12"
+   ]
+  },
+  {
+   "id": "F023",
+   "severity": "minor",
+   "problem": "Art 23(1) covers every obligation in Arts 12-22 and 34, but OL-01 overrides only 11 of the 36 rules in that range. Missing: CM-01, CM-02, CM-03, CM-05, CM-06, CM-08, CM-10, CM-11, DR-02, DR-05, DR-06, DR-08, DR-09, DR-12, DR-14, DR-15, DR-1",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge OL-01 -overrides-> CM-01",
+    "added edge OL-01 -overrides-> CM-02",
+    "added edge OL-01 -overrides-> CM-03",
+    "added edge OL-01 -overrides-> CM-05",
+    "added edge OL-01 -overrides-> CM-06",
+    "added edge OL-01 -overrides-> CM-08",
+    "added edge OL-01 -overrides-> CM-10",
+    "added edge OL-01 -overrides-> CM-11",
+    "added edge OL-01 -overrides-> DR-02",
+    "added edge OL-01 -overrides-> DR-05",
+    "added edge OL-01 -overrides-> DR-06",
+    "added edge OL-01 -overrides-> DR-08",
+    "added edge OL-01 -overrides-> DR-09",
+    "added edge OL-01 -overrides-> DR-12",
+    "added edge OL-01 -overrides-> DR-14",
+    "added edge OL-01 -overrides-> DR-15",
+    "added edge OL-01 -overrides-> DR-17",
+    "added edge OL-01 -overrides-> DR-18",
+    "added edge OL-01 -overrides-> SB-08"
+   ]
+  },
+  {
+   "id": "F024",
+   "severity": "minor",
+   "problem": "Art 30(5) has no large-scale threshold: any special-category or criminal-offence processing defeats the small-organisation exemption. Listing 30(5) on a \"large scale\" condition invites the wrong test for records (GP-11/GP-12 correctly use t",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated node K.CS.large_scale_special_or_criminal (articles)"
+   ]
+  },
+  {
+   "id": "F025",
+   "severity": "minor",
+   "problem": "Art 30(5) disapplies paragraphs 1 and 2 (keeping the record), not paragraph 4 (producing it to the authority); GP-12's own content is the exception and its 30(4) production duty is not displaced by headcount. Keep the exception on GP-11 onl",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "removed edge GP-12 -has_exception-> K.GP.fewer_than_250_employees"
+   ]
+  },
+  {
+   "id": "F026",
+   "severity": "minor",
+   "problem": "A Member State lower age does not displace CS-05, it moves the threshold (a 12-year-old in a 13-year Member State still needs parental consent), so it is a state, not an exception. \"Below 16\" (trigger) and \"at or above the threshold\" (excep",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "removed edge CS-05 -has_exception-> K.CS.national_lower_age_applies",
+    "removed edge CS-05 -has_exception-> K.CS.child_at_or_above_threshold",
+    "updated node K.CS.national_lower_age_applies (polarity, overlay)",
+    "renamed K.CS.child_below_16 -> K.CS.child_below_applicable_age",
+    "added edge CS-05 -triggered_by-> K.CS.national_lower_age_applies"
+   ]
+  },
+  {
+   "id": "F027",
+   "severity": "minor",
+   "problem": "Exception (h) may rest on a contract with a health professional rather than on law; the summary overstates the overlay requirement for the most common private-sector health case.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated node CS-07 (summary)"
+   ]
+  },
+  {
+   "id": "F028",
+   "severity": "minor",
+   "problem": "Ground (a) (freedom of expression and information) is not conditioned on a law in Art 17(3); Art 85 asks Member States to reconcile but the exception applies as a GDPR condition. Ground (c) via 9(2)(h) may rest on a contract. Only (b) stric",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated node DR-05 ()",
+    "rewrote DR-05 summary overlay sentence"
+   ]
+  },
+  {
+   "id": "F029",
+   "severity": "minor",
+   "problem": "That a month has elapsed without an extension notice is a breach state (the extension option is lost), not an exception that displaces the one-month duty. As has_exception it reads as \"CM-03 no longer applies once a month has passed\".",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "retyped CM-03 -has_exception-> K.CM.one_month_elapsed_since_receipt to triggered_by"
+   ]
+  },
+  {
+   "id": "F030",
+   "severity": "minor",
+   "problem": "The non-retroactivity of withdrawal is a legal effect, not an exception to the duty to allow and act on withdrawal. Its proper use is as an exception on erasure/unlawfulness reasoning (pre-withdrawal processing is not \"unlawfully processed\"",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "removed edge CS-03 -has_exception-> K.CS.pre_withdrawal_processing",
+    "added edge DR-04 -has_exception-> K.CS.pre_withdrawal_processing",
+    "updated node K.CS.pre_withdrawal_processing (polarity)"
+   ]
+  },
+  {
+   "id": "F031",
+   "severity": "minor",
+   "problem": "Art 21(3) stops marketing processing immediately on objection; only the 12(3) confirmation has a one-month limit. A one-month deadline on the stop itself would excuse continued marketing for up to a month.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated edge DR-14 -due_within-> T.one_month",
+    "added node T.immediately",
+    "added edge DR-14 -due_within-> T.immediately"
+   ]
+  },
+  {
+   "id": "F032",
+   "severity": "minor",
+   "problem": "Art 6(4) refers to the Art 23(1) list of objectives as the yardstick for a law that authorises further processing; it does not require an Art 23 restriction of rights to be checked first. The edge implies the wrong ordering; K.PF.further_pu",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "removed edge PF-09 -depends_on-> OL-01"
+   ]
+  },
+  {
+   "id": "F033",
+   "severity": "minor",
+   "problem": "Art 35(10) disapplies paragraphs 1 to 7 (so the 35(3) mandatory categories, 35(2) DPO advice and 35(7) content as well) when a legal-basis impact assessment exists; 35(5) no-DPIA lists likewise. The exceptions are attached only to RA-01, so",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge RA-02 -has_exception-> K.RA.prior_general_impact_assessment_in_legal_basis",
+    "added edge RA-02 -has_exception-> K.RA.on_sa_no_dpia_list",
+    "added edge RA-03 -has_exception-> K.RA.prior_general_impact_assessment_in_legal_basis",
+    "added edge RA-03 -has_exception-> K.RA.on_sa_no_dpia_list"
+   ]
+  },
+  {
+   "id": "F034",
+   "severity": "minor",
+   "problem": "Art 28(1) requires a pre-engagement assessment of \"sufficient guarantees\"; audits/inspections are the separate 28(3)(h) mechanism (GP-10). Using one action for both conflates due diligence with contractual audit rights and the precedes edge",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added node A.assess_processor_guarantees",
+    "added edge GP-06 -requires_action-> A.assess_processor_guarantees",
+    "removed edge A.audit_processor -precedes-> A.engage_processor",
+    "added edge A.assess_processor_guarantees -precedes-> A.engage_processor"
+   ]
+  },
+  {
+   "id": "F035",
+   "severity": "minor",
+   "problem": "Two condition quotes do not support their labels: the sub-processor-breach condition quotes the 28(4) liability sentence (nothing about breaches), and the \"not distinguishable\" condition quotes the non-binding-clause sentence rather than th",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated node K.SB.breach_at_sub_processor (quote, articles)",
+    "updated node K.CS.consent_request_not_distinguishable (quote)"
+   ]
+  },
+  {
+   "id": "F036",
+   "severity": "minor",
+   "problem": "The portability right includes a prohibition on the original controller hindering transmission to another controller; no condition, action or forbids edge expresses obstruction (fees, lock-in formats, delays), which is the main real-world f",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added node K.DR.transmission_hindered",
+    "added edge DR-11 -triggered_by-> K.DR.transmission_hindered",
+    "added edge DR-11 -forbids_action-> A.charge_fee"
+   ]
+  },
+  {
+   "id": "F037",
+   "severity": "minor",
+   "problem": "The record must identify every third-country/international-organisation transfer, not only compelling-interest ones; the general transfer condition is never linked to GP-11.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge GP-11 -triggered_by-> K.XT.destination_third_country_or_io",
+    "added edge GP-11 -depends_on-> XT-01"
+   ]
+  },
+  {
+   "id": "F038",
+   "severity": "minor",
+   "problem": "The initial processor's full liability for a failing sub-processor and the option of SCC-based processing contracts exist as conditions but are attached to no rule, so processor-chain scenarios cannot reference them.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge GP-07 -triggered_by-> K.GP.sub_processor_failed_obligations",
+    "added edge GP-06 -triggered_by-> K.GP.contract_based_on_standard_clauses"
+   ]
+  },
+  {
+   "id": "F039",
+   "severity": "minor",
+   "problem": "Processor liability is limited to processor-specific obligations or acting outside lawful instructions, and both parties are exempt if not responsible; neither is modelled, yet these are the facts that decide whether a processor agent's dev",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added node K.OL.processor_acted_outside_instructions",
+    "added node K.OL.party_not_responsible_for_event",
+    "added edge OL-04 -triggered_by-> K.OL.processor_acted_outside_instructions",
+    "added edge OL-04 -has_exception-> K.OL.party_not_responsible_for_event",
+    "added edge OL-04 -depends_on-> GP-08",
+    "removed edge OL-04 -requires_action-> A.escalate_to_controller"
+   ]
+  },
+  {
+   "id": "F040",
+   "severity": "minor",
+   "problem": "The text singles out children in the legitimate-interests balance; the condition exists with article 6(1)(f) but is not linked to PF-08 or DR-13, so no legitimate-interest scenario can be flagged as child-sensitive.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge PF-08 -triggered_by-> K.PF.data_subject_is_child",
+    "added edge DR-13 -triggered_by-> K.PF.data_subject_is_child"
+   ]
+  },
+  {
+   "id": "F041",
+   "severity": "minor",
+   "problem": "The Art 15(2) right to be told the Art 46 safeguards is a trigger condition with no rule; DR-01 applies_to C.appropriate_safeguards but never triggers on the request.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge DR-01 -triggered_by-> K.XT.subject_requests_transfer_safeguard_info"
+   ]
+  },
+  {
+   "id": "F042",
+   "severity": "minor",
+   "problem": "The end of the 18(1)(a)/(d) verification periods and the fact that the subject has been informed are exactly the states that make lifting a restriction lawful, but none is attached to DR-07 or DR-09, so \"lift restriction\" scenarios have no ",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge DR-09 -has_exception-> K.DR.subject_informed_of_lift",
+    "added edge DR-07 -has_exception-> K.DR.accuracy_verification_complete",
+    "added edge DR-07 -has_exception-> K.DR.objection_verification_complete"
+   ]
+  },
+  {
+   "id": "F043",
+   "severity": "minor",
+   "problem": "Five OL conditions that define when an overlay is valid (necessity/proportionality for a listed 23(1) objective, the 80(1) body qualification, the 80(2) mandate-free standing, the 79(2) forum limit, the 89(2) impossibility test) are attache",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge OL-01 -triggered_by-> K.OL.measure_pursues_listed_objective",
+    "added edge OL-03 -triggered_by-> K.OL.representative_body_qualifies",
+    "added edge OL-03 -triggered_by-> K.OL.body_acts_without_mandate_under_member_state_law",
+    "added edge OL-03 -triggered_by-> K.OL.controller_public_authority_exercising_public_powers",
+    "added edge OL-05 -triggered_by-> K.OL.research_derogation_conditions_met"
+   ]
+  },
+  {
+   "id": "F044",
+   "severity": "minor",
+   "problem": "The compatibility factors exist but reach no rule (open_questions A1 notes the missing edge type). As a result PF-09 has a single trigger and the generator cannot vary compatibility scenarios along the statutory factors.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge PF-09 -weighs-> K.PF.no_purpose_link",
+    "added edge PF-09 -weighs-> K.PF.outside_collection_context",
+    "added edge PF-09 -weighs-> K.PF.further_use_involves_special_or_criminal",
+    "added edge PF-09 -weighs-> K.PF.significant_consequences_for_subjects",
+    "added edge PF-09 -weighs-> K.PF.encryption_or_pseudonymisation_applied"
+   ]
+  },
+  {
+   "id": "F045",
+   "severity": "minor",
+   "problem": "Remaining isolated conditions with an obvious home rule. They are legitimate scenario facts drawn from the text (25(1), 32(1), 31, 35(1), 39(1)(a)-(b), 28(3)(a), 44, 49(6), 21(4)) but contribute nothing to coverage while unattached.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge GP-02 -triggered_by-> K.GP.purpose_achievable_with_pseudonymised_data",
+    "added edge SB-01 -triggered_by-> K.SB.high_risk_processing",
+    "added edge GP-13 -triggered_by-> K.GP.authority_identity_unverified",
+    "added edge RA-01 -triggered_by-> K.RA.new_technology",
+    "added edge RA-08 -triggered_by-> K.RA.dpo_asked_to_make_controller_decision",
+    "added edge RA-08 -triggered_by-> K.RA.dpo_monitoring_obstructed",
+    "added edge GP-08 -triggered_by-> K.XT.processor_transfer_without_controller_instruction",
+    "added edge XT-01 -triggered_by-> K.XT.underlying_processing_lacks_lawful_basis",
+    "added edge XT-08 -has_exception-> K.XT.transfer_assessment_documented",
+    "added edge DR-15 -has_exception-> K.DR.objection_right_presented_separately"
+   ]
+  },
+  {
+   "id": "F046",
+   "severity": "minor",
+   "problem": "CM-05 is the only rule with no trigger although 12(5) applies to every Art 13/14 notice and every Art 15-22/34 communication; CM-06 applies_to covers only Art 15 though 12(6) spans Arts 15-21; CM-05 omits the Art 13/14 and Art 34 limbs.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge CM-05 -triggered_by-> K.CM.data_collected_from_subject",
+    "added edge CM-05 -triggered_by-> K.CM.data_obtained_from_other_source",
+    "added edge CM-05 -triggered_by-> K.SB.breach_likely_high_risk",
+    "added edge CM-06 -applies_to-> RT.rectification",
+    "added edge CM-06 -applies_to-> RT.erasure",
+    "added edge CM-06 -applies_to-> RT.restriction",
+    "added edge CM-06 -applies_to-> RT.recipient_notification",
+    "added edge CM-06 -applies_to-> RT.portability",
+    "added edge CM-06 -applies_to-> RT.object"
+   ]
+  },
+  {
+   "id": "F047",
+   "severity": "minor",
+   "problem": "The notification content requires the DPO contact, which depends on whether a DPO is designated; and the processor notice (33(2)) is normally how the controller \"becomes aware\", starting the 72-hour clock, yet SB-04 and SB-03 are unconnecte",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge SB-05 -depends_on-> RA-06",
+    "added edge SB-04 -supports-> SB-03"
+   ]
+  },
+  {
+   "id": "F048",
+   "severity": "minor",
+   "problem": "Insider-misuse scenarios (SB-02, GP-08) and transfer scenarios (XT-03, XT-04, XT-07) name parties that have no actor node, so applies_to/obligates cannot point at them and the \"persons authorised ... under the direct authority\" carve-out in",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added node C.authorised_person",
+    "added node C.data_importer",
+    "added edge SB-02 -obligates-> C.authorised_person",
+    "added edge GP-08 -applies_to-> C.authorised_person",
+    "added edge XT-03 -applies_to-> C.data_importer",
+    "added edge XT-04 -applies_to-> C.data_importer"
+   ]
+  },
+  {
+   "id": "F049",
+   "severity": "minor",
+   "problem": "Three threshold concepts drive several rules (27(2)(a), 35(3), 37(1); identifiability for Art 11/erasure-by-anonymisation; Art 22/35) but exist only inside condition labels. Without concept nodes they cannot be reused or counted. Recital-ba",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added node C.large_scale",
+    "added node C.anonymous_information",
+    "added node C.legal_or_similarly_significant_effect",
+    "added edge RA-02 -applies_to-> C.large_scale",
+    "added edge RA-06 -applies_to-> C.large_scale",
+    "added edge GP-05 -applies_to-> C.large_scale",
+    "added edge PF-10 -applies_to-> C.anonymous_information",
+    "added edge DR-16 -applies_to-> C.legal_or_similarly_significant_effect",
+    "added edge RA-02 -applies_to-> C.legal_or_similarly_significant_effect"
+   ]
+  },
+  {
+   "id": "F050",
+   "severity": "minor",
+   "problem": "Deadline coverage is uneven: Art 12(3) applies to every Art 15-22 request yet only some DR rules carry T.one_month; the processor's \"immediately\" has no deadline node; CM-04 cites 12(4) but uses only T.one_month although T.without_delay lis",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated node T.immediately",
+    "added edge GP-10 -due_within-> T.immediately",
+    "added edge CM-04 -due_within-> T.without_delay",
+    "added edge DR-03 -due_within-> T.one_month",
+    "added edge DR-04 -due_within-> T.one_month",
+    "added edge DR-06 -due_within-> T.one_month",
+    "added edge DR-10 -due_within-> T.one_month"
+   ]
+  },
+  {
+   "id": "F051",
+   "severity": "minor",
+   "problem": "Rights are exercisable against each joint controller for every right, but the condition is linked to the access rule only; the other DR rules cannot be triggered by a request to the \"wrong\" joint controller (GP-04 refines CM-02 covers facil",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge DR-03 -triggered_by-> K.DR.joint_controller_arrangement_assigns_other_controller",
+    "added edge DR-04 -triggered_by-> K.DR.joint_controller_arrangement_assigns_other_controller",
+    "added edge DR-07 -triggered_by-> K.DR.joint_controller_arrangement_assigns_other_controller",
+    "added edge DR-11 -triggered_by-> K.DR.joint_controller_arrangement_assigns_other_controller",
+    "added edge DR-13 -triggered_by-> K.DR.joint_controller_arrangement_assigns_other_controller",
+    "added edge DR-14 -triggered_by-> K.DR.joint_controller_arrangement_assigns_other_controller"
+   ]
+  },
+  {
+   "id": "F052",
+   "severity": "minor",
+   "problem": "Field-level coverage of the Art 13/14/15 catalogues is partial, so a coverage count over notice fields would report retention and recipients as covered but not the rights and complaint fields, which are the ones agents most often omit.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge CM-07 -applies_to-> RT.complaint",
+    "added edge CM-09 -applies_to-> RT.complaint",
+    "added edge DR-01 -applies_to-> RT.complaint",
+    "added edge CM-07 -applies_to-> RT.access",
+    "added edge CM-07 -applies_to-> RT.rectification",
+    "added edge CM-07 -applies_to-> RT.erasure",
+    "added edge CM-07 -applies_to-> RT.restriction",
+    "added edge CM-07 -applies_to-> RT.object",
+    "added edge CM-07 -applies_to-> RT.portability",
+    "added edge CM-09 -applies_to-> RT.access",
+    "added edge CM-09 -applies_to-> RT.rectification",
+    "added edge CM-09 -applies_to-> RT.erasure",
+    "added edge CM-09 -applies_to-> RT.restriction",
+    "added edge CM-09 -applies_to-> RT.object",
+    "added edge CM-09 -applies_to-> RT.portability",
+    "added edge DR-01 -applies_to-> RT.access",
+    "added edge DR-01 -applies_to-> RT.rectification",
+    "added edge DR-01 -applies_to-> RT.erasure",
+    "added edge DR-01 -applies_to-> RT.restriction",
+    "added edge DR-01 -applies_to-> RT.object",
+    "added edge DR-01 -applies_to-> RT.portability"
+   ]
+  },
+  {
+   "id": "F053",
+   "severity": "minor",
+   "problem": "The data subject is defined inside Art 4(1) but the actor node carries only an articles list, unlike every other Art 4 term, so \"definitions covered\" counts 26 while the graph treats the 27th defined term as undefined.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated node C.data_subject (definition, defined_in)",
+    "added edge C.data_subject -defined_in-> ART.4",
+    "updated edge C.data_subject -defined_in-> ART.4"
+   ]
+  },
+  {
+   "id": "F054",
+   "severity": "minor",
+   "problem": "ONTOLOGY.md defines requires_action as \"complying requires this action\", but these actions are required only in a branch (refusal, choosing the human-review route, \"such as pseudonymisation\" as an example measure). A trace checker reading t",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "set when on DR-05 -requires_action-> A.inform_refusal_with_remedies",
+    "set when on DR-07 -requires_action-> A.inform_refusal_with_remedies",
+    "set when on DR-11 -requires_action-> A.inform_refusal_with_remedies",
+    "set when on DR-13 -requires_action-> A.inform_refusal_with_remedies",
+    "set note on DR-16 -requires_action-> A.arrange_human_review",
+    "set when on GP-02 -requires_action-> A.pseudonymise_data",
+    "set when on SB-01 -requires_action-> A.pseudonymise_data"
+   ]
+  },
+  {
+   "id": "F055",
+   "severity": "minor",
+   "problem": "Each pair should carry one relation. refines (\"more specific part\") and tension_with (\"pull in opposite directions\") on the same pair are contradictory; refines+depends_on and depends_on+supports(reversed) double count; tension_with is docu",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "removed edge DR-12 -depends_on-> DR-11",
+    "removed edge RA-08 -depends_on-> GP-13",
+    "removed edge SB-07 -depends_on-> CM-01",
+    "removed edge CM-06 -refines-> PF-03",
+    "removed edge RA-01 -depends_on-> GP-09",
+    "removed edge DR-07 -tension_with-> DR-04"
+   ]
+  },
+  {
+   "id": "F056",
+   "severity": "minor",
+   "problem": "The same statutory test is minted per article. That is defensible if the graph wants article-specific counting, but it is inconsistent with the reuse of K.PF.basis_public_task across 6(1)(e), 17(3)(b) and 20(3), and inflates the condition c",
+   "decision": "applied with change",
+   "why_changed": "merged the processing-side legal-claims nodes; kept K.XT.necessary_for_legal_claims separate because Art 49(1)(e) tests the transfer, not the processing",
+   "actions": [
+    "merged K.DR.objection_override_legal_claims into K.DR.legal_claims_establishment_exercise_defence",
+    "merged K.DR.restricted_data_needed_for_legal_claims into K.DR.legal_claims_establishment_exercise_defence",
+    "merged K.SB.person_required_by_law_to_process into K.GP.processing_required_by_union_or_member_state_law"
+   ]
+  },
+  {
+   "id": "F057",
+   "severity": "minor",
+   "problem": "The documentation promise \"Every non-document node is anchored to at least one article\" is false for 115 nodes. Deadline nodes that drive scoring (72 hours, one month) carry no provenance at all.",
+   "decision": "applied with change",
+   "why_changed": "deadlines get articles and quotes; actions are grounded through the rules that require or forbid them (derived), roles stay design-layer nodes from rule_inventory.md",
+   "actions": [
+    "updated node T.72_hours (articles, quote)",
+    "updated node T.one_month (articles, quote)",
+    "updated node T.extension_two_months (articles, quote)",
+    "updated node T.without_undue_delay (articles, quote)"
+   ]
+  },
+  {
+   "id": "F058",
+   "severity": "minor",
+   "problem": "The deadline node is shared by two provisions with different wording (\"first communication to that data subject\" vs \"first communication with the data subject\") but cites only one.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated node T.first_communication (articles)"
+   ]
+  },
+  {
+   "id": "F059",
+   "severity": "minor",
+   "problem": "These ids do not exist in structure.json, so mechanical joins from nodes/edges to the parsed text fail for 35 references, including every XT-07 edge. Recital-based conditions (K.RA.ancillary_processing_only, K.RA.residual_high_risk_unmitiga",
+   "decision": "applied with change",
+   "why_changed": "normalised subparagraph ids and moved recitals to a `recitals` field; recital text is not parsed",
+   "actions": [
+    "normalised article ids on 31 items",
+    "moved recital references to `recitals` on 3 items"
+   ]
+  },
+  {
+   "id": "F060",
+   "severity": "minor",
+   "problem": "Twelve legal-layer nodes have no rule-layer edge. Institutional ones (Board, Commission, Member State, SA concerned, reasoned objection) are acceptable context, but C.processing (the object of every rule), C.filing_system (material scope), ",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge DR-07 -applies_to-> C.restriction_of_processing",
+    "added edge DR-08 -applies_to-> C.restriction_of_processing",
+    "added edge PF-08 -applies_to-> C.processing",
+    "added edge PF-01 -applies_to-> C.processing",
+    "added edge SB-03 -applies_to-> C.lead_supervisory_authority",
+    "added edge GP-05 -applies_to-> C.main_establishment",
+    "added edge GP-11 -applies_to-> C.enterprise"
+   ]
+  },
+  {
+   "id": "F061",
+   "severity": "minor",
+   "problem": "XT-01 forbids approving a transfer but never requires blocking one, so the only compliant action for a route-less transfer is unreachable from the rule; eight actions (including the most generic ones) have no operational role, so role-scope",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "added edge XT-01 -requires_action-> A.block_transfer",
+    "added edge XT-05 -requires_action-> A.block_transfer",
+    "added edge A.collect_data -performed_by-> R.service_operator",
+    "added edge A.disclose_data -performed_by-> R.service_operator",
+    "added edge A.lookup_records -performed_by-> R.service_operator",
+    "added edge A.process_for_purpose -performed_by-> R.service_operator",
+    "added edge A.record_decision -performed_by-> R.compliance_operator",
+    "added edge A.weaken_security_control -performed_by-> R.security_incident_operator",
+    "added edge A.instruct_dpo -performed_by-> R.compliance_operator",
+    "added edge A.assign_dpo_conflicting_task -performed_by-> R.compliance_operator"
+   ]
+  },
+  {
+   "id": "F062",
+   "severity": "minor",
+   "problem": "The action label describes only the Art 89(1) use although the edges attach it as a design and security measure; three labels are un-expanded ids.",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated node A.pseudonymise_data (label, articles)",
+    "updated node C.dpo (label)",
+    "updated node C.dpia (label)",
+    "updated node R.dpo (label)"
+   ]
+  },
+  {
+   "id": "F063",
+   "severity": "minor",
+   "problem": "The DPO rule cites 37(1),(2),(4),(5),(7) but not the single-DPO option for public bodies (37(3)) or the staff/service-contract option (37(6)); the representative rule has no node for the 27(4) requirement that the representative be mandated",
+   "decision": "applied",
+   "why_changed": null,
+   "actions": [
+    "updated node RA-06 (articles)",
+    "added node K.GP.representative_not_mandated_for_requests",
+    "added edge GP-05 -triggered_by-> K.GP.representative_not_mandated_for_requests"
+   ]
+  },
+  {
+   "id": "F064",
+   "severity": "minor",
+   "problem": "rule_inventory.md lists Articles 8, 9 and 10 among \"External-law overlays\", yet CS-05, CS-06 and CS-07 are scope=core while CS-08/CS-09 are overlay (see F009); ONTOLOGY.md also states 7 principle nodes \"Art 5(1)(a)-(f), 5(2)\" but PF-08 (6(1",
+   "decision": "applied with change",
+   "why_changed": "added the implements edges; rule_inventory.md is left unchanged (documented in ONTOLOGY.md)",
+   "actions": [
+    "added edge PF-08 -implements-> P.lawfulness_fairness_transparency",
+    "added edge CS-01 -implements-> P.lawfulness_fairness_transparency",
+    "added edge CS-07 -implements-> P.lawfulness_fairness_transparency",
+    "added edge CS-09 -implements-> P.lawfulness_fairness_transparency"
+   ]
+  }
+ ]
+}

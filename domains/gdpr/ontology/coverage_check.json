@@ -1,0 +1,2273 @@
+{
+ "rows": [
+  {
+   "para": "5(1)",
+   "title": "Principles relating to processing of personal data",
+   "institutional": false,
+   "covered_by": [
+    "A.block_disclosure",
+    "A.collect_data",
+    "A.contain_incident",
+    "A.disclose_data",
+    "A.erase",
+    "A.process_for_purpose",
+    "A.rectify",
+    "A.request_identity_info",
+    "A.send_collection_notice",
+    "A.verify_identity",
+    "C.purpose",
+    "K.DR.accuracy_contested",
+    "K.PF.accurate_for_recorded_purpose",
+    "K.PF.archiving_research_statistics_purpose",
+    "K.PF.art89_safeguards_in_place",
+    "K.PF.data_inaccurate",
+    "K.PF.data_not_necessary_for_purpose",
+    "K.PF.further_purpose_incompatible",
+    "K.PF.further_purpose_requested",
+    "K.PF.insecure_handling_requested",
+    "K.PF.processing_not_transparent",
+    "K.PF.purpose_not_specified",
+    "K.PF.requester_not_authorised",
+    "K.PF.retention_no_longer_necessary",
+    "K.PF.unplanned_destruction_requested",
+    "K.SB.personal_data_breach_occurred",
+    "P.accuracy",
+    "P.data_minimisation",
+    "P.integrity_confidentiality",
+    "P.lawfulness_fairness_transparency",
+    "P.purpose_limitation",
+    "P.storage_limitation",
+    "PF-01",
+    "PF-02",
+    "PF-03",
+    "PF-04",
+    "PF-05",
+    "PF-06",
+    "T.without_delay"
+   ],
+   "text": "Personal data shall be:"
+  },
+  {
+   "para": "5(2)",
+   "title": "Principles relating to processing of personal data",
+   "institutional": false,
+   "covered_by": [
+    "A.record_decision",
+    "A.record_lawful_basis",
+    "A.update_processing_record",
+    "K.PF.compliance_not_demonstrable",
+    "P.accountability",
+    "PF-07"
+   ],
+   "text": "The controller shall be responsible for, and be able to demonstrate compliance with, paragraph 1 (‘accountability’)."
+  },
+  {
+   "para": "6(1)",
+   "title": "Lawfulness of processing",
+   "institutional": false,
+   "covered_by": [
+    "A.process_for_purpose",
+    "A.record_lawful_basis",
+    "A.stop_processing",
+    "C.basis.consent",
+    "C.basis.contract",
+    "C.basis.legal_obligation",
+    "C.basis.legitimate_interests",
+    "C.basis.public_task",
+    "C.basis.vital_interests",
+    "C.lawful_basis",
+    "C.member_state",
+    "C.public_authority",
+    "K.PF.basis_consent",
+    "K.PF.basis_contract",
+    "K.PF.basis_legal_obligation",
+    "K.PF.basis_legitimate_interests",
+    "K.PF.basis_pre_contract",
+    "K.PF.basis_public_task",
+    "K.PF.basis_vital_interests",
+    "K.PF.data_subject_is_child",
+    "K.PF.li_overridden",
+    "K.PF.no_lawful_basis",
+    "K.PF.processing_exceeds_basis",
+    "K.PF.public_authority_performing_tasks",
+    "K.XT.underlying_processing_lacks_lawful_basis",
+    "PF-08"
+   ],
+   "text": "Processing shall be lawful only if and to the extent that at least one of the following applies:"
+  },
+  {
+   "para": "6(3)",
+   "title": "Lawfulness of processing",
+   "institutional": false,
+   "covered_by": [
+    "C.member_state",
+    "K.PF.basis_laid_down_in_law",
+    "K.PF.basis_legal_obligation",
+    "K.PF.basis_public_task",
+    "PF-08"
+   ],
+   "text": "The basis for the processing referred to in point (c) and (e) of paragraph 1 shall be laid down by:"
+  },
+  {
+   "para": "6(4)",
+   "title": "Lawfulness of processing",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_compatibility",
+    "A.process_for_purpose",
+    "A.pseudonymise_data",
+    "C.member_state",
+    "K.PF.compatibility_assessed_compatible",
+    "K.PF.encryption_or_pseudonymisation_applied",
+    "K.PF.further_purpose_consented",
+    "K.PF.further_purpose_incompatible",
+    "K.PF.further_purpose_requested",
+    "K.PF.further_purpose_required_by_law",
+    "K.PF.further_use_involves_special_or_criminal",
+    "K.PF.no_purpose_link",
+    "K.PF.outside_collection_context",
+    "K.PF.significant_consequences_for_subjects",
+    "PF-09"
+   ],
+   "text": "Where the processing for a purpose other than that for which the personal data have been collected is not based on the data subject's consent or on a Union or M"
+  },
+  {
+   "para": "7(1)",
+   "title": "Conditions for consent",
+   "institutional": false,
+   "covered_by": [
+    "A.process_for_purpose",
+    "A.record_consent",
+    "CS-01",
+    "K.CS.consent_evidence_missing",
+    "K.CS.relies_on_consent"
+   ],
+   "text": "Where processing is based on consent, the controller shall be able to demonstrate that the data subject has consented to processing of his or her personal data."
+  },
+  {
+   "para": "7(2)",
+   "title": "Conditions for consent",
+   "institutional": false,
+   "covered_by": [
+    "A.present_consent_request",
+    "CS-02",
+    "K.CS.consent_in_multi_matter_declaration",
+    "K.CS.consent_request_not_distinguishable"
+   ],
+   "text": "If the data subject's consent is given in the context of a written declaration which also concerns other matters, the request for consent shall be presented in "
+  },
+  {
+   "para": "7(3)",
+   "title": "Conditions for consent",
+   "institutional": false,
+   "covered_by": [
+    "A.inform_withdrawal_right",
+    "A.record_consent_withdrawal",
+    "A.request_identity_info",
+    "A.stop_processing",
+    "CS-03",
+    "K.CS.consent_withdrawn",
+    "K.CS.pre_withdrawal_processing",
+    "K.CS.withdrawal_harder_than_consent",
+    "K.CS.withdrawal_info_not_given",
+    "RT.withdraw_consent"
+   ],
+   "text": "The data subject shall have the right to withdraw his or her consent at any time. The withdrawal of consent shall not affect the lawfulness of processing based "
+  },
+  {
+   "para": "7(4)",
+   "title": "Conditions for consent",
+   "institutional": false,
+   "covered_by": [
+    "A.record_consent",
+    "A.suspend_service",
+    "CS-04",
+    "K.CS.consent_conditional_on_unnecessary_processing"
+   ],
+   "text": "When assessing whether consent is freely given, utmost account shall be taken of whether, inter alia, the performance of a contract, including the provision of "
+  },
+  {
+   "para": "8(1)",
+   "title": "Conditions applicable to child's consent in relation to information society services",
+   "institutional": false,
+   "covered_by": [
+    "A.check_age",
+    "A.obtain_parental_consent",
+    "A.process_for_purpose",
+    "C.child",
+    "C.information_society_service",
+    "C.parental_responsibility_holder",
+    "CS-05",
+    "K.CS.child_below_applicable_age",
+    "K.CS.iss_offered_directly_to_child",
+    "K.CS.national_lower_age_applies",
+    "K.CS.parental_consent_given"
+   ],
+   "text": "Where point (a) of Article 6(1) applies, in relation to the offer of information society services directly to a child, the processing of the personal data of a "
+  },
+  {
+   "para": "8(2)",
+   "title": "Conditions applicable to child's consent in relation to information society services",
+   "institutional": false,
+   "covered_by": [
+    "A.process_for_purpose",
+    "A.verify_parental_authorisation",
+    "CS-06",
+    "K.CS.parental_authorisation_unverified"
+   ],
+   "text": "The controller shall make reasonable efforts to verify in such cases that consent is given or authorised by the holder of parental responsibility over the child"
+  },
+  {
+   "para": "8(3)",
+   "title": "Conditions applicable to child's consent in relation to information society services",
+   "institutional": false,
+   "covered_by": [],
+   "text": "Paragraph 1 shall not affect the general contract law of Member States such as the rules on the validity, formation or effect of a contract in relation to a chi"
+  },
+  {
+   "para": "9(1)",
+   "title": "Processing of special categories of personal data",
+   "institutional": false,
+   "covered_by": [
+    "A.collect_data",
+    "A.disclose_data",
+    "A.process_for_purpose",
+    "C.biometric_data",
+    "C.genetic_data",
+    "C.health_data",
+    "C.special_category_data",
+    "CS-07",
+    "K.CS.biometric_for_unique_identification",
+    "K.CS.special_category_data",
+    "K.DR.adm_uses_special_category_data"
+   ],
+   "text": "Processing of personal data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, and the proces"
+  },
+  {
+   "para": "9(2)",
+   "title": "Processing of special categories of personal data",
+   "institutional": false,
+   "covered_by": [
+    "C.explicit_consent",
+    "C.not_for_profit_body",
+    "CS-07",
+    "CS-08",
+    "K.CS.disclosure_outside_body_without_consent",
+    "K.CS.exc_archiving_research_law",
+    "K.CS.exc_employment_social_law",
+    "K.CS.exc_explicit_consent",
+    "K.CS.exc_health_care",
+    "K.CS.exc_manifestly_made_public",
+    "K.CS.exc_not_for_profit_members",
+    "K.CS.exc_public_health_law",
+    "K.CS.exc_substantial_public_interest_law",
+    "K.CS.exc_vital_interests_incapable",
+    "K.CS.law_bars_consent_lifting",
+    "K.DR.legal_claims_establishment_exercise_defence"
+   ],
+   "text": "Paragraph 1 shall not apply if one of the following applies:"
+  },
+  {
+   "para": "10",
+   "title": "Processing of personal data relating to criminal convictions and offences",
+   "institutional": false,
+   "covered_by": [
+    "A.collect_data",
+    "A.process_for_purpose",
+    "C.criminal_offence_data",
+    "CS-09",
+    "K.CS.authorised_by_law_with_safeguards",
+    "K.CS.comprehensive_criminal_register",
+    "K.CS.criminal_offence_data",
+    "K.CS.under_official_authority_control"
+   ],
+   "text": "Processing of personal data relating to criminal convictions and offences or related security measures based on Article 6(1) shall be carried out only under the"
+  },
+  {
+   "para": "11(1)",
+   "title": "Processing which does not require identification",
+   "institutional": false,
+   "covered_by": [
+    "A.collect_data",
+    "K.PF.identification_not_required",
+    "PF-10"
+   ],
+   "text": "If the purposes for which a controller processes personal data do not or do no longer require the identification of a data subject by the controller, the contro"
+  },
+  {
+   "para": "11(2)",
+   "title": "Processing which does not require identification",
+   "institutional": false,
+   "covered_by": [
+    "A.inform_cannot_identify",
+    "CM-02",
+    "K.PF.controller_cannot_identify",
+    "K.PF.subject_supplies_identifying_info",
+    "PF-10"
+   ],
+   "text": "Where, in cases referred to in paragraph 1 of this Article, the controller is able to demonstrate that it is not in a position to identify the data subject, the"
+  },
+  {
+   "para": "12(1)",
+   "title": "Transparent information, communication and modalities for the exercise of the rights of the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.provide_privacy_information",
+    "CM-01",
+    "K.CM.identity_proven_by_other_means",
+    "K.CM.oral_information_requested",
+    "K.PF.data_subject_is_child"
+   ],
+   "text": "The controller shall take appropriate measures to provide any information referred to in Articles 13 and 14 and any communication under Articles 15 to 22 and 34"
+  },
+  {
+   "para": "12(2)",
+   "title": "Transparent information, communication and modalities for the exercise of the rights of the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.log_rights_request",
+    "CM-02",
+    "K.CM.request_outside_designated_channel",
+    "K.PF.controller_cannot_identify",
+    "K.PF.identification_not_required"
+   ],
+   "text": "The controller shall facilitate the exercise of data subject rights under Articles 15 to 22. In the cases referred to in Article 11(2), the controller shall not"
+  },
+  {
+   "para": "12(3)",
+   "title": "Transparent information, communication and modalities for the exercise of the rights of the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.log_rights_request",
+    "A.send_extension_notice",
+    "CM-03",
+    "K.CM.extension_notified_within_one_month",
+    "K.CM.one_month_elapsed_since_receipt",
+    "K.CM.request_complex_or_numerous",
+    "K.CM.request_made_electronically",
+    "K.CM.subject_requested_other_format",
+    "T.extension_two_months",
+    "T.one_month",
+    "T.without_undue_delay"
+   ],
+   "text": "The controller shall provide information on action taken on a request under Articles 15 to 22 to the data subject without undue delay and in any event within on"
+  },
+  {
+   "para": "12(4)",
+   "title": "Transparent information, communication and modalities for the exercise of the rights of the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.inform_refusal_with_remedies",
+    "CM-04",
+    "K.CM.controller_declines_to_act",
+    "K.CM.one_month_elapsed_since_receipt",
+    "T.one_month",
+    "T.without_delay"
+   ],
+   "text": "If the controller does not take action on the request of the data subject, the controller shall inform the data subject without delay and at the latest within o"
+  },
+  {
+   "para": "12(5)",
+   "title": "Transparent information, communication and modalities for the exercise of the rights of the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.charge_fee",
+    "A.record_decision",
+    "CM-05",
+    "K.CM.excessiveness_demonstrated",
+    "K.CM.request_manifestly_unfounded_or_excessive",
+    "K.CM.request_repetitive"
+   ],
+   "text": "Information provided under Articles 13 and 14 and any communication and any actions taken under Articles 15 to 22 and 34 shall be provided free of charge. Where"
+  },
+  {
+   "para": "12(7)",
+   "title": "Transparent information, communication and modalities for the exercise of the rights of the data subject",
+   "institutional": false,
+   "covered_by": [],
+   "text": "The information to be provided to data subjects pursuant to Articles 13 and 14 may be provided in combination with standardised icons in order to give in an eas"
+  },
+  {
+   "para": "12(8)",
+   "title": "Transparent information, communication and modalities for the exercise of the rights of the data subject",
+   "institutional": true,
+   "covered_by": [],
+   "text": "The Commission shall be empowered to adopt delegated acts in accordance with Article 92 for the purpose of determining the information to be presented by the ic"
+  },
+  {
+   "para": "13(1)",
+   "title": "Information to be provided where personal data are collected from the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.send_collection_notice",
+    "CM-07",
+    "K.CM.data_collected_from_subject",
+    "K.CM.processing_based_on_legitimate_interests",
+    "K.CM.representative_designated",
+    "K.RA.dpo_designated",
+    "K.XT.destination_third_country_or_io",
+    "RT.information",
+    "T.at_collection"
+   ],
+   "text": "Where personal data relating to a data subject are collected from the data subject, the controller shall, at the time when personal data are obtained, provide t"
+  },
+  {
+   "para": "13(2)",
+   "title": "Information to be provided where personal data are collected from the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.send_collection_notice",
+    "C.retention_period",
+    "CM-07",
+    "K.CM.automated_decision_making_in_use",
+    "K.CM.provision_is_statutory_or_contractual_requirement",
+    "K.CS.relies_on_consent",
+    "RT.information",
+    "T.at_collection"
+   ],
+   "text": "In addition to the information referred to in paragraph 1, the controller shall, at the time when personal data are obtained, provide the data subject with the "
+  },
+  {
+   "para": "13(3)",
+   "title": "Information to be provided where personal data are collected from the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.process_for_purpose",
+    "A.send_new_purpose_notice",
+    "CM-08",
+    "K.CM.further_processing_for_new_purpose_intended",
+    "RT.information",
+    "T.before_further_processing"
+   ],
+   "text": "Where the controller intends to further process the personal data for a purpose other than that for which the personal data were collected, the controller shall"
+  },
+  {
+   "para": "13(4)",
+   "title": "Information to be provided where personal data are collected from the data subject",
+   "institutional": false,
+   "covered_by": [
+    "CM-07",
+    "K.CM.subject_already_has_information",
+    "RT.information"
+   ],
+   "text": "Paragraphs 1, 2 and 3 shall not apply where and insofar as the data subject already has the information."
+  },
+  {
+   "para": "14(1)",
+   "title": "Information to be provided where personal data have not been obtained from the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.send_collection_notice",
+    "CM-09",
+    "K.CM.data_obtained_from_other_source",
+    "K.CM.representative_designated",
+    "K.RA.dpo_designated",
+    "K.XT.destination_third_country_or_io",
+    "RT.information"
+   ],
+   "text": "Where personal data have not been obtained from the data subject, the controller shall provide the data subject with the following information:"
+  },
+  {
+   "para": "14(2)",
+   "title": "Information to be provided where personal data have not been obtained from the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.send_collection_notice",
+    "CM-09",
+    "K.CM.automated_decision_making_in_use",
+    "K.CM.data_from_publicly_accessible_source",
+    "K.CM.processing_based_on_legitimate_interests",
+    "K.CS.relies_on_consent",
+    "RT.information"
+   ],
+   "text": "In addition to the information referred to in paragraph 1, the controller shall provide the data subject with the following information necessary to ensure fair"
+  },
+  {
+   "para": "14(3)",
+   "title": "Information to be provided where personal data have not been obtained from the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.send_collection_notice",
+    "CM-10",
+    "K.CM.data_used_to_communicate_with_subject",
+    "K.CM.disclosure_to_recipient_envisaged",
+    "K.CM.one_month_since_obtaining_elapsed",
+    "RT.information",
+    "T.first_communication",
+    "T.first_disclosure",
+    "T.one_month"
+   ],
+   "text": "The controller shall provide the information referred to in paragraphs 1 and 2:"
+  },
+  {
+   "para": "14(4)",
+   "title": "Information to be provided where personal data have not been obtained from the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.send_new_purpose_notice",
+    "CM-08",
+    "K.CM.further_processing_for_new_purpose_intended",
+    "RT.information",
+    "T.before_further_processing"
+   ],
+   "text": "Where the controller intends to further process the personal data for a purpose other than that for which the personal data were obtained, the controller shall "
+  },
+  {
+   "para": "14(5)",
+   "title": "Information to be provided where personal data have not been obtained from the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.public_communication",
+    "A.record_decision",
+    "CM-11",
+    "K.CM.notice_impossible_or_disproportionate",
+    "K.CM.notice_would_seriously_impair_objectives",
+    "K.CM.obtaining_or_disclosure_laid_down_by_law",
+    "K.CM.professional_secrecy_obligation",
+    "K.CM.protective_measures_taken",
+    "K.CM.research_archiving_statistics_with_art89_safeguards",
+    "K.CM.subject_already_has_information",
+    "RT.information"
+   ],
+   "text": "Paragraphs 1 to 4 shall not apply where and insofar as:"
+  },
+  {
+   "para": "15(1)",
+   "title": "Right of access by the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.confirm_processing_status",
+    "A.lookup_records",
+    "A.provide_access_copy",
+    "C.recipient_list",
+    "DR-01",
+    "K.CM.automated_decision_making_in_use",
+    "K.CM.data_obtained_from_other_source",
+    "K.DR.no_personal_data_held",
+    "K.DR.requester_not_data_subject",
+    "K.DR.source_is_identifiable_individual",
+    "K.XT.destination_third_country_or_io",
+    "RT.access"
+   ],
+   "text": "The data subject shall have the right to obtain from the controller confirmation as to whether or not personal data concerning him or her are being processed, a"
+  },
+  {
+   "para": "15(2)",
+   "title": "Right of access by the data subject",
+   "institutional": false,
+   "covered_by": [
+    "DR-01",
+    "K.XT.destination_third_country_or_io",
+    "K.XT.subject_requests_transfer_safeguard_info",
+    "RT.access"
+   ],
+   "text": "Where personal data are transferred to a third country or to an international organisation, the data subject shall have the right to be informed of the appropri"
+  },
+  {
+   "para": "15(3)",
+   "title": "Right of access by the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.provide_access_copy",
+    "DR-02",
+    "K.CM.request_made_electronically",
+    "K.CM.subject_requested_other_format",
+    "K.DR.further_copy_requested",
+    "RT.access"
+   ],
+   "text": "The controller shall provide a copy of the personal data undergoing processing. For any further copies requested by the data subject, the controller may charge "
+  },
+  {
+   "para": "15(4)",
+   "title": "Right of access by the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.disclose_data",
+    "A.redact_third_party_data",
+    "DR-02",
+    "K.DR.copy_contains_third_party_data",
+    "K.DR.source_is_identifiable_individual",
+    "RT.access"
+   ],
+   "text": "The right to obtain a copy referred to in paragraph 3 shall not adversely affect the rights and freedoms of others."
+  },
+  {
+   "para": "16",
+   "title": "Right to rectification",
+   "institutional": false,
+   "covered_by": [
+    "A.complete_data",
+    "A.rectify",
+    "DR-03",
+    "K.DR.data_incomplete_for_purpose",
+    "K.DR.data_verified_accurate",
+    "K.PF.data_inaccurate",
+    "RT.rectification",
+    "T.without_undue_delay"
+   ],
+   "text": "The data subject shall have the right to obtain from the controller without undue delay the rectification of inaccurate personal data concerning him or her. Tak"
+  },
+  {
+   "para": "17(1)",
+   "title": "Right to erasure (‘right to be forgotten’)",
+   "institutional": false,
+   "covered_by": [
+    "A.erase",
+    "DR-04",
+    "K.CS.consent_withdrawn",
+    "K.CS.iss_offered_directly_to_child",
+    "K.DR.consent_withdrawn_no_other_basis",
+    "K.DR.legal_obligation_to_erase",
+    "K.DR.objection_21_1_no_overriding_grounds",
+    "K.DR.objection_to_direct_marketing",
+    "K.DR.other_legal_ground_for_processing",
+    "K.DR.unlawfully_processed",
+    "K.PF.no_lawful_basis",
+    "K.PF.retention_no_longer_necessary",
+    "RT.erasure",
+    "T.without_undue_delay"
+   ],
+   "text": "The data subject shall have the right to obtain from the controller the erasure of personal data concerning him or her without undue delay and the controller sh"
+  },
+  {
+   "para": "17(2)",
+   "title": "Right to erasure (‘right to be forgotten’)",
+   "institutional": false,
+   "covered_by": [
+    "A.notify_other_controllers",
+    "DR-06",
+    "K.DR.data_made_public_by_controller",
+    "K.DR.erasure_obligation_established",
+    "K.DR.other_controllers_processing_copies_or_links",
+    "RT.erasure"
+   ],
+   "text": "Where the controller has made the personal data public and is obliged pursuant to paragraph 1 to erase the personal data, the controller, taking account of avai"
+  },
+  {
+   "para": "17(3)",
+   "title": "Right to erasure (‘right to be forgotten’)",
+   "institutional": false,
+   "covered_by": [
+    "A.record_decision",
+    "DR-05",
+    "K.DR.archiving_research_statistics_impairment",
+    "K.DR.exception_covers_only_part_of_data",
+    "K.DR.legal_claims_establishment_exercise_defence",
+    "K.DR.legal_obligation_to_retain",
+    "K.DR.necessary_for_freedom_of_expression",
+    "K.DR.public_health_interest",
+    "K.PF.basis_public_task",
+    "RT.erasure"
+   ],
+   "text": "Paragraphs 1 and 2 shall not apply to the extent that processing is necessary:"
+  },
+  {
+   "para": "18(1)",
+   "title": "Right to restriction of processing",
+   "institutional": false,
+   "covered_by": [
+    "A.erase",
+    "A.lift_restriction",
+    "A.restrict_processing",
+    "DR-07",
+    "K.DR.accuracy_contested",
+    "K.DR.accuracy_verification_complete",
+    "K.DR.art21_1_objection_pending_verification",
+    "K.DR.no_longer_needed_but_required_for_subject_legal_claims",
+    "K.DR.objection_verification_complete",
+    "K.DR.unlawful_processing_erasure_opposed",
+    "RT.restriction"
+   ],
+   "text": "The data subject shall have the right to obtain from the controller restriction of processing where one of the following applies:"
+  },
+  {
+   "para": "18(2)",
+   "title": "Right to restriction of processing",
+   "institutional": false,
+   "covered_by": [
+    "A.block_disclosure",
+    "A.disclose_data",
+    "A.process_for_purpose",
+    "DR-08",
+    "K.DR.legal_claims_establishment_exercise_defence",
+    "K.DR.operation_is_storage_only",
+    "K.DR.processing_restricted",
+    "K.DR.restricted_data_important_public_interest",
+    "K.DR.restricted_data_protects_rights_of_another_person",
+    "K.DR.subject_consents_to_restricted_processing",
+    "RT.restriction"
+   ],
+   "text": "Where processing has been restricted under paragraph 1, such personal data shall, with the exception of storage, only be processed with the data subject's conse"
+  },
+  {
+   "para": "18(3)",
+   "title": "Right to restriction of processing",
+   "institutional": false,
+   "covered_by": [
+    "A.inform_subject_before_lifting_restriction",
+    "A.lift_restriction",
+    "DR-09",
+    "K.DR.restriction_lift_intended",
+    "K.DR.subject_informed_of_lift",
+    "RT.restriction"
+   ],
+   "text": "A data subject who has obtained restriction of processing pursuant to paragraph 1 shall be informed by the controller before the restriction of processing is li"
+  },
+  {
+   "para": "19",
+   "title": "Notification obligation regarding rectification or erasure of personal data or restriction of processing",
+   "institutional": false,
+   "covered_by": [
+    "A.inform_subject_of_recipients",
+    "A.notify_recipients",
+    "DR-10",
+    "K.DR.art16_17_18_action_carried_out",
+    "K.DR.data_disclosed_to_recipients",
+    "K.DR.recipient_notification_disproportionate_effort",
+    "K.DR.recipient_notification_impossible",
+    "K.DR.subject_requests_recipient_list",
+    "RT.recipient_notification"
+   ],
+   "text": "The controller shall communicate any rectification or erasure of personal data or restriction of processing carried out in accordance with Article 16, Article 1"
+  },
+  {
+   "para": "20(1)",
+   "title": "Right to data portability",
+   "institutional": false,
+   "covered_by": [
+    "A.charge_fee",
+    "A.export_portable_data",
+    "DR-11",
+    "K.CS.exc_explicit_consent",
+    "K.DR.data_provided_by_subject",
+    "K.DR.processing_by_automated_means",
+    "K.DR.transmission_hindered",
+    "K.PF.basis_consent",
+    "K.PF.basis_contract",
+    "K.PF.basis_pre_contract",
+    "RT.portability"
+   ],
+   "text": "The data subject shall have the right to receive the personal data concerning him or her, which he or she has provided to a controller, in a structured, commonl"
+  },
+  {
+   "para": "20(2)",
+   "title": "Right to data portability",
+   "institutional": false,
+   "covered_by": [
+    "A.transmit_to_other_controller",
+    "DR-12",
+    "K.DR.direct_transmission_technically_feasible",
+    "K.DR.subject_requests_direct_transmission",
+    "RT.portability"
+   ],
+   "text": "In exercising his or her right to data portability pursuant to paragraph 1, the data subject shall have the right to have the personal data transmitted directly"
+  },
+  {
+   "para": "20(3)",
+   "title": "Right to data portability",
+   "institutional": false,
+   "covered_by": [
+    "DR-11",
+    "K.DR.portability_without_erasure_request",
+    "K.PF.basis_public_task",
+    "RT.portability"
+   ],
+   "text": "The exercise of the right referred to in paragraph 1 of this Article shall be without prejudice to Article 17. That right shall not apply to processing necessar"
+  },
+  {
+   "para": "20(4)",
+   "title": "Right to data portability",
+   "institutional": false,
+   "covered_by": [
+    "A.redact_third_party_data",
+    "DR-12",
+    "K.DR.portability_adversely_affects_others",
+    "RT.portability"
+   ],
+   "text": "The right referred to in paragraph 1 shall not adversely affect the rights and freedoms of others."
+  },
+  {
+   "para": "21(1)",
+   "title": "Right to object",
+   "institutional": false,
+   "covered_by": [
+    "A.record_objection",
+    "A.stop_processing",
+    "DR-13",
+    "K.DR.art21_1_objection_pending_verification",
+    "K.DR.compelling_legitimate_grounds_demonstrated",
+    "K.DR.legal_claims_establishment_exercise_defence",
+    "K.DR.objection_21_1_no_overriding_grounds",
+    "K.DR.objection_on_particular_situation",
+    "K.PF.basis_legitimate_interests",
+    "K.PF.basis_public_task",
+    "RT.object"
+   ],
+   "text": "The data subject shall have the right to object, on grounds relating to his or her particular situation, at any time to processing of personal data concerning h"
+  },
+  {
+   "para": "21(2)",
+   "title": "Right to object",
+   "institutional": false,
+   "covered_by": [
+    "A.record_objection",
+    "C.direct_marketing",
+    "DR-14",
+    "K.DR.objection_to_direct_marketing",
+    "K.DR.processing_for_direct_marketing",
+    "K.DR.profiling_related_to_direct_marketing",
+    "RT.object"
+   ],
+   "text": "Where personal data are processed for direct marketing purposes, the data subject shall have the right to object at any time to processing of personal data conc"
+  },
+  {
+   "para": "21(3)",
+   "title": "Right to object",
+   "institutional": false,
+   "covered_by": [
+    "A.process_for_purpose",
+    "A.stop_processing",
+    "DR-14",
+    "K.DR.objection_to_direct_marketing",
+    "RT.object",
+    "T.immediately"
+   ],
+   "text": "Where the data subject objects to processing for direct marketing purposes, the personal data shall no longer be processed for such purposes."
+  },
+  {
+   "para": "21(4)",
+   "title": "Right to object",
+   "institutional": false,
+   "covered_by": [
+    "A.present_objection_right",
+    "DR-15",
+    "K.DR.first_communication_with_subject",
+    "K.DR.objection_right_presented_separately",
+    "RT.object",
+    "T.first_communication"
+   ],
+   "text": "At the latest at the time of the first communication with the data subject, the right referred to in paragraphs 1 and 2 shall be explicitly brought to the atten"
+  },
+  {
+   "para": "21(6)",
+   "title": "Right to object",
+   "institutional": false,
+   "covered_by": [
+    "A.record_objection",
+    "DR-15",
+    "K.DR.objection_on_particular_situation",
+    "K.DR.processing_for_research_or_statistics",
+    "K.DR.research_necessary_for_public_interest_task",
+    "RT.object"
+   ],
+   "text": "Where personal data are processed for scientific or historical research purposes or statistical purposes pursuant to Article 89(1), the data subject, on grounds"
+  },
+  {
+   "para": "22(1)",
+   "title": "Automated individual decision-making, including profiling",
+   "institutional": false,
+   "covered_by": [
+    "A.arrange_human_review",
+    "A.issue_solely_automated_decision",
+    "C.automated_decision",
+    "C.legal_or_similarly_significant_effect",
+    "DR-16",
+    "K.DR.decision_legal_or_similarly_significant_effect",
+    "K.DR.decision_solely_automated",
+    "K.DR.human_involvement_nominal_only",
+    "RT.automated_decisions"
+   ],
+   "text": "The data subject shall have the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal effects co"
+  },
+  {
+   "para": "22(2)",
+   "title": "Automated individual decision-making, including profiling",
+   "institutional": false,
+   "covered_by": [
+    "DR-17",
+    "K.DR.adm_authorised_by_law_with_safeguards",
+    "K.DR.adm_explicit_consent",
+    "K.DR.adm_necessary_for_contract",
+    "RT.automated_decisions"
+   ],
+   "text": "Paragraph 1 shall not apply if the decision:"
+  },
+  {
+   "para": "22(3)",
+   "title": "Automated individual decision-making, including profiling",
+   "institutional": false,
+   "covered_by": [
+    "A.arrange_human_review",
+    "A.record_subject_view",
+    "A.register_decision_contest",
+    "DR-17",
+    "K.DR.adm_safeguards_in_place",
+    "K.DR.subject_contests_decision",
+    "K.DR.subject_requests_human_intervention",
+    "RT.automated_decisions"
+   ],
+   "text": "In the cases referred to in points (a) and (c) of paragraph 2, the data controller shall implement suitable measures to safeguard the data subject's rights and "
+  },
+  {
+   "para": "22(4)",
+   "title": "Automated individual decision-making, including profiling",
+   "institutional": false,
+   "covered_by": [
+    "A.issue_solely_automated_decision",
+    "C.explicit_consent",
+    "DR-18",
+    "K.CS.exc_explicit_consent",
+    "K.CS.exc_substantial_public_interest_law",
+    "K.DR.adm_special_category_safeguards_in_place",
+    "K.DR.adm_uses_special_category_data",
+    "RT.automated_decisions"
+   ],
+   "text": "Decisions referred to in paragraph 2 shall not be based on special categories of personal data referred to in Article 9(1), unless point (a) or (g) of Article 9"
+  },
+  {
+   "para": "23(2)",
+   "title": "Restrictions",
+   "institutional": false,
+   "covered_by": [
+    "A.apply_legislative_restriction",
+    "A.record_decision",
+    "C.legislative_measure",
+    "K.OL.informing_prejudicial_to_restriction",
+    "K.OL.measure_covers_request_scope",
+    "OL-01"
+   ],
+   "text": "In particular, any legislative measure referred to in paragraph 1 shall contain specific provisions at least, where relevant, as to:"
+  },
+  {
+   "para": "24(1)",
+   "title": "Responsibility of the controller",
+   "institutional": false,
+   "covered_by": [
+    "A.apply_security_measure",
+    "A.provide_compliance_evidence",
+    "GP-01",
+    "K.GP.processing_risk_changed",
+    "K.PF.compliance_not_demonstrable",
+    "PF-07"
+   ],
+   "text": "Taking into account the nature, scope, context and purposes of processing as well as the risks of varying likelihood and severity for the rights and freedoms of"
+  },
+  {
+   "para": "24(2)",
+   "title": "Responsibility of the controller",
+   "institutional": false,
+   "covered_by": [
+    "GP-01",
+    "K.GP.data_protection_policy_proportionate"
+   ],
+   "text": "Where proportionate in relation to processing activities, the measures referred to in paragraph 1 shall include the implementation of appropriate data protectio"
+  },
+  {
+   "para": "25(1)",
+   "title": "Data protection by design and by default",
+   "institutional": false,
+   "covered_by": [
+    "A.pseudonymise_data",
+    "GP-02",
+    "K.GP.determining_means_of_processing",
+    "K.GP.purpose_achievable_with_pseudonymised_data"
+   ],
+   "text": "Taking into account the state of the art, the cost of implementation and the nature, scope, context and purposes of processing as well as the risks of varying l"
+  },
+  {
+   "para": "25(2)",
+   "title": "Data protection by design and by default",
+   "institutional": false,
+   "covered_by": [
+    "A.collect_data",
+    "A.configure_privacy_defaults",
+    "GP-03",
+    "K.GP.default_accessible_to_indefinite_persons",
+    "K.GP.default_exceeds_purpose_necessity",
+    "K.GP.individual_intervention_given"
+   ],
+   "text": "The controller shall implement appropriate technical and organisational measures for ensuring that, by default, only personal data which are necessary for each "
+  },
+  {
+   "para": "26(1)",
+   "title": "Joint controllers",
+   "institutional": false,
+   "covered_by": [
+    "A.record_joint_arrangement",
+    "C.joint_controller",
+    "GP-04",
+    "K.GP.joint_arrangement_absent",
+    "K.GP.joint_determination_of_purposes_and_means",
+    "K.GP.responsibilities_determined_by_law"
+   ],
+   "text": "Where two or more controllers jointly determine the purposes and means of processing, they shall be joint controllers. They shall in a transparent manner determ"
+  },
+  {
+   "para": "26(2)",
+   "title": "Joint controllers",
+   "institutional": false,
+   "covered_by": [
+    "A.provide_arrangement_essence",
+    "GP-04",
+    "K.GP.subject_requests_arrangement_essence"
+   ],
+   "text": "The arrangement referred to in paragraph 1 shall duly reflect the respective roles and relationships of the joint controllers vis-à-vis the data subjects. The e"
+  },
+  {
+   "para": "27(1)",
+   "title": "Representatives of controllers or processors not established in the Union",
+   "institutional": false,
+   "covered_by": [
+    "A.designate_representative",
+    "GP-05",
+    "K.GP.not_established_in_union_art3_2"
+   ],
+   "text": "Where Article 3(2) applies, the controller or the processor shall designate in writing a representative in the Union."
+  },
+  {
+   "para": "27(2)",
+   "title": "Representatives of controllers or processors not established in the Union",
+   "institutional": false,
+   "covered_by": [
+    "C.large_scale",
+    "GP-05",
+    "K.CS.large_scale_special_or_criminal",
+    "K.GP.occasional_low_risk_processing",
+    "K.GP.public_authority_or_body"
+   ],
+   "text": "The obligation laid down in paragraph 1 of this Article shall not apply to:"
+  },
+  {
+   "para": "27(3)",
+   "title": "Representatives of controllers or processors not established in the Union",
+   "institutional": false,
+   "covered_by": [
+    "GP-05",
+    "K.GP.representative_outside_subjects_member_states"
+   ],
+   "text": "The representative shall be established in one of the Member States where the data subjects, whose personal data are processed in relation to the offering of go"
+  },
+  {
+   "para": "27(4)",
+   "title": "Representatives of controllers or processors not established in the Union",
+   "institutional": false,
+   "covered_by": [
+    "GP-05",
+    "K.GP.representative_not_mandated_for_requests"
+   ],
+   "text": "The representative shall be mandated by the controller or processor to be addressed in addition to or instead of the controller or the processor by, in particul"
+  },
+  {
+   "para": "27(5)",
+   "title": "Representatives of controllers or processors not established in the Union",
+   "institutional": false,
+   "covered_by": [
+    "GP-05"
+   ],
+   "text": "The designation of a representative by the controller or processor shall be without prejudice to legal actions which could be initiated against the controller o"
+  },
+  {
+   "para": "28(1)",
+   "title": "Processor",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_processor_guarantees",
+    "A.disclose_data",
+    "A.engage_processor",
+    "GP-06",
+    "K.GP.processing_on_behalf_of_controller",
+    "K.GP.processor_guarantees_not_demonstrated"
+   ],
+   "text": "Where processing is to be carried out on behalf of a controller, the controller shall use only processors providing sufficient guarantees to implement appropria"
+  },
+  {
+   "para": "28(2)",
+   "title": "Processor",
+   "institutional": false,
+   "covered_by": [
+    "A.authorize_subprocessor",
+    "A.engage_subprocessor",
+    "A.notify_controller",
+    "C.sub_processor",
+    "GP-07",
+    "K.GP.controller_not_informed_of_sub_processor_change",
+    "K.GP.controller_objected_to_sub_processor_change",
+    "K.GP.general_written_authorisation",
+    "K.GP.prior_specific_written_authorisation",
+    "K.GP.processor_intends_to_engage_sub_processor"
+   ],
+   "text": "The processor shall not engage another processor without prior specific or general written authorisation of the controller. In the case of general written autho"
+  },
+  {
+   "para": "28(3)",
+   "title": "Processor",
+   "institutional": false,
+   "covered_by": [
+    "A.approve_transfer",
+    "A.assist_controller",
+    "A.disclose_data",
+    "A.engage_processor",
+    "A.escalate_to_controller",
+    "A.notify_controller",
+    "A.process_for_purpose",
+    "A.provide_compliance_evidence",
+    "A.return_or_delete_data",
+    "GP-06",
+    "GP-08",
+    "GP-09",
+    "GP-10",
+    "K.GP.assistance_beyond_processor_information",
+    "K.GP.audit_by_controller_or_mandated_auditor",
+    "K.GP.auditor_not_mandated_by_controller",
+    "K.GP.contract_missing_processing_particulars",
+    "K.GP.contract_missing_term_a_documented_instructions",
+    "K.GP.contract_missing_term_b_confidentiality",
+    "K.GP.contract_missing_term_c_security",
+    "K.GP.contract_missing_term_d_subprocessor_conditions",
+    "K.GP.contract_missing_term_e_rights_assistance",
+    "K.GP.contract_missing_term_f_art32_36_assistance",
+    "K.GP.contract_missing_term_g_return_or_delete",
+    "K.GP.contract_missing_term_h_audit_information",
+    "K.GP.controller_choice_not_given",
+    "K.GP.controller_requests_assistance",
+    "K.GP.instruction_infringes_data_protection_law",
+    "K.GP.law_prohibits_informing_controller",
+    "K.GP.law_requires_storage",
+    "K.GP.person_lacks_confidentiality_commitment",
+    "K.GP.processing_required_by_union_or_member_state_law",
+    "K.GP.processor_contract_absent_or_unwritten",
+    "K.GP.request_outside_documented_instructions",
+    "K.GP.rights_request_reaches_processor",
+    "K.GP.service_provision_ended",
+    "K.GP.transfer_not_covered_by_instructions",
+    "K.XT.processor_transfer_without_controller_instruction",
+    "T.immediately"
+   ],
+   "text": "Processing by a processor shall be governed by a contract or other legal act under Union or Member State law, that is binding on the processor with regard to th"
+  },
+  {
+   "para": "28(4)",
+   "title": "Processor",
+   "institutional": false,
+   "covered_by": [
+    "A.engage_subprocessor",
+    "GP-07",
+    "K.GP.processor_intends_to_engage_sub_processor",
+    "K.GP.sub_processor_failed_obligations",
+    "K.GP.sub_processor_lacks_equivalent_obligations",
+    "K.SB.breach_at_sub_processor"
+   ],
+   "text": "Where a processor engages another processor for carrying out specific processing activities on behalf of the controller, the same data protection obligations as"
+  },
+  {
+   "para": "28(9)",
+   "title": "Processor",
+   "institutional": false,
+   "covered_by": [
+    "GP-06",
+    "K.GP.processor_contract_absent_or_unwritten"
+   ],
+   "text": "The contract or the other legal act referred to in paragraphs 3 and 4 shall be in writing, including in electronic form."
+  },
+  {
+   "para": "28(10)",
+   "title": "Processor",
+   "institutional": false,
+   "covered_by": [
+    "GP-08",
+    "K.GP.processor_determines_purposes_and_means"
+   ],
+   "text": "Without prejudice to Articles 82, 83 and 84, if a processor infringes this Regulation by determining the purposes and means of processing, the processor shall b"
+  },
+  {
+   "para": "29",
+   "title": "Processing under the authority of the controller or processor",
+   "institutional": false,
+   "covered_by": [
+    "A.process_for_purpose",
+    "C.authorised_person",
+    "GP-08",
+    "K.GP.processing_required_by_union_or_member_state_law",
+    "K.GP.request_outside_documented_instructions",
+    "K.GP.rights_request_reaches_processor",
+    "K.SB.person_processing_outside_instructions"
+   ],
+   "text": "The processor and any person acting under the authority of the controller or of the processor, who has access to personal data, shall not process those data exc"
+  },
+  {
+   "para": "30(1)",
+   "title": "Records of processing activities",
+   "institutional": false,
+   "covered_by": [
+    "A.update_processing_record",
+    "C.processing_record",
+    "GP-11",
+    "K.GP.processing_activity_not_in_record",
+    "K.GP.record_missing_required_field",
+    "K.GP.transfer_under_art49_1_second_subparagraph",
+    "K.XT.transfer_assessment_documented"
+   ],
+   "text": "Each controller and, where applicable, the controller's representative, shall maintain a record of processing activities under its responsibility. That record s"
+  },
+  {
+   "para": "30(2)",
+   "title": "Records of processing activities",
+   "institutional": false,
+   "covered_by": [
+    "A.update_processing_record",
+    "GP-11",
+    "K.GP.organisation_acts_as_processor",
+    "K.GP.processing_activity_not_in_record",
+    "K.GP.record_missing_required_field",
+    "K.GP.transfer_under_art49_1_second_subparagraph",
+    "K.XT.transfer_assessment_documented"
+   ],
+   "text": "Each processor and, where applicable, the processor's representative shall maintain a record of all categories of processing activities carried out on behalf of"
+  },
+  {
+   "para": "30(3)",
+   "title": "Records of processing activities",
+   "institutional": false,
+   "covered_by": [
+    "GP-11"
+   ],
+   "text": "The records referred to in paragraphs 1 and 2 shall be in writing, including in electronic form."
+  },
+  {
+   "para": "30(4)",
+   "title": "Records of processing activities",
+   "institutional": false,
+   "covered_by": [
+    "A.provide_info_to_supervisory_authority",
+    "GP-12",
+    "K.GP.authority_requests_record"
+   ],
+   "text": "The controller or the processor and, where applicable, the controller's or the processor's representative, shall make the record available to the supervisory au"
+  },
+  {
+   "para": "30(5)",
+   "title": "Records of processing activities",
+   "institutional": false,
+   "covered_by": [
+    "GP-12",
+    "K.CS.criminal_offence_data",
+    "K.CS.special_category_data",
+    "K.GP.fewer_than_250_employees",
+    "K.GP.processing_likely_to_result_in_risk",
+    "K.GP.processing_not_occasional"
+   ],
+   "text": "The obligations referred to in paragraphs 1 and 2 shall not apply to an enterprise or an organisation employing fewer than 250 persons unless the processing it "
+  },
+  {
+   "para": "31",
+   "title": "Cooperation with the supervisory authority",
+   "institutional": false,
+   "covered_by": [
+    "A.provide_info_to_supervisory_authority",
+    "GP-13",
+    "K.GP.authority_identity_unverified",
+    "K.GP.authority_request_in_performance_of_tasks"
+   ],
+   "text": "The controller and the processor and, where applicable, their representatives, shall cooperate, on request, with the supervisory authority in the performance of"
+  },
+  {
+   "para": "32(1)",
+   "title": "Security of processing",
+   "institutional": false,
+   "covered_by": [
+    "A.apply_security_measure",
+    "A.pseudonymise_data",
+    "A.weaken_security_control",
+    "K.PF.insecure_handling_requested",
+    "K.SB.high_risk_processing",
+    "K.SB.restore_capability_untested",
+    "K.SB.security_weakening_requested",
+    "SB-01"
+   ],
+   "text": "Taking into account the state of the art, the costs of implementation and the nature, scope, context and purposes of processing as well as the risk of varying l"
+  },
+  {
+   "para": "32(2)",
+   "title": "Security of processing",
+   "institutional": false,
+   "covered_by": [
+    "K.SB.unprotected_disclosure_channel",
+    "SB-01"
+   ],
+   "text": "In assessing the appropriate level of security account shall be taken in particular of the risks that are presented by processing, in particular from accidental"
+  },
+  {
+   "para": "32(4)",
+   "title": "Security of processing",
+   "institutional": false,
+   "covered_by": [
+    "A.lookup_records",
+    "C.authorised_person",
+    "K.GP.processing_required_by_union_or_member_state_law",
+    "K.SB.person_processing_outside_instructions",
+    "SB-02"
+   ],
+   "text": "The controller and processor shall take steps to ensure that any natural person acting under the authority of the controller or the processor who has access to "
+  },
+  {
+   "para": "33(1)",
+   "title": "Notification of a personal data breach to the supervisory authority",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_breach_risk",
+    "A.notify_supervisory_authority",
+    "A.provide_delay_reasons",
+    "K.SB.authority_notification_after_72_hours",
+    "K.SB.breach_unlikely_to_result_in_risk",
+    "K.SB.controller_aware_of_breach",
+    "K.SB.personal_data_breach_occurred",
+    "SB-03",
+    "T.72_hours",
+    "T.without_undue_delay"
+   ],
+   "text": "In the case of a personal data breach, the controller shall without undue delay and, where feasible, not later than 72 hours after having become aware of it, no"
+  },
+  {
+   "para": "33(2)",
+   "title": "Notification of a personal data breach to the supervisory authority",
+   "institutional": false,
+   "covered_by": [
+    "A.notify_controller",
+    "K.SB.breach_at_sub_processor",
+    "K.SB.processor_aware_of_breach",
+    "SB-04",
+    "T.without_undue_delay"
+   ],
+   "text": "The processor shall notify the controller without undue delay after becoming aware of a personal data breach."
+  },
+  {
+   "para": "33(3)",
+   "title": "Notification of a personal data breach to the supervisory authority",
+   "institutional": false,
+   "covered_by": [
+    "A.contain_incident",
+    "A.notify_supervisory_authority",
+    "K.SB.notification_lacks_mandatory_content",
+    "SB-05"
+   ],
+   "text": "The notification referred to in paragraph 1 shall at least:"
+  },
+  {
+   "para": "33(5)",
+   "title": "Notification of a personal data breach to the supervisory authority",
+   "institutional": false,
+   "covered_by": [
+    "A.document_breach",
+    "K.SB.breach_documentation_incomplete",
+    "SB-06"
+   ],
+   "text": "The controller shall document any personal data breaches, comprising the facts relating to the personal data breach, its effects and the remedial action taken. "
+  },
+  {
+   "para": "34(1)",
+   "title": "Communication of a personal data breach to the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_breach_risk",
+    "A.notify_data_subjects",
+    "K.SB.breach_likely_high_risk",
+    "SB-07",
+    "T.without_undue_delay"
+   ],
+   "text": "When the personal data breach is likely to result in a high risk to the rights and freedoms of natural persons, the controller shall communicate the personal da"
+  },
+  {
+   "para": "34(2)",
+   "title": "Communication of a personal data breach to the data subject",
+   "institutional": false,
+   "covered_by": [
+    "K.SB.subject_communication_lacks_required_content",
+    "SB-07"
+   ],
+   "text": "The communication to the data subject referred to in paragraph 1 of this Article shall describe in clear and plain language the nature of the personal data brea"
+  },
+  {
+   "para": "34(3)",
+   "title": "Communication of a personal data breach to the data subject",
+   "institutional": false,
+   "covered_by": [
+    "A.public_communication",
+    "K.SB.affected_data_unintelligible",
+    "K.SB.high_risk_no_longer_likely",
+    "K.SB.individual_notice_disproportionate_effort",
+    "K.SB.protection_not_applied_to_affected_data",
+    "SB-08"
+   ],
+   "text": "The communication to the data subject referred to in paragraph 1 shall not be required if any of the following conditions are met:"
+  },
+  {
+   "para": "35(1)",
+   "title": "Data protection impact assessment",
+   "institutional": false,
+   "covered_by": [
+    "A.conduct_dpia",
+    "C.dpia",
+    "K.RA.likely_high_risk",
+    "K.RA.new_technology",
+    "K.RA.similar_operations_covered_by_existing_dpia",
+    "RA-01",
+    "T.prior_to_processing"
+   ],
+   "text": "Where a type of processing in particular using new technologies, and taking into account the nature, scope, context and purposes of the processing, is likely to"
+  },
+  {
+   "para": "35(2)",
+   "title": "Data protection impact assessment",
+   "institutional": false,
+   "covered_by": [
+    "A.consult_dpo",
+    "A.record_dpo_advice",
+    "K.RA.dpo_designated",
+    "RA-03"
+   ],
+   "text": "The controller shall seek the advice of the data protection officer, where designated, when carrying out a data protection impact assessment."
+  },
+  {
+   "para": "35(3)",
+   "title": "Data protection impact assessment",
+   "institutional": false,
+   "covered_by": [
+    "A.conduct_dpia",
+    "C.large_scale",
+    "C.legal_or_similarly_significant_effect",
+    "K.CS.large_scale_special_or_criminal",
+    "K.RA.large_scale_public_area_monitoring",
+    "K.RA.systematic_extensive_automated_evaluation",
+    "RA-02"
+   ],
+   "text": "A data protection impact assessment referred to in paragraph 1 shall in particular be required in the case of:"
+  },
+  {
+   "para": "35(4)",
+   "title": "Data protection impact assessment",
+   "institutional": true,
+   "covered_by": [
+    "K.RA.on_sa_dpia_required_list",
+    "RA-01"
+   ],
+   "text": "The supervisory authority shall establish and make public a list of the kind of processing operations which are subject to the requirement for a data protection"
+  },
+  {
+   "para": "35(5)",
+   "title": "Data protection impact assessment",
+   "institutional": true,
+   "covered_by": [
+    "K.RA.on_sa_no_dpia_list",
+    "RA-01"
+   ],
+   "text": "The supervisory authority may also establish and make public a list of the kind of processing operations for which no data protection impact assessment is requi"
+  },
+  {
+   "para": "35(6)",
+   "title": "Data protection impact assessment",
+   "institutional": false,
+   "covered_by": [],
+   "text": "Prior to the adoption of the lists referred to in paragraphs 4 and 5, the competent supervisory authority shall apply the consistency mechanism referred to in A"
+  },
+  {
+   "para": "35(7)",
+   "title": "Data protection impact assessment",
+   "institutional": false,
+   "covered_by": [
+    "K.RA.dpia_incomplete",
+    "RA-03"
+   ],
+   "text": "The assessment shall contain at least:"
+  },
+  {
+   "para": "35(8)",
+   "title": "Data protection impact assessment",
+   "institutional": false,
+   "covered_by": [
+    "OL-02"
+   ],
+   "text": "Compliance with approved codes of conduct referred to in Article 40 by the relevant controllers or processors shall be taken into due account in assessing the i"
+  },
+  {
+   "para": "35(9)",
+   "title": "Data protection impact assessment",
+   "institutional": false,
+   "covered_by": [
+    "A.seek_subject_views",
+    "K.RA.subject_views_appropriate",
+    "K.RA.views_would_prejudice_commercial_or_security",
+    "RA-04"
+   ],
+   "text": "Where appropriate, the controller shall seek the views of data subjects or their representatives on the intended processing, without prejudice to the protection"
+  },
+  {
+   "para": "35(10)",
+   "title": "Data protection impact assessment",
+   "institutional": false,
+   "covered_by": [
+    "K.RA.prior_general_impact_assessment_in_legal_basis",
+    "RA-01"
+   ],
+   "text": "Where processing pursuant to point (c) or (e) of Article 6(1) has a legal basis in Union law or in the law of the Member State to which the controller is subjec"
+  },
+  {
+   "para": "35(11)",
+   "title": "Data protection impact assessment",
+   "institutional": false,
+   "covered_by": [
+    "A.review_dpia",
+    "K.RA.risk_changed",
+    "RA-04"
+   ],
+   "text": "Where necessary, the controller shall carry out a review to assess if processing is performed in accordance with the data protection impact assessment at least "
+  },
+  {
+   "para": "36(1)",
+   "title": "Prior consultation",
+   "institutional": false,
+   "covered_by": [
+    "A.prior_consultation",
+    "A.process_for_purpose",
+    "K.RA.residual_high_risk_unmitigated",
+    "RA-05",
+    "T.prior_to_processing"
+   ],
+   "text": "The controller shall consult the supervisory authority prior to processing where a data protection impact assessment under Article 35 indicates that the process"
+  },
+  {
+   "para": "36(2)",
+   "title": "Prior consultation",
+   "institutional": false,
+   "covered_by": [
+    "K.RA.consultation_awaiting_sa_response",
+    "K.RA.sa_advised_infringement",
+    "RA-05"
+   ],
+   "text": "Where the supervisory authority is of the opinion that the intended processing referred to in paragraph 1 would infringe this Regulation, in particular where th"
+  },
+  {
+   "para": "36(3)",
+   "title": "Prior consultation",
+   "institutional": false,
+   "covered_by": [
+    "A.prior_consultation",
+    "K.RA.consultation_package_incomplete",
+    "RA-05"
+   ],
+   "text": "When consulting the supervisory authority pursuant to paragraph 1, the controller shall provide the supervisory authority with:"
+  },
+  {
+   "para": "36(4)",
+   "title": "Prior consultation",
+   "institutional": true,
+   "covered_by": [],
+   "text": "Member States shall consult the supervisory authority during the preparation of a proposal for a legislative measure to be adopted by a national parliament, or "
+  },
+  {
+   "para": "37(1)",
+   "title": "Designation of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "A.designate_dpo",
+    "C.dpo",
+    "C.large_scale",
+    "C.public_authority",
+    "K.CS.large_scale_special_or_criminal",
+    "K.RA.ancillary_processing_only",
+    "K.RA.core_activity_large_scale_special_and_criminal",
+    "K.RA.core_activity_large_scale_systematic_monitoring",
+    "K.RA.court_judicial_capacity",
+    "K.RA.dpo_designated",
+    "K.RA.public_authority_processing",
+    "RA-06"
+   ],
+   "text": "The controller and the processor shall designate a data protection officer in any case where:"
+  },
+  {
+   "para": "37(4)",
+   "title": "Designation of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "K.RA.dpo_designated",
+    "K.RA.ms_law_requires_dpo",
+    "RA-06"
+   ],
+   "text": "In cases other than those referred to in paragraph 1, the controller or processor or associations and other bodies representing categories of controllers or pro"
+  },
+  {
+   "para": "37(5)",
+   "title": "Designation of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "A.designate_dpo",
+    "K.RA.dpo_candidate_lacks_expertise",
+    "K.RA.dpo_designated",
+    "RA-06"
+   ],
+   "text": "The data protection officer shall be designated on the basis of professional qualities and, in particular, expert knowledge of data protection law and practices"
+  },
+  {
+   "para": "37(7)",
+   "title": "Designation of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "A.publish_dpo_contact",
+    "K.RA.dpo_contact_not_published",
+    "K.RA.dpo_designated",
+    "RA-06"
+   ],
+   "text": "The controller or the processor shall publish the contact details of the data protection officer and communicate them to the supervisory authority."
+  },
+  {
+   "para": "38(1)",
+   "title": "Position of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "A.consult_dpo",
+    "K.RA.dp_issue_without_dpo_involvement",
+    "RA-07"
+   ],
+   "text": "The controller and the processor shall ensure that the data protection officer is involved, properly and in a timely manner, in all issues which relate to the p"
+  },
+  {
+   "para": "38(2)",
+   "title": "Position of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "A.grant_dpo_access",
+    "K.RA.dpo_resources_or_access_withheld",
+    "RA-07"
+   ],
+   "text": "The controller and processor shall support the data protection officer in performing the tasks referred to in Article 39 by providing resources necessary to car"
+  },
+  {
+   "para": "38(3)",
+   "title": "Position of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "A.instruct_dpo",
+    "A.report_to_highest_management",
+    "K.RA.dpo_penalised_for_tasks",
+    "K.RA.dpo_reporting_line_blocked",
+    "K.RA.instruction_to_dpo_on_tasks",
+    "RA-07"
+   ],
+   "text": "The controller and processor shall ensure that the data protection officer does not receive any instructions regarding the exercise of those tasks. He or she sh"
+  },
+  {
+   "para": "38(5)",
+   "title": "Position of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "K.RA.dpo_confidential_matter",
+    "RA-07"
+   ],
+   "text": "The data protection officer shall be bound by secrecy or confidentiality concerning the performance of his or her tasks, in accordance with Union or Member Stat"
+  },
+  {
+   "para": "38(6)",
+   "title": "Position of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "A.assign_dpo_conflicting_task",
+    "K.RA.dpo_other_duty_conflict",
+    "RA-07"
+   ],
+   "text": "The data protection officer may fulfil other tasks and duties. The controller or processor shall ensure that any such tasks and duties do not result in a confli"
+  },
+  {
+   "para": "39(1)",
+   "title": "Tasks of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "A.monitor_compliance",
+    "A.record_dpo_advice",
+    "K.RA.dpia_advice_requested",
+    "K.RA.dpo_asked_to_make_controller_decision",
+    "K.RA.dpo_monitoring_obstructed",
+    "K.RA.sa_contact_on_processing",
+    "RA-08"
+   ],
+   "text": "The data protection officer shall have at least the following tasks:"
+  },
+  {
+   "para": "39(2)",
+   "title": "Tasks of the data protection officer",
+   "institutional": false,
+   "covered_by": [
+    "K.RA.high_risk_operation_in_dpo_scope",
+    "RA-08"
+   ],
+   "text": "The data protection officer shall in the performance of his or her tasks have due regard to the risk associated with processing operations, taking into account "
+  },
+  {
+   "para": "40(1)",
+   "title": "Codes of conduct",
+   "institutional": false,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "The Member States, the supervisory authorities, the Board and the Commission shall encourage the drawing up of codes of conduct intended to contribute to the pr"
+  },
+  {
+   "para": "40(3)",
+   "title": "Codes of conduct",
+   "institutional": false,
+   "covered_by": [
+    "C.code_of_conduct",
+    "K.XT.safeguard_code_with_commitments",
+    "OL-02"
+   ],
+   "text": "In addition to adherence by controllers or processors subject to this Regulation, codes of conduct approved pursuant to paragraph 5 of this Article and having g"
+  },
+  {
+   "para": "40(4)",
+   "title": "Codes of conduct",
+   "institutional": false,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "A code of conduct referred to in paragraph 2 of this Article shall contain mechanisms which enable the body referred to in Article 41(1) to carry out the mandat"
+  },
+  {
+   "para": "40(5)",
+   "title": "Codes of conduct",
+   "institutional": false,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "Associations and other bodies referred to in paragraph 2 of this Article which intend to prepare a code of conduct or to amend or extend an existing code shall "
+  },
+  {
+   "para": "40(6)",
+   "title": "Codes of conduct",
+   "institutional": false,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "Where the draft code, or amendment or extension is approved in accordance with paragraph 5, and where the code of conduct concerned does not relate to processin"
+  },
+  {
+   "para": "40(7)",
+   "title": "Codes of conduct",
+   "institutional": false,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "Where a draft code of conduct relates to processing activities in several Member States, the supervisory authority which is competent pursuant to Article 55 sha"
+  },
+  {
+   "para": "40(8)",
+   "title": "Codes of conduct",
+   "institutional": false,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "Where the opinion referred to in paragraph 7 confirms that the draft code, amendment or extension complies with this Regulation, or, in the situation referred t"
+  },
+  {
+   "para": "40(9)",
+   "title": "Codes of conduct",
+   "institutional": true,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "The Commission may, by way of implementing acts, decide that the approved code of conduct, amendment or extension submitted to it pursuant to paragraph 8 of thi"
+  },
+  {
+   "para": "40(10)",
+   "title": "Codes of conduct",
+   "institutional": true,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "The Commission shall ensure appropriate publicity for the approved codes which have been decided as having general validity in accordance with paragraph 9."
+  },
+  {
+   "para": "40(11)",
+   "title": "Codes of conduct",
+   "institutional": true,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "The Board shall collate all approved codes of conduct, amendments and extensions in a register and shall make them publicly available by way of appropriate mean"
+  },
+  {
+   "para": "41(3)",
+   "title": "Monitoring of approved codes of conduct",
+   "institutional": true,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "The competent supervisory authority shall submit the draft criteria for accreditation of a body as referred to in paragraph 1 of this Article to the Board pursu"
+  },
+  {
+   "para": "41(4)",
+   "title": "Monitoring of approved codes of conduct",
+   "institutional": false,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "Without prejudice to the tasks and powers of the competent supervisory authority and the provisions of Chapter VIII, a body as referred to in paragraph 1 of thi"
+  },
+  {
+   "para": "41(5)",
+   "title": "Monitoring of approved codes of conduct",
+   "institutional": true,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "The competent supervisory authority shall revoke the accreditation of a body as referred to in paragraph 1 if the conditions for accreditation are not, or are n"
+  },
+  {
+   "para": "41(6)",
+   "title": "Monitoring of approved codes of conduct",
+   "institutional": false,
+   "covered_by": [
+    "C.code_of_conduct",
+    "OL-02"
+   ],
+   "text": "This Article shall not apply to processing carried out by public authorities and bodies."
+  },
+  {
+   "para": "42(1)",
+   "title": "Certification",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "The Member States, the supervisory authorities, the Board and the Commission shall encourage, in particular at Union level, the establishment of data protection"
+  },
+  {
+   "para": "42(2)",
+   "title": "Certification",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "K.XT.safeguard_certification_with_commitments",
+    "OL-02"
+   ],
+   "text": "In addition to adherence by controllers or processors subject to this Regulation, data protection certification mechanisms, seals or marks approved pursuant to "
+  },
+  {
+   "para": "42(3)",
+   "title": "Certification",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "The certification shall be voluntary and available via a process that is transparent."
+  },
+  {
+   "para": "42(5)",
+   "title": "Certification",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "A certification pursuant to this Article shall be issued by the certification bodies referred to in Article 43 or by the competent supervisory authority, on the"
+  },
+  {
+   "para": "42(6)",
+   "title": "Certification",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "The controller or processor which submits its processing to the certification mechanism shall provide the certification body referred to in Article 43, or where"
+  },
+  {
+   "para": "42(7)",
+   "title": "Certification",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "K.OL.certification_expired_or_withdrawn",
+    "OL-02"
+   ],
+   "text": "Certification shall be issued to a controller or processor for a maximum period of three years and may be renewed, under the same conditions, provided that the "
+  },
+  {
+   "para": "42(8)",
+   "title": "Certification",
+   "institutional": true,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "The Board shall collate all certification mechanisms and data protection seals and marks in a register and shall make them publicly available by any appropriate"
+  },
+  {
+   "para": "43(1)",
+   "title": "Certification bodies",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "Without prejudice to the tasks and powers of the competent supervisory authority under Articles 57 and 58, certification bodies which have an appropriate level "
+  },
+  {
+   "para": "43(2)",
+   "title": "Certification bodies",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "Certification bodies referred to in paragraph 1 shall be accredited in accordance with that paragraph only where they have:"
+  },
+  {
+   "para": "43(3)",
+   "title": "Certification bodies",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "The accreditation of certification bodies as referred to in paragraphs 1 and 2 of this Article shall take place on the basis of criteria approved by the supervi"
+  },
+  {
+   "para": "43(4)",
+   "title": "Certification bodies",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "K.OL.reliance_offered_as_substitute",
+    "OL-02"
+   ],
+   "text": "The certification bodies referred to in paragraph 1 shall be responsible for the proper assessment leading to the certification or the withdrawal of such certif"
+  },
+  {
+   "para": "43(5)",
+   "title": "Certification bodies",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "The certification bodies referred to in paragraph 1 shall provide the competent supervisory authorities with the reasons for granting or withdrawing the request"
+  },
+  {
+   "para": "43(6)",
+   "title": "Certification bodies",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "The requirements referred to in paragraph 3 of this Article and the criteria referred to in Article 42(5) shall be made public by the supervisory authority in a"
+  },
+  {
+   "para": "43(7)",
+   "title": "Certification bodies",
+   "institutional": false,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "Without prejudice to Chapter VIII, the competent supervisory authority or the national accreditation body shall revoke an accreditation of a certification body "
+  },
+  {
+   "para": "43(8)",
+   "title": "Certification bodies",
+   "institutional": true,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "The Commission shall be empowered to adopt delegated acts in accordance with Article 92 for the purpose of specifying the requirements to be taken into account "
+  },
+  {
+   "para": "43(9)",
+   "title": "Certification bodies",
+   "institutional": true,
+   "covered_by": [
+    "C.certification_mechanism",
+    "OL-02"
+   ],
+   "text": "The Commission may adopt implementing acts laying down technical standards for certification mechanisms and data protection seals and marks, and mechanisms to p"
+  },
+  {
+   "para": "44",
+   "title": "General principle for transfers",
+   "institutional": false,
+   "covered_by": [
+    "A.approve_transfer",
+    "A.assess_transfer_route",
+    "A.block_transfer",
+    "C.third_country",
+    "K.XT.destination_third_country_or_io",
+    "K.XT.onward_transfer",
+    "K.XT.processor_transfer_without_controller_instruction",
+    "K.XT.underlying_processing_lacks_lawful_basis",
+    "XT-01"
+   ],
+   "text": "Any transfer of personal data which are undergoing processing or are intended for processing after transfer to a third country or to an international organisati"
+  },
+  {
+   "para": "45(1)",
+   "title": "Transfers on the basis of an adequacy decision",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.adequacy_decision",
+    "C.commission",
+    "K.XT.adequacy_decision_covers_destination",
+    "XT-02"
+   ],
+   "text": "A transfer of personal data to a third country or an international organisation may take place where the Commission has decided that the third country, a territ"
+  },
+  {
+   "para": "45(2)",
+   "title": "Transfers on the basis of an adequacy decision",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.commission"
+   ],
+   "text": "When assessing the adequacy of the level of protection, the Commission shall, in particular, take account of the following elements:"
+  },
+  {
+   "para": "45(3)",
+   "title": "Transfers on the basis of an adequacy decision",
+   "institutional": true,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.commission",
+    "K.XT.adequacy_decision_covers_destination",
+    "K.XT.adequacy_scope_excludes_recipient",
+    "XT-02"
+   ],
+   "text": "The Commission, after assessing the adequacy of the level of protection, may decide, by means of implementing act, that a third country, a territory or one or m"
+  },
+  {
+   "para": "45(4)",
+   "title": "Transfers on the basis of an adequacy decision",
+   "institutional": true,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.commission"
+   ],
+   "text": "The Commission shall, on an ongoing basis, monitor developments in third countries and international organisations that could affect the functioning of decision"
+  },
+  {
+   "para": "45(5)",
+   "title": "Transfers on the basis of an adequacy decision",
+   "institutional": true,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.commission",
+    "K.XT.adequacy_repealed_or_suspended",
+    "XT-02"
+   ],
+   "text": "The Commission shall, where available information reveals, in particular following the review referred to in paragraph 3 of this Article, that a third country, "
+  },
+  {
+   "para": "45(6)",
+   "title": "Transfers on the basis of an adequacy decision",
+   "institutional": true,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.commission"
+   ],
+   "text": "The Commission shall enter into consultations with the third country or international organisation with a view to remedying the situation giving rise to the dec"
+  },
+  {
+   "para": "45(8)",
+   "title": "Transfers on the basis of an adequacy decision",
+   "institutional": true,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.commission"
+   ],
+   "text": "The Commission shall publish in the Official Journal of the European Union and on its website a list of the third countries, territories and specified sectors w"
+  },
+  {
+   "para": "45(9)",
+   "title": "Transfers on the basis of an adequacy decision",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.commission",
+    "K.XT.legacy_adequacy_decision_in_force",
+    "XT-02"
+   ],
+   "text": "Decisions adopted by the Commission on the basis of Article 25(6) of Directive 95/46/EC shall remain in force until amended, replaced or repealed by a Commissio"
+  },
+  {
+   "para": "46(4)",
+   "title": "Transfers subject to appropriate safeguards",
+   "institutional": true,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "A.record_transfer_safeguard",
+    "K.XT.sa_transfer_authorisation_obtained"
+   ],
+   "text": "The supervisory authority shall apply the consistency mechanism referred to in Article 63 in the cases referred to in paragraph 3 of this Article."
+  },
+  {
+   "para": "46(5)",
+   "title": "Transfers subject to appropriate safeguards",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "A.record_transfer_safeguard",
+    "K.XT.legacy_transfer_authorisation_valid",
+    "XT-03"
+   ],
+   "text": "Authorisations by a Member State or supervisory authority on the basis of Article 26(2) of Directive 95/46/EC shall remain valid until amended, replaced or repe"
+  },
+  {
+   "para": "47(1)",
+   "title": "Binding corporate rules",
+   "institutional": true,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.data_importer",
+    "C.group_of_undertakings",
+    "K.XT.bcr_approved_by_sa",
+    "K.XT.bcr_missing_required_content",
+    "K.XT.recipient_bound_by_bcr",
+    "XT-04"
+   ],
+   "text": "The competent supervisory authority shall approve binding corporate rules in accordance with the consistency mechanism set out in Article 63, provided that they"
+  },
+  {
+   "para": "47(2)",
+   "title": "Binding corporate rules",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.group_of_undertakings",
+    "K.XT.bcr_missing_required_content",
+    "K.XT.recipient_not_bound_by_bcr",
+    "K.XT.third_country_law_adverse_to_bcr",
+    "K.XT.transfer_within_bcr_scope",
+    "XT-04"
+   ],
+   "text": "The binding corporate rules referred to in paragraph 1 shall specify at least:"
+  },
+  {
+   "para": "47(3)",
+   "title": "Binding corporate rules",
+   "institutional": true,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "C.group_of_undertakings"
+   ],
+   "text": "The Commission may specify the format and procedures for the exchange of information between controllers, processors and supervisory authorities for binding cor"
+  },
+  {
+   "para": "49(1)",
+   "title": "Derogations for specific situations",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "A.inform_subject_of_transfer",
+    "A.inform_transfer_risks",
+    "A.notify_supervisory_authority",
+    "A.record_consent",
+    "A.record_transfer_safeguard",
+    "C.derogation",
+    "C.public_register",
+    "K.PF.basis_vital_interests",
+    "K.XT.circumstances_assessed_suitable_safeguards",
+    "K.XT.compelling_legitimate_interest_not_overridden",
+    "K.XT.explicit_transfer_consent_given",
+    "K.XT.from_public_register",
+    "K.XT.important_public_interest_recognised_in_law",
+    "K.XT.limited_number_of_subjects",
+    "K.XT.necessary_for_contract_in_subject_interest",
+    "K.XT.necessary_for_contract_with_subject",
+    "K.XT.necessary_for_legal_claims",
+    "K.XT.no_adequacy_no_safeguards",
+    "K.XT.no_specific_derogation_applicable",
+    "K.XT.register_consultation_conditions_met",
+    "K.XT.subject_incapable_of_consent",
+    "K.XT.transfer_not_repetitive",
+    "K.XT.transfer_risks_disclosed",
+    "XT-06",
+    "XT-07"
+   ],
+   "text": "In the absence of an adequacy decision pursuant to Article 45(3), or of appropriate safeguards pursuant to Article 46, including binding corporate rules, a tran"
+  },
+  {
+   "para": "49(2)",
+   "title": "Derogations for specific situations",
+   "institutional": false,
+   "covered_by": [
+    "A.approve_transfer",
+    "A.assess_transfer_route",
+    "C.public_register",
+    "K.XT.register_entirety_requested",
+    "K.XT.register_transfer_not_requested_by_or_to_interested_person",
+    "XT-08"
+   ],
+   "text": "A transfer pursuant to point (g) of the first subparagraph of paragraph 1 shall not involve the entirety of the personal data or entire categories of the person"
+  },
+  {
+   "para": "49(3)",
+   "title": "Derogations for specific situations",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "K.XT.public_authority_exercising_public_powers",
+    "XT-08"
+   ],
+   "text": "Points (a), (b) and (c) of the first subparagraph of paragraph 1 and the second subparagraph thereof shall not apply to activities carried out by public authori"
+  },
+  {
+   "para": "49(4)",
+   "title": "Derogations for specific situations",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "K.XT.important_public_interest_recognised_in_law",
+    "XT-08"
+   ],
+   "text": "The public interest referred to in point (d) of the first subparagraph of paragraph 1 shall be recognised in Union law or in the law of the Member State to whic"
+  },
+  {
+   "para": "49(5)",
+   "title": "Derogations for specific situations",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "K.XT.law_limits_category_transfer",
+    "XT-08"
+   ],
+   "text": "In the absence of an adequacy decision, Union or Member State law may, for important reasons of public interest, expressly set limits to the transfer of specifi"
+  },
+  {
+   "para": "49(6)",
+   "title": "Derogations for specific situations",
+   "institutional": false,
+   "covered_by": [
+    "A.assess_transfer_route",
+    "A.record_transfer_safeguard",
+    "A.update_processing_record",
+    "K.GP.transfer_under_art49_1_second_subparagraph",
+    "K.XT.transfer_assessment_documented",
+    "XT-08"
+   ],
+   "text": "The controller or processor shall document the assessment as well as the suitable safeguards referred to in the second subparagraph of paragraph 1 of this Artic"
+  }
+ ]
+}

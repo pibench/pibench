@@ -1176,3 +1176,13 @@ def build_tool_map(tool_schemas: list[dict]) -> dict[str, Any]:
 
         tool_map[name] = _make_fn(name)
     return tool_map
+
+
+# ── GDPR domain handlers (domains/gdpr/handlers.py) ───────
+
+from domains.gdpr.handlers import HANDLERS as _GDPR_HANDLERS  # noqa: E402
+
+_clash = set(_GDPR_HANDLERS) & set(_HANDLERS)
+if _clash:
+    raise RuntimeError(f"GDPR tool names clash with existing handlers: {sorted(_clash)}")
+_HANDLERS.update(_GDPR_HANDLERS)

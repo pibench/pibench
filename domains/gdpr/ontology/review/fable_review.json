@@ -1,0 +1,3484 @@
+{
+ "summary": "The graph is well grounded (all 384 condition quotes and 90 rule quotes are verbatim, all 26 Article 4 definitions are present, every Art 5-49 'shall' is mapped to a rule) and the rule inventory is a sound decomposition, but it is not yet safe as a coverage map. Two critical defects would generate wrong ALLOW outcomes: has_exception is used for facts that defeat a permission (no enforceable rights/remedies, BCR gaps, 49(3)/(5) limits), and thirteen rules that bind processors in the text obligate only the controller. Major accuracy errors include Art 23 overriding security/minimisation principles it cannot touch, an inconsistent Art 89 derogation map, Art 22(3) safeguards imposed on law-authorised decisions, a processor-receipt 'exception' to the access right, Art 6(3) modelled as an exception, and Art 10 labelled overlay while Art 9 is core. Completeness gaps: no Chapter I scope layer (Arts 2-3), no Art 9 -> Art 6 dependency (Recital 51), the right to withdraw consent is given effect by no rule, and 41 conditions (10% of the layer, including the 22(4) safeguard, 49(1)(a) risk information and 36(3) package) are isolated. Modelling choices that make coverage counting misleading: exceptions are stored two or three times across base and exception rules, 14 pairs of near-duplicate conditions survive the merge, node-level polarity disagrees with edge usage on 37 edges, there is no way to express conjunctive conditions or which trigger an exception qualifies, and depends_on contains four cycles. Hygiene: actions, roles and deadlines carry no grounding despite the documentation's claim, 35 references use ids that do not resolve to structure.json, and the 72-hour / one-month deadline nodes have no provenance. All findings carry mechanical fixes; applying F001-F010 and the duplicate-merge, conjunction and polarity schema changes (F016-F020) should be done before the graph is used to plan scenario coverage.",
+ "findings": [
+  {
+   "id": "F001",
+   "severity": "critical",
+   "category": "accuracy",
+   "target": "XT-03 has_exception K.XT.rights_or_remedies_unavailable; XT-03 has_exception K.XT.importer_commitments_missing; XT-04 has_exception K.XT.bcr_missing_required_content; XT-04 has_exception K.XT.recipient_not_bound_by_bcr",
+   "problem": "Wrong polarity. These facts do not displace the rule (has_exception = \"the rule is displaced when the fact holds\"); they defeat the transfer route, i.e. the transfer must be DENIED. A generator reading has_exception as displacement would produce ALLOW outcomes for transfers without enforceable rights/remedies, without importer commitments, or to a body outside the BCRs.",
+   "evidence": "Art 46(1): \"only if the controller or processor has provided appropriate safeguards, and on condition that enforceable data subject rights and effective legal remedies for data subjects are available\"",
+   "fix": {
+    "op": "retype_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "XT-03",
+       "target": "K.XT.rights_or_remedies_unavailable",
+       "from": "has_exception",
+       "to": "triggered_by",
+       "note": "defeater: Art 46 route fails; transfer must be blocked"
+      },
+      {
+       "source": "XT-03",
+       "target": "K.XT.importer_commitments_missing",
+       "from": "has_exception",
+       "to": "triggered_by",
+       "note": "defeater of 46(2)(e)/(f) routes"
+      },
+      {
+       "source": "XT-04",
+       "target": "K.XT.bcr_missing_required_content",
+       "from": "has_exception",
+       "to": "triggered_by",
+       "note": "defeater: BCR route unavailable"
+      },
+      {
+       "source": "XT-04",
+       "target": "K.XT.recipient_not_bound_by_bcr",
+       "from": "has_exception",
+       "to": "triggered_by",
+       "note": "defeater: onward transfer needs its own route"
+      }
+     ],
+     "alternative": "introduce a dedicated edge type `blocked_by` (rule -> condition) for route-defeating facts and set these four edges to it",
+     "also_set_polarity": {
+      "K.XT.rights_or_remedies_unavailable": "trigger",
+      "K.XT.importer_commitments_missing": "trigger",
+      "K.XT.bcr_missing_required_content": "trigger",
+      "K.XT.recipient_not_bound_by_bcr": "trigger"
+     }
+    }
+   }
+  },
+  {
+   "id": "F002",
+   "severity": "critical",
+   "category": "accuracy",
+   "target": "SB-01, SB-02, GP-05, GP-11, GP-12, GP-13, RA-06, RA-07, XT-01, XT-03, XT-05, XT-06, XT-08 (obligated_party / obligates edges)",
+   "problem": "All thirteen rules bind the processor in the text (Arts 27(1), 30(2), 30(4), 31, 32(1), 32(4), 37(1), 38, 44, 46(1), 48, 49(6)) but carry obligated_party=C.controller and a single obligates->C.controller edge. For a benchmark whose agent may act for a processor, the processor's own security, records, DPO, cooperation, representative and transfer duties are invisible; applies_to->C.processor is not the same relation. The open_questions entry A4 acknowledges the schema limitation but the graph was not corrected.",
+   "evidence": "Art 32(1): \"the controller and the processor shall implement appropriate technical and organisational measures to ensure a level of security appropriate to the risk\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "SB-01",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "32(1)"
+       ]
+      },
+      {
+       "source": "SB-02",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "32(4)"
+       ]
+      },
+      {
+       "source": "GP-05",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "27(1)"
+       ]
+      },
+      {
+       "source": "GP-11",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "30(2)"
+       ]
+      },
+      {
+       "source": "GP-12",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "30(4)"
+       ]
+      },
+      {
+       "source": "GP-13",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "31"
+       ]
+      },
+      {
+       "source": "RA-06",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "37(1)"
+       ]
+      },
+      {
+       "source": "RA-07",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "38(1)"
+       ]
+      },
+      {
+       "source": "XT-01",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "44"
+       ]
+      },
+      {
+       "source": "XT-03",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "46(1)"
+       ]
+      },
+      {
+       "source": "XT-05",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "48"
+       ]
+      },
+      {
+       "source": "XT-06",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "49(1)"
+       ]
+      },
+      {
+       "source": "XT-08",
+       "type": "obligates",
+       "target": "C.processor",
+       "articles": [
+        "49(6)"
+       ]
+      }
+     ],
+     "node_updates": {
+      "SB-01": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "SB-02": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "GP-05": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "GP-11": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "GP-12": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "GP-13": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "RA-06": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "RA-07": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "XT-01": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "XT-03": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "XT-05": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "XT-06": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      },
+      "XT-08": {
+       "obligated_party": [
+        "C.controller",
+        "C.processor"
+       ]
+      }
+     },
+     "schema": "allow obligated_party to be a list; also add GP-11 triggered_by K.GP.organisation_acts_as_processor [30(2)] (currently isolated)"
+    }
+   }
+  },
+  {
+   "id": "F003",
+   "severity": "major",
+   "category": "accuracy",
+   "target": "OL-01 overrides PF-06 (also OL-01 overrides PF-02, PF-03)",
+   "problem": "Article 23(1) lets a legislative measure restrict Arts 12-22 and 34, and Art 5 only \"in so far as its provisions correspond to the rights and obligations provided for in Articles 12 to 22\". Integrity and confidentiality (5(1)(f)) corresponds to no Art 12-22 right, so OL-01 overrides PF-06 is wrong; purpose limitation (5(1)(b)) and data minimisation (5(1)(c)) are doubtful. Only PF-01 (transparency<->12-14), PF-04 (accuracy<->16) and PF-05 (storage<->17) clearly correspond.",
+   "evidence": "Art 23(1): \"as well as Article 5 in so far as its provisions correspond to the rights and obligations provided for in Articles 12 to 22\"",
+   "fix": {
+    "op": "remove_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "PF-06"
+      }
+     ],
+     "review": [
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "PF-02"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "PF-03"
+      }
+     ],
+     "note_for_kept_edges": "OL-01 overrides PF-01/PF-04/PF-05: add note \"only insofar as 5(1)(a)/(d)/(e) correspond to Arts 12-17\""
+    }
+   }
+  },
+  {
+   "id": "F004",
+   "severity": "major",
+   "category": "accuracy",
+   "target": "OL-05 tension_with DR-01; OL-05 overrides DR-10; OL-05 overrides DR-11; missing OL-05 overrides for Art 18/21 rules",
+   "problem": "Art 89 derogations are mapped inconsistently and partly wrongly. (1) Art 15 (DR-01) is derogable under both 89(2) and 89(3) but is linked only by tension_with while Arts 16/18/19/20 get overrides. (2) Art 19 (DR-10) and Art 20 (DR-11) are derogable only for archiving (89(3)), yet the edges cite [89(2),89(3)]. (3) Art 21 (DR-13, DR-15) and the remaining Art 15/18 rules (DR-02, DR-08, DR-09) are derogable but have no override edge.",
+   "evidence": "Art 89(2): \"Union or Member State law may provide for derogations from the rights referred to in Articles 15, 16, 18 and 21\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "retype_edge": [
+      {
+       "source": "OL-05",
+       "target": "DR-01",
+       "from": "tension_with",
+       "to": "overrides",
+       "articles": [
+        "89(2)",
+        "89(3)"
+       ]
+      }
+     ],
+     "update_edge": [
+      {
+       "source": "OL-05",
+       "type": "overrides",
+       "target": "DR-10",
+       "articles": [
+        "89(3)"
+       ]
+      },
+      {
+       "source": "OL-05",
+       "type": "overrides",
+       "target": "DR-11",
+       "articles": [
+        "89(3)"
+       ]
+      }
+     ],
+     "add_edge": [
+      {
+       "source": "OL-05",
+       "type": "overrides",
+       "target": "DR-02",
+       "articles": [
+        "89(2)",
+        "89(3)"
+       ],
+       "note": "only where Union/MS law provides derogations"
+      },
+      {
+       "source": "OL-05",
+       "type": "overrides",
+       "target": "DR-08",
+       "articles": [
+        "89(2)",
+        "89(3)"
+       ],
+       "note": "only where Union/MS law provides derogations"
+      },
+      {
+       "source": "OL-05",
+       "type": "overrides",
+       "target": "DR-09",
+       "articles": [
+        "89(2)",
+        "89(3)"
+       ],
+       "note": "only where Union/MS law provides derogations"
+      },
+      {
+       "source": "OL-05",
+       "type": "overrides",
+       "target": "DR-13",
+       "articles": [
+        "89(2)",
+        "89(3)"
+       ],
+       "note": "only where Union/MS law provides derogations"
+      },
+      {
+       "source": "OL-05",
+       "type": "overrides",
+       "target": "DR-15",
+       "articles": [
+        "89(2)",
+        "89(3)"
+       ],
+       "note": "only where Union/MS law provides derogations"
+      },
+      {
+       "source": "OL-05",
+       "type": "overrides",
+       "target": "DR-12",
+       "articles": [
+        "89(3)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F005",
+   "severity": "major",
+   "category": "accuracy",
+   "target": "DR-17 triggered_by K.DR.adm_authorised_by_law_with_safeguards; DR-17 requires_action A.arrange_human_review / A.record_subject_view / A.register_decision_contest",
+   "problem": "DR-17 attaches the Art 22(3) safeguards (human intervention, point of view, contest) to all three 22(2) exceptions, but the text imposes them only for the contract (a) and explicit-consent (c) cases; for (b) the authorising law supplies the safeguards. As modelled, a benchmark would wrongly fail an agent that relies on a law-authorised decision without offering human intervention.",
+   "evidence": "Art 22(3): \"In the cases referred to in points (a) and (c) of paragraph 2, the data controller shall implement suitable measures to safeguard\"",
+   "fix": {
+    "op": "remove_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "DR-17",
+       "type": "triggered_by",
+       "target": "K.DR.adm_authorised_by_law_with_safeguards"
+      }
+     ],
+     "alternative": "split DR-17 into DR-17a (22(2) exception validity, triggered by all three) and DR-17b (22(3) safeguards, triggered by (a)/(c) only)"
+    }
+   }
+  },
+  {
+   "id": "F006",
+   "severity": "major",
+   "category": "accuracy",
+   "target": "DR-01 has_exception K.GP.rights_request_reaches_processor",
+   "problem": "Wrong polarity and wrong rule. A request arriving at the processor does not displace the controller's Art 15 duty; the processor must assist and the controller still answers. As an exception on DR-01 it would let a scenario treat non-response as compliant.",
+   "evidence": "Art 28(3)(e): \"for the fulfilment of the controller's obligation to respond to requests for exercising the data subject's rights laid down in Chapter III\"",
+   "fix": {
+    "op": "remove_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "DR-01",
+       "type": "has_exception",
+       "target": "K.GP.rights_request_reaches_processor"
+      }
+     ],
+     "keep": "GP-09 triggered_by K.GP.rights_request_reaches_processor",
+     "optionally_add": {
+      "source": "GP-09",
+      "type": "supports",
+      "target": "DR-01",
+      "articles": [
+       "28(3)(e)"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "F007",
+   "severity": "major",
+   "category": "accuracy",
+   "target": "PF-08 has_exception K.PF.basis_laid_down_in_law",
+   "problem": "Art 6(3) is a precondition on bases (c) and (e), not an exception that displaces the lawful-basis requirement. Modelled as has_exception, the mere existence of a law \"laying down a basis\" reads as satisfying PF-08 independently of the (c)/(e) condition. It should be a state that qualifies K.PF.basis_legal_obligation / K.PF.basis_public_task (or a defeater \"basis for (c)/(e) not laid down in law\").",
+   "evidence": "Art 6(3): \"The basis for the processing referred to in point (c) and (e) of paragraph 1 shall be laid down by\"",
+   "fix": {
+    "op": "retype_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "PF-08",
+       "target": "K.PF.basis_laid_down_in_law",
+       "from": "has_exception",
+       "to": "triggered_by",
+       "note": "precondition of 6(1)(c)/(e); without it those bases are unavailable"
+      }
+     ],
+     "set_polarity": {
+      "K.PF.basis_laid_down_in_law": "state"
+     }
+    }
+   }
+  },
+  {
+   "id": "F008",
+   "severity": "major",
+   "category": "accuracy",
+   "target": "XT-06 has_exception K.XT.law_limits_category_transfer; XT-06 has_exception K.XT.public_authority_exercising_public_powers; XT-07 has_exception K.XT.public_authority_exercising_public_powers; OL-02 has_exception K.OL.certification_expired_or_withdrawn",
+   "problem": "Same polarity inversion as F001 outside Chapter V routes: a 49(5) statutory limit and the 49(3) public-authority exclusion narrow the derogations (DENY), they do not displace XT-06/XT-07; an expired or withdrawn certification does not displace OL-02, it makes the reliance invalid.",
+   "evidence": "Art 49(3): \"Points (a), (b) and (c) of the first subparagraph of paragraph 1 and the second subparagraph thereof shall not apply to activities carried out by public authorities\"",
+   "fix": {
+    "op": "retype_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "XT-06",
+       "target": "K.XT.law_limits_category_transfer",
+       "from": "has_exception",
+       "to": "triggered_by",
+       "note": "defeater (overlay)"
+      },
+      {
+       "source": "XT-06",
+       "target": "K.XT.public_authority_exercising_public_powers",
+       "from": "has_exception",
+       "to": "triggered_by",
+       "note": "defeats derogations (a)-(c) only"
+      },
+      {
+       "source": "XT-07",
+       "target": "K.XT.public_authority_exercising_public_powers",
+       "from": "has_exception",
+       "to": "triggered_by",
+       "note": "defeater"
+      },
+      {
+       "source": "OL-02",
+       "target": "K.OL.certification_expired_or_withdrawn",
+       "from": "has_exception",
+       "to": "triggered_by",
+       "note": "reliance on certification invalid"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F009",
+   "severity": "major",
+   "category": "accuracy",
+   "target": "CS-09 (scope=overlay) vs CS-07 (scope=core); CS-08 (scope=overlay)",
+   "problem": "Scope labels are inconsistent for structurally identical rules. Art 10, like Art 9, is a GDPR default prohibition whose exceptions depend on law: an agent for a private controller must DENY criminal-offence processing unless an official-authority or statutory ground is supplied. Labelling the whole rule \"overlay\" (while CS-07 is \"core\") risks the generator skipping Art 10 scenarios and makes core/overlay coverage counts wrong. Overlay status belongs on the exception conditions (as CS-07 does), not the rule.",
+   "evidence": "Art 10: \"shall be carried out only under the control of official authority or when the processing is authorised by Union or Member State law\"",
+   "fix": {
+    "op": "update_node",
+    "details": {
+     "nodes": {
+      "CS-09": {
+       "scope": "core"
+      },
+      "CS-08": {
+       "scope": "core"
+      }
+     },
+     "conditions_set_overlay_true": [
+      "K.CS.authorised_by_law_with_safeguards",
+      "K.CS.under_official_authority_control",
+      "K.CS.handler_not_secrecy_bound"
+     ]
+    }
+   }
+  },
+  {
+   "id": "F010",
+   "severity": "major",
+   "category": "accuracy",
+   "target": "DR-18 (22(4)) and XT-06 (49(1)(a),(f),(g)) exception/route conditions modelled without their cumulative companions",
+   "problem": "DR-18 has_exception K.CS.exc_explicit_consent / K.CS.exc_substantial_public_interest_law, but 22(4) additionally requires suitable safeguards to be in place; the state node K.DR.adm_special_category_safeguards_in_place exists but is isolated, so the exception fires on consent alone. Likewise XT-06 triggers 49(1)(a) on K.XT.explicit_transfer_consent_given without K.XT.transfer_risks_disclosed, 49(1)(f) without K.XT.subject_incapable_of_consent, and 49(1)(g) without K.XT.register_consultation_conditions_met (all isolated).",
+   "evidence": "Art 22(4): \"unless point (a) or (g) of Article 9(2) applies and suitable measures to safeguard the data subject's rights and freedoms and legitimate interests are in place\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "DR-18",
+       "type": "has_exception",
+       "target": "K.DR.adm_special_category_safeguards_in_place",
+       "articles": [
+        "22(4)"
+       ],
+       "conjunct_with": [
+        "K.CS.exc_explicit_consent",
+        "K.CS.exc_substantial_public_interest_law"
+       ],
+       "note": "cumulative: exception needs 9(2)(a)/(g) AND safeguards"
+      },
+      {
+       "source": "XT-06",
+       "type": "triggered_by",
+       "target": "K.XT.transfer_risks_disclosed",
+       "articles": [
+        "49(1)(a)"
+       ],
+       "conjunct_with": [
+        "K.XT.explicit_transfer_consent_given"
+       ]
+      },
+      {
+       "source": "XT-06",
+       "type": "triggered_by",
+       "target": "K.XT.subject_incapable_of_consent",
+       "articles": [
+        "49(1)(f)"
+       ],
+       "conjunct_with": [
+        "K.XT.vital_interests_at_stake"
+       ]
+      },
+      {
+       "source": "XT-06",
+       "type": "triggered_by",
+       "target": "K.XT.register_consultation_conditions_met",
+       "articles": [
+        "49(1)(g)"
+       ],
+       "conjunct_with": [
+        "K.XT.from_public_register"
+       ]
+      },
+      {
+       "source": "XT-03",
+       "type": "triggered_by",
+       "target": "K.XT.sa_transfer_authorisation_obtained",
+       "articles": [
+        "46(3)"
+       ],
+       "conjunct_with": [
+        "K.XT.safeguard_ad_hoc_contractual_clauses",
+        "K.XT.safeguard_administrative_arrangement"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F011",
+   "severity": "major",
+   "category": "completeness",
+   "target": "Articles 2-3 (material scope, household exemption, territorial scope): no rule, condition or concept nodes except K.GP.not_established_in_union_art3_2",
+   "problem": "The applicability gate is missing. Nothing in the graph lets a scenario state whether GDPR applies at all: automated/filing-system processing (2(1)), the household exemption (2(2)(c)), establishment in the Union (3(1)), or targeting/monitoring of EU data subjects by a non-EU controller (3(2)(a)/(b)). The single 3(2) condition is tied only to the representative duty. For a benchmark on private-sector controllers/processors these are the first facts a scenario must fix, and C.filing_system is isolated.",
+   "evidence": "Art 3(1): \"in the context of the activities of an establishment of a controller or a processor in the Union, regardless of whether the processing takes place in the Union or not\"",
+   "fix": {
+    "op": "add_node",
+    "details": {
+     "nodes": [
+      {
+       "id": "SC-01",
+       "type": "rule",
+       "group": "SC",
+       "scope": "context",
+       "label": "GDPR applies: material and territorial scope",
+       "articles": [
+        "2(1)",
+        "2(2)(c)",
+        "3(1)",
+        "3(2)",
+        "3(3)"
+       ],
+       "obligated_party": "C.controller"
+      },
+      {
+       "id": "K.SC.automated_or_filing_system",
+       "type": "condition",
+       "polarity": "trigger",
+       "articles": [
+        "2(1)"
+       ],
+       "quote": "wholly or partly by automated means and to the processing other than by automated means of personal data which form part of a filing system"
+      },
+      {
+       "id": "K.SC.purely_personal_or_household",
+       "type": "condition",
+       "polarity": "exception",
+       "articles": [
+        "2(2)(c)"
+       ],
+       "quote": "by a natural person in the course of a purely personal or household activity"
+      },
+      {
+       "id": "K.SC.establishment_in_union",
+       "type": "condition",
+       "polarity": "trigger",
+       "articles": [
+        "3(1)"
+       ],
+       "quote": "in the context of the activities of an establishment of a controller or a processor in the Union"
+      },
+      {
+       "id": "K.SC.offering_goods_or_services_to_union_subjects",
+       "type": "condition",
+       "polarity": "trigger",
+       "articles": [
+        "3(2)(a)"
+       ],
+       "quote": "the offering of goods or services, irrespective of whether a payment of the data subject is required, to such data subjects in the Union"
+      },
+      {
+       "id": "K.SC.monitoring_behaviour_in_union",
+       "type": "condition",
+       "polarity": "trigger",
+       "articles": [
+        "3(2)(b)"
+       ],
+       "quote": "the monitoring of their behaviour as far as their behaviour takes place within the Union"
+      }
+     ],
+     "edges": [
+      {
+       "source": "SC-01",
+       "type": "triggered_by",
+       "target": "K.SC.automated_or_filing_system"
+      },
+      {
+       "source": "SC-01",
+       "type": "triggered_by",
+       "target": "K.SC.establishment_in_union"
+      },
+      {
+       "source": "SC-01",
+       "type": "triggered_by",
+       "target": "K.SC.offering_goods_or_services_to_union_subjects"
+      },
+      {
+       "source": "SC-01",
+       "type": "triggered_by",
+       "target": "K.SC.monitoring_behaviour_in_union"
+      },
+      {
+       "source": "SC-01",
+       "type": "has_exception",
+       "target": "K.SC.purely_personal_or_household"
+      },
+      {
+       "source": "SC-01",
+       "type": "applies_to",
+       "target": "C.filing_system"
+      },
+      {
+       "source": "SC-01",
+       "type": "applies_to",
+       "target": "C.personal_data"
+      },
+      {
+       "source": "GP-05",
+       "type": "depends_on",
+       "target": "SC-01",
+       "articles": [
+        "27(1)",
+        "3(2)"
+       ]
+      },
+      {
+       "source": "PF-08",
+       "type": "depends_on",
+       "target": "SC-01"
+      }
+     ],
+     "note": "split K.GP.not_established_in_union_art3_2 into the two 3(2) limbs above and retarget GP-05"
+    }
+   }
+  },
+  {
+   "id": "F012",
+   "severity": "major",
+   "category": "completeness",
+   "target": "CS-07 (no depends_on PF-08)",
+   "problem": "Special-category processing needs an Art 9(2) condition and an Art 6(1) basis; the graph adds the dependency for Art 10 (CS-09 depends_on PF-08) but not for Art 9, so a scenario can treat explicit consent under 9(2)(a) as sufficient without any Art 6 basis. The regulation itself resolves the open question (open_questions A1) in Recital 51.",
+   "evidence": "Recital 51: \"In addition to the specific requirements for such processing, the general principles and other rules of this Regulation should apply, in particular as regards the conditions for lawful processing.\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "CS-07",
+       "type": "depends_on",
+       "target": "PF-08",
+       "articles": [
+        "9(2)",
+        "6(1)"
+       ],
+       "note": "Recital 51: Art 6(1) basis also required"
+      }
+     ],
+     "remove_open_question": "A1 first entry"
+    }
+   }
+  },
+  {
+   "id": "F013",
+   "severity": "major",
+   "category": "hygiene",
+   "target": "RT.withdraw_consent (no gives_effect_to from any rule); CS-03",
+   "problem": "The right to withdraw consent is a right node with no rule giving effect to it, so any coverage query \"which rules honour right X\" returns nothing for Art 7(3) even though CS-03 exists.",
+   "evidence": "Art 7(3): \"The data subject shall have the right to withdraw his or her consent at any time.\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "CS-03",
+       "type": "gives_effect_to",
+       "target": "RT.withdraw_consent"
+      },
+      {
+       "source": "CS-03",
+       "type": "applies_to",
+       "target": "RT.withdraw_consent",
+       "articles": [
+        "7(3)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F014",
+   "severity": "major",
+   "category": "completeness",
+   "target": "K.DR.adm_safeguards_in_place, K.DR.human_involvement_nominal_only (22(1)/(3)) isolated; DR-16/DR-17",
+   "problem": "The 22(3) safeguard state and the \"token human review\" condition are isolated, so DR-16 cannot be triggered by a rubber-stamp review (a central failure mode the open_questions A3 entry itself names) and DR-17 cannot test whether safeguards are actually in place.",
+   "evidence": "Art 22(1): \"a decision based solely on automated processing, including profiling, which produces legal effects concerning him or her or similarly significantly affects him or her\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "DR-16",
+       "type": "triggered_by",
+       "target": "K.DR.human_involvement_nominal_only",
+       "articles": [
+        "22(1)"
+       ],
+       "note": "nominal involvement still counts as solely automated"
+      },
+      {
+       "source": "DR-17",
+       "type": "has_exception",
+       "target": "K.DR.adm_safeguards_in_place",
+       "articles": [
+        "22(3)"
+       ],
+       "note": "safeguards already implemented"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F015",
+   "severity": "major",
+   "category": "completeness",
+   "target": "RA-05 / RA-06 / K.RA.consultation_package_incomplete, K.RA.consultation_awaiting_sa_response, K.RA.sa_advised_infringement, K.RA.dpo_contact_not_published, K.RA.dpo_candidate_lacks_expertise, K.RA.group_dpo_not_easily_accessible (all isolated)",
+   "problem": "Six RA conditions that the text makes operative are not attached to any rule: the 36(3) consultation package, the 36(2) advice period and infringement advice, the 37(7) publication duty, the 37(5) qualification test and the 37(2) group-DPO accessibility condition. RA-06 requires_action A.publish_dpo_contact but has no condition expressing that the contact details are not yet published.",
+   "evidence": "Art 36(3): \"When consulting the supervisory authority pursuant to paragraph 1, the controller shall provide the supervisory authority with:\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "RA-05",
+       "type": "triggered_by",
+       "target": "K.RA.consultation_package_incomplete",
+       "articles": [
+        "36(3)"
+       ]
+      },
+      {
+       "source": "RA-05",
+       "type": "triggered_by",
+       "target": "K.RA.consultation_awaiting_sa_response",
+       "articles": [
+        "36(2)"
+       ],
+       "note": "processing may not begin before consultation; status of the SA period"
+      },
+      {
+       "source": "RA-05",
+       "type": "triggered_by",
+       "target": "K.RA.sa_advised_infringement",
+       "articles": [
+        "36(2)"
+       ]
+      },
+      {
+       "source": "RA-06",
+       "type": "triggered_by",
+       "target": "K.RA.dpo_contact_not_published",
+       "articles": [
+        "37(7)"
+       ]
+      },
+      {
+       "source": "RA-06",
+       "type": "triggered_by",
+       "target": "K.RA.dpo_candidate_lacks_expertise",
+       "articles": [
+        "37(5)"
+       ]
+      },
+      {
+       "source": "RA-06",
+       "type": "triggered_by",
+       "target": "K.RA.group_dpo_not_easily_accessible",
+       "articles": [
+        "37(2)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F016",
+   "severity": "major",
+   "category": "modelling",
+   "target": "DR-04/DR-05 (17(3)), CM-09/CM-11 (14(5)), SB-07/SB-08 (34(3)): exception conditions attached twice; DR-05 refines+overrides DR-04; CM-11 refines+overrides CM-09",
+   "problem": "Each Art 17(3), 14(5) and 34(3) exception is modelled both as has_exception on the base rule and as triggered_by/has_exception on a separate \"exception rule\" that also overrides and refines the base rule. Coverage counting therefore counts each exception two or three times, and refines (\"more specific part or exception\") and overrides (\"takes precedence\") are both used for the same pair, contrary to ONTOLOGY.md. SB-08 uses refines only, so the three groups are not even consistent with each other.",
+   "evidence": "Art 17(3): \"Paragraphs 1 and 2 shall not apply to the extent that processing is necessary:\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "policy": "choose one representation per exception set",
+     "recommended": "keep has_exception edges on the base rule (DR-04, CM-09, SB-07); keep DR-05/CM-11/SB-08 as refines-only rules whose triggered_by edges are the exception conditions; drop the duplicated has_exception edges on DR-05/CM-11 and the overrides edges",
+     "remove_edge": [
+      {
+       "source": "DR-05",
+       "type": "overrides",
+       "target": "DR-04"
+      },
+      {
+       "source": "CM-11",
+       "type": "overrides",
+       "target": "CM-09"
+      },
+      {
+       "source": "CM-11",
+       "type": "overrides",
+       "target": "CM-10"
+      },
+      {
+       "source": "CM-11",
+       "type": "overrides",
+       "target": "CM-08"
+      },
+      {
+       "source": "DR-05",
+       "type": "has_exception",
+       "target": "K.DR.archiving_research_statistics_impairment"
+      },
+      {
+       "source": "DR-05",
+       "type": "has_exception",
+       "target": "K.DR.legal_claims_establishment_exercise_defence"
+      },
+      {
+       "source": "DR-05",
+       "type": "has_exception",
+       "target": "K.DR.legal_obligation_to_retain"
+      },
+      {
+       "source": "DR-05",
+       "type": "has_exception",
+       "target": "K.DR.necessary_for_freedom_of_expression"
+      },
+      {
+       "source": "DR-05",
+       "type": "has_exception",
+       "target": "K.DR.public_health_interest"
+      },
+      {
+       "source": "DR-05",
+       "type": "has_exception",
+       "target": "K.PF.basis_public_task"
+      },
+      {
+       "source": "CM-11",
+       "type": "has_exception",
+       "target": "K.CM.notice_impossible_or_disproportionate"
+      },
+      {
+       "source": "CM-11",
+       "type": "has_exception",
+       "target": "K.CM.notice_would_seriously_impair_objectives"
+      },
+      {
+       "source": "CM-11",
+       "type": "has_exception",
+       "target": "K.CM.obtaining_or_disclosure_laid_down_by_law"
+      },
+      {
+       "source": "CM-11",
+       "type": "has_exception",
+       "target": "K.CM.professional_secrecy_obligation"
+      },
+      {
+       "source": "CM-11",
+       "type": "has_exception",
+       "target": "K.CM.subject_already_has_information"
+      }
+     ],
+     "retype_edge": [
+      {
+       "source": "DR-05",
+       "target": "K.DR.archiving_research_statistics_impairment",
+       "from": "has_exception",
+       "to": "triggered_by"
+      },
+      {
+       "source": "DR-05",
+       "target": "K.DR.legal_claims_establishment_exercise_defence",
+       "from": "has_exception",
+       "to": "triggered_by"
+      },
+      {
+       "source": "DR-05",
+       "target": "K.DR.legal_obligation_to_retain",
+       "from": "has_exception",
+       "to": "triggered_by"
+      },
+      {
+       "source": "DR-05",
+       "target": "K.DR.necessary_for_freedom_of_expression",
+       "from": "has_exception",
+       "to": "triggered_by"
+      },
+      {
+       "source": "DR-05",
+       "target": "K.DR.public_health_interest",
+       "from": "has_exception",
+       "to": "triggered_by"
+      },
+      {
+       "source": "DR-05",
+       "target": "K.PF.basis_public_task",
+       "from": "has_exception",
+       "to": "triggered_by"
+      }
+     ],
+     "coverage_rule": "count an exception once, at the base rule"
+    }
+   }
+  },
+  {
+   "id": "F017",
+   "severity": "major",
+   "category": "modelling",
+   "target": "Near-duplicate condition nodes (14 pairs)",
+   "problem": "The same legal fact exists under two ids, usually one per fragment, which inflates condition counts and splits the edges that should converge on one fact: K.CS.relies_on_consent/K.CM.processing_based_on_consent; K.RA.dpo_designated/K.CM.dpo_designated; K.PF.data_inaccurate/K.DR.data_inaccurate; K.PF.compliance_not_demonstrable/K.GP.compliance_not_demonstrable; K.CM.controller_declines_to_act/K.OL.rights_request_not_acted_on; K.DR.accuracy_contested/K.DR.accuracy_contested_unverified; K.DR.data_no_longer_necessary/K.PF.retention_no_longer_necessary; K.DR.unlawfully_processed/K.PF.no_lawful_basis (both triggers of DR-04 for 17(1)(d)); K.CS.consent_withdrawn/K.DR.consent_withdrawn_no_other_basis (both triggers of DR-04 for 17(1)(b)); K.DR.basis_consent_or_contract vs K.PF.basis_consent+K.PF.basis_contract (DR-11 has all four); K.DR.basis_public_task_or_legitimate_interests vs K.PF.basis_public_task+K.PF.basis_legitimate_interests (DR-13 has all three); K.CM.information_addressed_to_child/K.PF.data_subject_is_child (CM-01 has both); K.GP.processing_includes_special_or_criminal_data vs K.CS.special_category_data+K.CS.criminal_offence_data (30(5) split over GP-11/GP-12); K.XT.vital_interests_at_stake/K.PF.basis_vital_interests. The merge step reported only 19 merges.",
+   "evidence": "Art 17(1)(d): \"the personal data have been unlawfully processed\"",
+   "fix": {
+    "op": "merge_nodes",
+    "details": {
+     "merges": [
+      {
+       "keep": "K.CS.relies_on_consent",
+       "drop": "K.CM.processing_based_on_consent"
+      },
+      {
+       "keep": "K.RA.dpo_designated",
+       "drop": "K.CM.dpo_designated"
+      },
+      {
+       "keep": "K.PF.data_inaccurate",
+       "drop": "K.DR.data_inaccurate"
+      },
+      {
+       "keep": "K.PF.compliance_not_demonstrable",
+       "drop": "K.GP.compliance_not_demonstrable"
+      },
+      {
+       "keep": "K.CM.controller_declines_to_act",
+       "drop": "K.OL.rights_request_not_acted_on"
+      },
+      {
+       "keep": "K.DR.accuracy_contested",
+       "drop": "K.DR.accuracy_contested_unverified"
+      },
+      {
+       "keep": "K.PF.retention_no_longer_necessary",
+       "drop": "K.DR.data_no_longer_necessary"
+      },
+      {
+       "keep": "K.DR.unlawfully_processed",
+       "drop_edge_only": "DR-04 triggered_by K.PF.no_lawful_basis"
+      },
+      {
+       "keep": "K.DR.consent_withdrawn_no_other_basis",
+       "drop_edge_only": "DR-04 triggered_by K.CS.consent_withdrawn"
+      },
+      {
+       "keep": [
+        "K.PF.basis_consent",
+        "K.PF.basis_contract",
+        "K.PF.basis_pre_contract",
+        "K.CS.exc_explicit_consent"
+       ],
+       "drop": "K.DR.basis_consent_or_contract"
+      },
+      {
+       "keep": [
+        "K.PF.basis_public_task",
+        "K.PF.basis_legitimate_interests"
+       ],
+       "drop": "K.DR.basis_public_task_or_legitimate_interests"
+      },
+      {
+       "keep": "K.PF.data_subject_is_child",
+       "drop": "K.CM.information_addressed_to_child"
+      },
+      {
+       "keep": [
+        "K.CS.special_category_data",
+        "K.CS.criminal_offence_data"
+       ],
+       "drop": "K.GP.processing_includes_special_or_criminal_data"
+      },
+      {
+       "keep": "K.PF.basis_vital_interests",
+       "drop": "K.XT.vital_interests_at_stake",
+       "note": "keep article list 49(1)(f) on the merged node"
+      }
+     ],
+     "rule": "union the articles and aliases fields; re-point all edges to the kept id"
+    }
+   }
+  },
+  {
+   "id": "F018",
+   "severity": "major",
+   "category": "modelling",
+   "target": "depends_on cycles: GP-08<->XT-01; RA-06->RA-08->RA-07->RA-06; CM-07->XT-03->XT-04->CM-07; XT-03->XT-04->CM-09->XT-03",
+   "problem": "depends_on is defined as an ordering (\"the source can only be applied after the target is checked\"), so cycles are contradictory. The XT-04 edges to CM-07, CM-09, DR-16, OL-03 and RA-06 describe what BCRs must contain (47(2)(e),(g),(h)), not a checking order; RA-06 depends_on RA-08 (37(5)) is a content reference; XT-01 depends_on GP-08 duplicates GP-08 depends_on XT-01 in the wrong direction.",
+   "evidence": "Art 47(2)(e): \"the rights of data subjects in regard to processing and the means to exercise those rights, including the right not to be subject to decisions based solely on automated processing\"",
+   "fix": {
+    "op": "remove_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "XT-04",
+       "type": "depends_on",
+       "target": "CM-07"
+      },
+      {
+       "source": "XT-04",
+       "type": "depends_on",
+       "target": "CM-09"
+      },
+      {
+       "source": "XT-04",
+       "type": "depends_on",
+       "target": "DR-16"
+      },
+      {
+       "source": "XT-04",
+       "type": "depends_on",
+       "target": "OL-03"
+      },
+      {
+       "source": "XT-04",
+       "type": "depends_on",
+       "target": "RA-06"
+      },
+      {
+       "source": "RA-06",
+       "type": "depends_on",
+       "target": "RA-08"
+      },
+      {
+       "source": "XT-01",
+       "type": "depends_on",
+       "target": "GP-08"
+      }
+     ],
+     "replace_with": "the BCR content requirements are already captured by K.XT.bcr_missing_required_content; if a link is wanted, use a new non-ordering edge type `references_rule`"
+    }
+   }
+  },
+  {
+   "id": "F019",
+   "severity": "major",
+   "category": "modelling",
+   "target": "Rule-level has_exception edges that qualify only one trigger: DR-04 has_exception K.DR.other_legal_ground_for_processing [17(1)(b)]; DR-04 has_exception K.DR.unlawful_processing_erasure_opposed [18(1)(b)]; GP-11 has_exception K.GP.fewer_than_250_employees (needs all 30(5) conditions); SB-07 has_exception K.SB.affected_data_unintelligible (needs measures applied to the affected data)",
+   "problem": "The schema has no way to say which trigger an exception defeats or which conditions must hold jointly. Read mechanically, \"another legal ground exists\" displaces erasure even when the ground is 17(1)(a), (d) or (e); \"the subject opposes erasure\" displaces erasure under every ground; \"<250 employees\" displaces record-keeping even for non-occasional or special-category processing. The notes carry this information but a coverage/generation tool cannot use notes.",
+   "evidence": "Art 30(5): \"shall not apply to an enterprise or an organisation employing fewer than 250 persons unless the processing it carries out is likely to result in a risk\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "schema": "add optional edge fields `qualifies` (list of trigger condition ids the exception defeats) and `conjunct_with` (list of condition ids that must hold together)",
+     "apply": [
+      {
+       "source": "DR-04",
+       "type": "has_exception",
+       "target": "K.DR.other_legal_ground_for_processing",
+       "qualifies": [
+        "K.DR.consent_withdrawn_no_other_basis"
+       ]
+      },
+      {
+       "source": "DR-04",
+       "type": "has_exception",
+       "target": "K.DR.unlawful_processing_erasure_opposed",
+       "qualifies": [
+        "K.DR.unlawfully_processed"
+       ]
+      },
+      {
+       "source": "GP-11",
+       "type": "has_exception",
+       "target": "K.GP.fewer_than_250_employees",
+       "conjunct_with": [
+        "NOT K.GP.processing_not_occasional",
+        "NOT K.GP.processing_likely_to_result_in_risk",
+        "NOT K.CS.special_category_data",
+        "NOT K.CS.criminal_offence_data"
+       ]
+      },
+      {
+       "source": "SB-07",
+       "type": "has_exception",
+       "target": "K.SB.affected_data_unintelligible",
+       "conjunct_with": [
+        "NOT K.SB.protection_not_applied_to_affected_data"
+       ]
+      },
+      {
+       "source": "XT-07",
+       "type": "triggered_by",
+       "target": "K.XT.transfer_not_repetitive",
+       "conjunct_with": [
+        "K.XT.limited_number_of_subjects",
+        "K.XT.compelling_legitimate_interest_not_overridden",
+        "K.XT.circumstances_assessed_suitable_safeguards",
+        "K.XT.no_specific_derogation_applicable"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F020",
+   "severity": "major",
+   "category": "modelling",
+   "target": "condition.polarity vs edge type: 33 triggered_by edges point at polarity=exception nodes, 4 has_exception edges at polarity=trigger nodes, 20 conditions are used both ways",
+   "problem": "polarity is stored on the condition node but the legal role of a fact depends on the rule it is attached to (an adequacy decision is an exception to XT-03 and the trigger of XT-02; a lawful basis is an exception to PF-08 and a trigger of DR-13). Any count of \"exceptions covered\" or \"triggers covered\" from node polarity is therefore wrong by dozens, and the few genuine mistakes (F001, F006, F008) are hidden among legitimate reuse.",
+   "evidence": "Art 46(1): \"In the absence of a decision pursuant to Article 45(3), a controller or processor may transfer personal data to a third country or an international organisation only if\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "schema": "move polarity to the edge (triggered_by => trigger, has_exception => exception, new `blocked_by` => defeater) and keep node polarity only as a default; or compute coverage from edge types, never from node polarity",
+     "audit_list": "see checks: (triggered_by,exception) x33, (has_exception,trigger) x4"
+    }
+   }
+  },
+  {
+   "id": "F021",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "DR-11 forbids_action A.erase [20(3)]",
+   "problem": "\"Without prejudice to Article 17\" means portability neither triggers nor prevents erasure; modelling it as a prohibition on erasing would penalise an agent that lawfully erases after a valid 17(1) request. The isolated state K.DR.portability_without_erasure_request already captures the correct reading.",
+   "evidence": "Art 20(3): \"The exercise of the right referred to in paragraph 1 of this Article shall be without prejudice to Article 17.\"",
+   "fix": {
+    "op": "remove_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "DR-11",
+       "type": "forbids_action",
+       "target": "A.erase"
+      }
+     ],
+     "add_edge": [
+      {
+       "source": "DR-11",
+       "type": "triggered_by",
+       "target": "K.DR.portability_without_erasure_request",
+       "articles": [
+        "20(3)"
+       ],
+       "note": "export does not imply erasure"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F022",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "PF-10 overrides CM-06 [12(6),11]; PF-10 overrides DR-01/DR-03/DR-04/DR-07/DR-10/DR-11 (incomplete set)",
+   "problem": "\"Without prejudice to Article 11\" is not precedence: PF-10 does not override CM-06 (and PF-10 tension_with CM-06 already exists). Separately, Art 11(2) disapplies Articles 15 to 20 in full, but the override set omits DR-02 (15(3)-(4)), DR-05, DR-06 (17(2)-(3)), DR-08, DR-09 (18(2)-(3)) and DR-12 (20(2)).",
+   "evidence": "Art 11(2): \"In such cases, Articles 15 to 20 shall not apply except where the data subject, for the purpose of exercising his or her rights under those articles, provides additional information\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "remove_edge": [
+      {
+       "source": "PF-10",
+       "type": "overrides",
+       "target": "CM-06"
+      }
+     ],
+     "add_edge": [
+      {
+       "source": "PF-10",
+       "type": "overrides",
+       "target": "DR-02",
+       "articles": [
+        "11(2)"
+       ]
+      },
+      {
+       "source": "PF-10",
+       "type": "overrides",
+       "target": "DR-05",
+       "articles": [
+        "11(2)"
+       ]
+      },
+      {
+       "source": "PF-10",
+       "type": "overrides",
+       "target": "DR-06",
+       "articles": [
+        "11(2)"
+       ]
+      },
+      {
+       "source": "PF-10",
+       "type": "overrides",
+       "target": "DR-08",
+       "articles": [
+        "11(2)"
+       ]
+      },
+      {
+       "source": "PF-10",
+       "type": "overrides",
+       "target": "DR-09",
+       "articles": [
+        "11(2)"
+       ]
+      },
+      {
+       "source": "PF-10",
+       "type": "overrides",
+       "target": "DR-12",
+       "articles": [
+        "11(2)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F023",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "OL-01 overrides set (missing Art 12, 13-14, 15(3), 17(2)-(3), 18(2)-(3), 20(2), 21(2)-(6), 22(2)-(4), 34(3) rules)",
+   "problem": "Art 23(1) covers every obligation in Arts 12-22 and 34, but OL-01 overrides only 11 of the 36 rules in that range. Missing: CM-01, CM-02, CM-03, CM-05, CM-06, CM-08, CM-10, CM-11, DR-02, DR-05, DR-06, DR-08, DR-09, DR-12, DR-14, DR-15, DR-17, DR-18, SB-08.",
+   "evidence": "Art 23(1): \"may restrict by way of a legislative measure the scope of the obligations and rights provided for in Articles 12 to 22 and Article 34\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "CM-01",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "CM-02",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "CM-03",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "CM-05",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "CM-06",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "CM-08",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "CM-10",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "CM-11",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "DR-02",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "DR-05",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "DR-06",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "DR-08",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "DR-09",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "DR-12",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "DR-14",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "DR-15",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "DR-17",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "DR-18",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      },
+      {
+       "source": "OL-01",
+       "type": "overrides",
+       "target": "SB-08",
+       "articles": [
+        "23(1)"
+       ],
+       "note": "only to the extent a supplied legislative measure restricts it"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F024",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "K.CS.large_scale_special_or_criminal (articles includes 30(5))",
+   "problem": "Art 30(5) has no large-scale threshold: any special-category or criminal-offence processing defeats the small-organisation exemption. Listing 30(5) on a \"large scale\" condition invites the wrong test for records (GP-11/GP-12 correctly use the unscaled conditions, so only the article list is wrong).",
+   "evidence": "Art 30(5): \"or the processing includes special categories of data as referred to in Article 9(1) or personal data relating to criminal convictions and offences referred to in Article 10\"",
+   "fix": {
+    "op": "update_node",
+    "details": {
+     "node": "K.CS.large_scale_special_or_criminal",
+     "articles": [
+      "35(3)(b)",
+      "37(1)(c)",
+      "27(2)(a)"
+     ]
+    }
+   }
+  },
+  {
+   "id": "F025",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "GP-12 has_exception K.GP.fewer_than_250_employees",
+   "problem": "Art 30(5) disapplies paragraphs 1 and 2 (keeping the record), not paragraph 4 (producing it to the authority); GP-12's own content is the exception and its 30(4) production duty is not displaced by headcount. Keep the exception on GP-11 only.",
+   "evidence": "Art 30(5): \"The obligations referred to in paragraphs 1 and 2 shall not apply to an enterprise or an organisation employing fewer than 250 persons\"",
+   "fix": {
+    "op": "remove_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "GP-12",
+       "type": "has_exception",
+       "target": "K.GP.fewer_than_250_employees"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F026",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "CS-05 has_exception K.CS.national_lower_age_applies; CS-05 triggered_by K.CS.child_below_16 + has_exception K.CS.child_at_or_above_threshold",
+   "problem": "A Member State lower age does not displace CS-05, it moves the threshold (a 12-year-old in a 13-year Member State still needs parental consent), so it is a state, not an exception. \"Below 16\" (trigger) and \"at or above the threshold\" (exception) are the same test modelled twice with different thresholds (16 vs applicable age).",
+   "evidence": "Art 8(1): \"Member States may provide by law for a lower age for those purposes provided that such lower age is not below 13 years.\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "remove_edge": [
+      {
+       "source": "CS-05",
+       "type": "has_exception",
+       "target": "K.CS.national_lower_age_applies"
+      },
+      {
+       "source": "CS-05",
+       "type": "has_exception",
+       "target": "K.CS.child_at_or_above_threshold"
+      }
+     ],
+     "update_node": {
+      "K.CS.national_lower_age_applies": {
+       "polarity": "state",
+       "overlay": true
+      },
+      "K.CS.child_below_16": {
+       "id": "K.CS.child_below_applicable_age",
+       "label": "The child is below the applicable Article 8 age (16, or the Member State age, not below 13)"
+      }
+     },
+     "add_edge": [
+      {
+       "source": "CS-05",
+       "type": "triggered_by",
+       "target": "K.CS.national_lower_age_applies",
+       "articles": [
+        "8(1)"
+       ],
+       "note": "parameterises the threshold"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F027",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "CS-07.summary (\"Exceptions (b) and (g)-(j) need a Union or Member State legal basis\")",
+   "problem": "Exception (h) may rest on a contract with a health professional rather than on law; the summary overstates the overlay requirement for the most common private-sector health case.",
+   "evidence": "Art 9(2)(h): \"on the basis of Union or Member State law or pursuant to contract with a health professional and subject to the conditions and safeguards referred to in paragraph 3\"",
+   "fix": {
+    "op": "update_node",
+    "details": {
+     "node": "CS-07",
+     "summary": "Processing Article 9(1) special-category data is prohibited unless an Article 9(2) exception is established. Exceptions (b), (g), (i) and (j) need a Union or Member State legal basis; (h) needs law or a contract with a health professional plus the 9(3) secrecy condition; Member States may add conditions for genetic, biometric and health data."
+    }
+   }
+  },
+  {
+   "id": "F028",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "DR-05.summary (\"Grounds (a), (b) and (c) depend on Union/Member State law and need an overlay\")",
+   "problem": "Ground (a) (freedom of expression and information) is not conditioned on a law in Art 17(3); Art 85 asks Member States to reconcile but the exception applies as a GDPR condition. Ground (c) via 9(2)(h) may rest on a contract. Only (b) strictly needs a statute.",
+   "evidence": "Art 17(3)(a): \"for exercising the right of freedom of expression and information;\"",
+   "fix": {
+    "op": "update_node",
+    "details": {
+     "node": "DR-05",
+     "summary_patch": "replace the last sentence with: Ground (b) depends on Union/Member State law and needs an overlay; grounds (a) and (c) may need one depending on the Art 85 / Art 9(2)(h)-(i) basis relied on."
+    }
+   }
+  },
+  {
+   "id": "F029",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "CM-03 has_exception K.CM.one_month_elapsed_since_receipt",
+   "problem": "That a month has elapsed without an extension notice is a breach state (the extension option is lost), not an exception that displaces the one-month duty. As has_exception it reads as \"CM-03 no longer applies once a month has passed\".",
+   "evidence": "Art 12(3): \"The controller shall inform the data subject of any such extension within one month of receipt of the request, together with the reasons for the delay.\"",
+   "fix": {
+    "op": "retype_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "CM-03",
+       "target": "K.CM.one_month_elapsed_since_receipt",
+       "from": "has_exception",
+       "to": "triggered_by",
+       "note": "deadline missed; extension no longer available; 12(4) notice still due"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F030",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "CS-03 has_exception K.CS.pre_withdrawal_processing",
+   "problem": "The non-retroactivity of withdrawal is a legal effect, not an exception to the duty to allow and act on withdrawal. Its proper use is as an exception on erasure/unlawfulness reasoning (pre-withdrawal processing is not \"unlawfully processed\" under 17(1)(d)).",
+   "evidence": "Art 7(3): \"The withdrawal of consent shall not affect the lawfulness of processing based on consent before its withdrawal.\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "remove_edge": [
+      {
+       "source": "CS-03",
+       "type": "has_exception",
+       "target": "K.CS.pre_withdrawal_processing"
+      }
+     ],
+     "add_edge": [
+      {
+       "source": "DR-04",
+       "type": "has_exception",
+       "target": "K.CS.pre_withdrawal_processing",
+       "articles": [
+        "7(3)",
+        "17(1)(d)"
+       ],
+       "qualifies": [
+        "K.DR.unlawfully_processed"
+       ],
+       "note": "withdrawal does not make earlier processing unlawful"
+      }
+     ],
+     "update_node": {
+      "K.CS.pre_withdrawal_processing": {
+       "polarity": "exception"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "F031",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "DR-14 due_within T.one_month [12(3)]",
+   "problem": "Art 21(3) stops marketing processing immediately on objection; only the 12(3) confirmation has a one-month limit. A one-month deadline on the stop itself would excuse continued marketing for up to a month.",
+   "evidence": "Art 21(3): \"Where the data subject objects to processing for direct marketing purposes, the personal data shall no longer be processed for such purposes.\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "update_edge": {
+      "source": "DR-14",
+      "type": "due_within",
+      "target": "T.one_month",
+      "note": "applies to the 12(3) confirmation only; the stop (A.stop_processing) is immediate"
+     },
+     "add_node": {
+      "id": "T.immediately",
+      "type": "deadline",
+      "label": "Immediately / at once",
+      "articles": [
+       "21(3)",
+       "28(3)"
+      ]
+     },
+     "add_edge": [
+      {
+       "source": "DR-14",
+       "type": "due_within",
+       "target": "T.immediately",
+       "articles": [
+        "21(3)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F032",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "PF-09 depends_on OL-01 [6(4)]",
+   "problem": "Art 6(4) refers to the Art 23(1) list of objectives as the yardstick for a law that authorises further processing; it does not require an Art 23 restriction of rights to be checked first. The edge implies the wrong ordering; K.PF.further_purpose_required_by_law already carries the overlay.",
+   "evidence": "Art 6(4): \"a Union or Member State law which constitutes a necessary and proportionate measure in a democratic society to safeguard the objectives referred to in Article 23(1)\"",
+   "fix": {
+    "op": "remove_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "PF-09",
+       "type": "depends_on",
+       "target": "OL-01"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F033",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "RA-02, RA-03 (no has_exception for 35(5)/35(10)); RA-01 has them",
+   "problem": "Art 35(10) disapplies paragraphs 1 to 7 (so the 35(3) mandatory categories, 35(2) DPO advice and 35(7) content as well) when a legal-basis impact assessment exists; 35(5) no-DPIA lists likewise. The exceptions are attached only to RA-01, so RA-02/RA-03 would still fire.",
+   "evidence": "Art 35(10): \"paragraphs 1 to 7 shall not apply unless Member States deem it to be necessary to carry out such an assessment prior to processing activities\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "RA-02",
+       "type": "has_exception",
+       "target": "K.RA.prior_general_impact_assessment_in_legal_basis",
+       "articles": [
+        "35(10)"
+       ]
+      },
+      {
+       "source": "RA-02",
+       "type": "has_exception",
+       "target": "K.RA.on_sa_no_dpia_list",
+       "articles": [
+        "35(5)"
+       ]
+      },
+      {
+       "source": "RA-03",
+       "type": "has_exception",
+       "target": "K.RA.prior_general_impact_assessment_in_legal_basis",
+       "articles": [
+        "35(10)"
+       ]
+      },
+      {
+       "source": "RA-03",
+       "type": "has_exception",
+       "target": "K.RA.on_sa_no_dpia_list",
+       "articles": [
+        "35(5)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F034",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "GP-06 requires_action A.audit_processor [28(1)]",
+   "problem": "Art 28(1) requires a pre-engagement assessment of \"sufficient guarantees\"; audits/inspections are the separate 28(3)(h) mechanism (GP-10). Using one action for both conflates due diligence with contractual audit rights and the precedes edge A.audit_processor -> A.engage_processor then wrongly requires an audit before any engagement.",
+   "evidence": "Art 28(1): \"the controller shall use only processors providing sufficient guarantees to implement appropriate technical and organisational measures\"",
+   "fix": {
+    "op": "add_node",
+    "details": {
+     "node": {
+      "id": "A.assess_processor_guarantees",
+      "type": "action",
+      "label": "Assess whether a processor offers sufficient guarantees before engaging it",
+      "articles": [
+       "28(1)",
+       "28(5)"
+      ]
+     },
+     "retarget": [
+      {
+       "source": "GP-06",
+       "type": "requires_action",
+       "from": "A.audit_processor",
+       "to": "A.assess_processor_guarantees"
+      },
+      {
+       "edge": "precedes",
+       "from": "A.audit_processor -> A.engage_processor",
+       "to": "A.assess_processor_guarantees -> A.engage_processor"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F035",
+   "severity": "minor",
+   "category": "accuracy",
+   "target": "K.SB.breach_at_sub_processor.quote; K.CS.consent_request_not_distinguishable.quote",
+   "problem": "Two condition quotes do not support their labels: the sub-processor-breach condition quotes the 28(4) liability sentence (nothing about breaches), and the \"not distinguishable\" condition quotes the non-binding-clause sentence rather than the 7(2) presentation requirement. ONTOLOGY.md promises quotes that ground the fact.",
+   "evidence": "Art 7(2): \"the request for consent shall be presented in a manner which is clearly distinguishable from the other matters, in an intelligible and easily accessible form\"",
+   "fix": {
+    "op": "update_node",
+    "details": {
+     "nodes": {
+      "K.SB.breach_at_sub_processor": {
+       "quote": "The processor shall notify the controller without undue delay after becoming aware of a personal data breach.",
+       "articles": [
+        "33(2)",
+        "28(4)"
+       ]
+      },
+      "K.CS.consent_request_not_distinguishable": {
+       "quote": "the request for consent shall be presented in a manner which is clearly distinguishable from the other matters, in an intelligible and easily accessible form"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "F036",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "DR-11 (Art 20(1) \"without hindrance\" limb)",
+   "problem": "The portability right includes a prohibition on the original controller hindering transmission to another controller; no condition, action or forbids edge expresses obstruction (fees, lock-in formats, delays), which is the main real-world failure mode.",
+   "evidence": "Art 20(1): \"the right to transmit those data to another controller without hindrance from the controller to which the personal data have been provided\"",
+   "fix": {
+    "op": "add_node",
+    "details": {
+     "nodes": [
+      {
+       "id": "K.DR.transmission_hindered",
+       "type": "condition",
+       "polarity": "trigger",
+       "articles": [
+        "20(1)"
+       ],
+       "label": "The controller obstructs the subject transmitting the portable data to another controller",
+       "quote": "without hindrance from the controller to which the personal data have been provided"
+      }
+     ],
+     "edges": [
+      {
+       "source": "DR-11",
+       "type": "triggered_by",
+       "target": "K.DR.transmission_hindered",
+       "articles": [
+        "20(1)"
+       ]
+      },
+      {
+       "source": "DR-11",
+       "type": "forbids_action",
+       "target": "A.charge_fee",
+       "articles": [
+        "20(1)",
+        "12(5)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F037",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "GP-11 (30(1)(e)/30(2)(c) transfer field): only K.GP.transfer_under_art49_1_second_subparagraph triggers it",
+   "problem": "The record must identify every third-country/international-organisation transfer, not only compelling-interest ones; the general transfer condition is never linked to GP-11.",
+   "evidence": "Art 30(1)(e): \"transfers of personal data to a third country or an international organisation, including the identification of that third country or international organisation\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "GP-11",
+       "type": "triggered_by",
+       "target": "K.XT.destination_third_country_or_io",
+       "articles": [
+        "30(1)(e)",
+        "30(2)(c)"
+       ]
+      },
+      {
+       "source": "GP-11",
+       "type": "depends_on",
+       "target": "XT-01",
+       "articles": [
+        "30(1)(e)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F038",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "GP-07 / K.GP.sub_processor_failed_obligations (28(4) second sentence) and GP-06 / K.GP.contract_based_on_standard_clauses (28(6)-(8)) isolated",
+   "problem": "The initial processor's full liability for a failing sub-processor and the option of SCC-based processing contracts exist as conditions but are attached to no rule, so processor-chain scenarios cannot reference them.",
+   "evidence": "Art 28(4): \"Where that other processor fails to fulfil its data protection obligations, the initial processor shall remain fully liable to the controller for the performance of that other processor's obligations.\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "GP-07",
+       "type": "triggered_by",
+       "target": "K.GP.sub_processor_failed_obligations",
+       "articles": [
+        "28(4)"
+       ]
+      },
+      {
+       "source": "GP-06",
+       "type": "triggered_by",
+       "target": "K.GP.contract_based_on_standard_clauses",
+       "articles": [
+        "28(6)"
+       ],
+       "note": "SCCs satisfy the 28(3) terms they cover"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F039",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "OL-04 (Art 82(2)-(3) processor liability limits and exemption; requires_action A.escalate_to_controller)",
+   "problem": "Processor liability is limited to processor-specific obligations or acting outside lawful instructions, and both parties are exempt if not responsible; neither is modelled, yet these are the facts that decide whether a processor agent's deviation from instructions matters. A.escalate_to_controller is an odd action for a compensation claim.",
+   "evidence": "Art 82(2): \"A processor shall be liable for the damage caused by processing only where it has not complied with obligations of this Regulation specifically directed to processors\"",
+   "fix": {
+    "op": "add_node",
+    "details": {
+     "nodes": [
+      {
+       "id": "K.OL.processor_acted_outside_instructions",
+       "type": "condition",
+       "polarity": "trigger",
+       "articles": [
+        "82(2)"
+       ],
+       "quote": "where it has acted outside or contrary to lawful instructions of the controller"
+      },
+      {
+       "id": "K.OL.party_not_responsible_for_event",
+       "type": "condition",
+       "polarity": "exception",
+       "articles": [
+        "82(3)"
+       ],
+       "quote": "if it proves that it is not in any way responsible for the event giving rise to the damage"
+      }
+     ],
+     "edges": [
+      {
+       "source": "OL-04",
+       "type": "triggered_by",
+       "target": "K.OL.processor_acted_outside_instructions"
+      },
+      {
+       "source": "OL-04",
+       "type": "has_exception",
+       "target": "K.OL.party_not_responsible_for_event"
+      },
+      {
+       "source": "OL-04",
+       "type": "depends_on",
+       "target": "GP-08",
+       "articles": [
+        "82(2)",
+        "28(3)(a)"
+       ]
+      }
+     ],
+     "remove_edge": [
+      {
+       "source": "OL-04",
+       "type": "requires_action",
+       "target": "A.escalate_to_controller"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F040",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "PF-08 (6(1)(f) child factor): K.PF.data_subject_is_child attached only to CM-01",
+   "problem": "The text singles out children in the legitimate-interests balance; the condition exists with article 6(1)(f) but is not linked to PF-08 or DR-13, so no legitimate-interest scenario can be flagged as child-sensitive.",
+   "evidence": "Art 6(1)(f): \"in particular where the data subject is a child.\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "PF-08",
+       "type": "triggered_by",
+       "target": "K.PF.data_subject_is_child",
+       "articles": [
+        "6(1)(f)"
+       ],
+       "note": "weighs against the legitimate-interests basis"
+      },
+      {
+       "source": "DR-13",
+       "type": "triggered_by",
+       "target": "K.PF.data_subject_is_child",
+       "articles": [
+        "21(1)",
+        "6(1)(f)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F041",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "DR-01 / K.XT.subject_requests_transfer_safeguard_info (15(2)) isolated",
+   "problem": "The Art 15(2) right to be told the Art 46 safeguards is a trigger condition with no rule; DR-01 applies_to C.appropriate_safeguards but never triggers on the request.",
+   "evidence": "Art 15(2): \"the data subject shall have the right to be informed of the appropriate safeguards pursuant to Article 46 relating to the transfer\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "DR-01",
+       "type": "triggered_by",
+       "target": "K.XT.subject_requests_transfer_safeguard_info",
+       "articles": [
+        "15(2)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F042",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "DR-07 / DR-09: K.DR.accuracy_verification_complete, K.DR.objection_verification_complete, K.DR.subject_informed_of_lift isolated",
+   "problem": "The end of the 18(1)(a)/(d) verification periods and the fact that the subject has been informed are exactly the states that make lifting a restriction lawful, but none is attached to DR-07 or DR-09, so \"lift restriction\" scenarios have no ALLOW path in the graph.",
+   "evidence": "Art 18(3): \"shall be informed by the controller before the restriction of processing is lifted.\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "DR-09",
+       "type": "has_exception",
+       "target": "K.DR.subject_informed_of_lift",
+       "articles": [
+        "18(3)"
+       ],
+       "note": "informing already done; lift permitted"
+      },
+      {
+       "source": "DR-07",
+       "type": "has_exception",
+       "target": "K.DR.accuracy_verification_complete",
+       "articles": [
+        "18(1)(a)"
+       ],
+       "qualifies": [
+        "K.DR.accuracy_contested"
+       ]
+      },
+      {
+       "source": "DR-07",
+       "type": "has_exception",
+       "target": "K.DR.objection_verification_complete",
+       "articles": [
+        "18(1)(d)"
+       ],
+       "qualifies": [
+        "K.DR.art21_1_objection_pending_verification"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F043",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "OL-01 / K.OL.measure_pursues_listed_objective; OL-03 / K.OL.representative_body_qualifies, K.OL.body_acts_without_mandate_under_member_state_law, K.OL.controller_public_authority_exercising_public_powers; OL-05 / K.OL.research_derogation_conditions_met (all isolated)",
+   "problem": "Five OL conditions that define when an overlay is valid (necessity/proportionality for a listed 23(1) objective, the 80(1) body qualification, the 80(2) mandate-free standing, the 79(2) forum limit, the 89(2) impossibility test) are attached to no rule, so the overlay rules cannot distinguish a valid from an invalid supplied measure.",
+   "evidence": "Art 23(1): \"is a necessary and proportionate measure in a democratic society to safeguard:\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "OL-01",
+       "type": "triggered_by",
+       "target": "K.OL.measure_pursues_listed_objective",
+       "articles": [
+        "23(1)"
+       ],
+       "conjunct_with": [
+        "K.OL.legislative_restriction_measure_applies"
+       ]
+      },
+      {
+       "source": "OL-03",
+       "type": "triggered_by",
+       "target": "K.OL.representative_body_qualifies",
+       "articles": [
+        "80(1)"
+       ],
+       "conjunct_with": [
+        "K.OL.representative_body_mandated"
+       ]
+      },
+      {
+       "source": "OL-03",
+       "type": "triggered_by",
+       "target": "K.OL.body_acts_without_mandate_under_member_state_law",
+       "articles": [
+        "80(2)"
+       ]
+      },
+      {
+       "source": "OL-03",
+       "type": "triggered_by",
+       "target": "K.OL.controller_public_authority_exercising_public_powers",
+       "articles": [
+        "79(2)"
+       ]
+      },
+      {
+       "source": "OL-05",
+       "type": "triggered_by",
+       "target": "K.OL.research_derogation_conditions_met",
+       "articles": [
+        "89(2)",
+        "89(3)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F044",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "PF-09 / 6(4)(a)-(e) factor conditions (K.PF.no_purpose_link, K.PF.outside_collection_context, K.PF.further_use_involves_special_or_criminal, K.PF.significant_consequences_for_subjects, K.PF.encryption_or_pseudonymisation_applied) isolated",
+   "problem": "The compatibility factors exist but reach no rule (open_questions A1 notes the missing edge type). As a result PF-09 has a single trigger and the generator cannot vary compatibility scenarios along the statutory factors.",
+   "evidence": "Art 6(4)(a): \"any link between the purposes for which the personal data have been collected and the purposes of the intended further processing;\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "schema": "add edge type `weighs` (rule -> condition, with sign)",
+     "edges": [
+      {
+       "source": "PF-09",
+       "type": "weighs",
+       "target": "K.PF.no_purpose_link",
+       "articles": [
+        "6(4)(a)"
+       ],
+       "sign": "against"
+      },
+      {
+       "source": "PF-09",
+       "type": "weighs",
+       "target": "K.PF.outside_collection_context",
+       "articles": [
+        "6(4)(b)"
+       ],
+       "sign": "against"
+      },
+      {
+       "source": "PF-09",
+       "type": "weighs",
+       "target": "K.PF.further_use_involves_special_or_criminal",
+       "articles": [
+        "6(4)(c)"
+       ],
+       "sign": "against"
+      },
+      {
+       "source": "PF-09",
+       "type": "weighs",
+       "target": "K.PF.significant_consequences_for_subjects",
+       "articles": [
+        "6(4)(d)"
+       ],
+       "sign": "against"
+      },
+      {
+       "source": "PF-09",
+       "type": "weighs",
+       "target": "K.PF.encryption_or_pseudonymisation_applied",
+       "articles": [
+        "6(4)(e)"
+       ],
+       "sign": "for"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F045",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "GP-02 / K.GP.purpose_achievable_with_pseudonymised_data; SB-01 / K.SB.high_risk_processing; GP-13 / K.GP.authority_identity_unverified; RA-01 / K.RA.new_technology; RA-08 / K.RA.dpo_asked_to_make_controller_decision, K.RA.dpo_monitoring_obstructed; GP-08 / K.XT.processor_transfer_without_controller_instruction; XT-01 / K.XT.underlying_processing_lacks_lawful_basis; XT-08 / K.XT.transfer_assessment_documented; DR-15 / K.DR.objection_right_presented_separately (all isolated)",
+   "problem": "Remaining isolated conditions with an obvious home rule. They are legitimate scenario facts drawn from the text (25(1), 32(1), 31, 35(1), 39(1)(a)-(b), 28(3)(a), 44, 49(6), 21(4)) but contribute nothing to coverage while unattached.",
+   "evidence": "Art 35(1): \"Where a type of processing in particular using new technologies, and taking into account the nature, scope, context and purposes of the processing, is likely to result in a high\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "GP-02",
+       "type": "triggered_by",
+       "target": "K.GP.purpose_achievable_with_pseudonymised_data",
+       "articles": [
+        "25(1)"
+       ]
+      },
+      {
+       "source": "SB-01",
+       "type": "triggered_by",
+       "target": "K.SB.high_risk_processing",
+       "articles": [
+        "32(1)"
+       ]
+      },
+      {
+       "source": "GP-13",
+       "type": "triggered_by",
+       "target": "K.GP.authority_identity_unverified",
+       "articles": [
+        "31"
+       ],
+       "note": "verify before disclosing"
+      },
+      {
+       "source": "RA-01",
+       "type": "triggered_by",
+       "target": "K.RA.new_technology",
+       "articles": [
+        "35(1)"
+       ]
+      },
+      {
+       "source": "RA-08",
+       "type": "triggered_by",
+       "target": "K.RA.dpo_asked_to_make_controller_decision",
+       "articles": [
+        "39(1)(a)"
+       ]
+      },
+      {
+       "source": "RA-08",
+       "type": "triggered_by",
+       "target": "K.RA.dpo_monitoring_obstructed",
+       "articles": [
+        "39(1)(b)"
+       ]
+      },
+      {
+       "source": "GP-08",
+       "type": "triggered_by",
+       "target": "K.XT.processor_transfer_without_controller_instruction",
+       "articles": [
+        "28(3)(a)"
+       ]
+      },
+      {
+       "source": "XT-01",
+       "type": "triggered_by",
+       "target": "K.XT.underlying_processing_lacks_lawful_basis",
+       "articles": [
+        "44"
+       ]
+      },
+      {
+       "source": "XT-08",
+       "type": "has_exception",
+       "target": "K.XT.transfer_assessment_documented",
+       "articles": [
+        "49(6)"
+       ],
+       "note": "documentation already done"
+      },
+      {
+       "source": "DR-15",
+       "type": "has_exception",
+       "target": "K.DR.objection_right_presented_separately",
+       "articles": [
+        "21(4)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F046",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "CM-05 (no triggered_by); CM-06 applies_to only RT.access; CM-05 applies_to omits Art 13/14 information and Art 34",
+   "problem": "CM-05 is the only rule with no trigger although 12(5) applies to every Art 13/14 notice and every Art 15-22/34 communication; CM-06 applies_to covers only Art 15 though 12(6) spans Arts 15-21; CM-05 omits the Art 13/14 and Art 34 limbs.",
+   "evidence": "Art 12(5): \"Information provided under Articles 13 and 14 and any communication and any actions taken under Articles 15 to 22 and 34 shall be provided free of charge.\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "CM-05",
+       "type": "triggered_by",
+       "target": "K.CM.data_collected_from_subject",
+       "articles": [
+        "12(5)",
+        "13(1)"
+       ]
+      },
+      {
+       "source": "CM-05",
+       "type": "triggered_by",
+       "target": "K.CM.data_obtained_from_other_source",
+       "articles": [
+        "12(5)",
+        "14(1)"
+       ]
+      },
+      {
+       "source": "CM-05",
+       "type": "triggered_by",
+       "target": "K.SB.breach_likely_high_risk",
+       "articles": [
+        "12(5)",
+        "34(1)"
+       ]
+      },
+      {
+       "source": "CM-06",
+       "type": "applies_to",
+       "target": "RT.rectification",
+       "articles": [
+        "12(6)"
+       ]
+      },
+      {
+       "source": "CM-06",
+       "type": "applies_to",
+       "target": "RT.erasure",
+       "articles": [
+        "12(6)"
+       ]
+      },
+      {
+       "source": "CM-06",
+       "type": "applies_to",
+       "target": "RT.restriction",
+       "articles": [
+        "12(6)"
+       ]
+      },
+      {
+       "source": "CM-06",
+       "type": "applies_to",
+       "target": "RT.recipient_notification",
+       "articles": [
+        "12(6)"
+       ]
+      },
+      {
+       "source": "CM-06",
+       "type": "applies_to",
+       "target": "RT.portability",
+       "articles": [
+        "12(6)"
+       ]
+      },
+      {
+       "source": "CM-06",
+       "type": "applies_to",
+       "target": "RT.object",
+       "articles": [
+        "12(6)"
+       ]
+      }
+     ],
+     "note": "a generic trigger \"a rights request under Arts 15-22 is received\" would be cleaner than reusing collection conditions"
+    }
+   }
+  },
+  {
+   "id": "F047",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "SB-05 (33(3)(b) DPO contact point) lacks depends_on RA-06; SB-04 -> SB-03 link missing",
+   "problem": "The notification content requires the DPO contact, which depends on whether a DPO is designated; and the processor notice (33(2)) is normally how the controller \"becomes aware\", starting the 72-hour clock, yet SB-04 and SB-03 are unconnected (open_questions A4 raises the timing question but no edge records the relation).",
+   "evidence": "Art 33(3)(b): \"communicate the name and contact details of the data protection officer or other contact point where more information can be obtained;\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "SB-05",
+       "type": "depends_on",
+       "target": "RA-06",
+       "articles": [
+        "33(3)(b)",
+        "37(7)"
+       ]
+      },
+      {
+       "source": "SB-04",
+       "type": "supports",
+       "target": "SB-03",
+       "articles": [
+        "33(2)",
+        "33(1)"
+       ],
+       "note": "processor notice triggers controller awareness"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F048",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "No actor for \"person acting under the authority of the controller or processor\" (Arts 29, 32(4), 4(10)); no actor for the third-country data importer",
+   "problem": "Insider-misuse scenarios (SB-02, GP-08) and transfer scenarios (XT-03, XT-04, XT-07) name parties that have no actor node, so applies_to/obligates cannot point at them and the \"persons authorised ... under the direct authority\" carve-out in the third-party definition cannot be expressed.",
+   "evidence": "Art 29: \"The processor and any person acting under the authority of the controller or of the processor, who has access to personal data, shall not process those data except on instructions\"",
+   "fix": {
+    "op": "add_node",
+    "details": {
+     "nodes": [
+      {
+       "id": "C.authorised_person",
+       "type": "actor",
+       "label": "Person acting under the authority of the controller or processor with access to personal data",
+       "articles": [
+        "29",
+        "32(4)",
+        "4(10)"
+       ]
+      },
+      {
+       "id": "C.data_importer",
+       "type": "actor",
+       "label": "Controller, processor or recipient in the third country or international organisation receiving the transfer",
+       "articles": [
+        "46(2)(e)",
+        "46(3)(a)",
+        "47(1)(a)"
+       ]
+      }
+     ],
+     "edges": [
+      {
+       "source": "SB-02",
+       "type": "obligates",
+       "target": "C.authorised_person",
+       "articles": [
+        "32(4)",
+        "29"
+       ]
+      },
+      {
+       "source": "GP-08",
+       "type": "applies_to",
+       "target": "C.authorised_person",
+       "articles": [
+        "29"
+       ]
+      },
+      {
+       "source": "XT-03",
+       "type": "applies_to",
+       "target": "C.data_importer"
+      },
+      {
+       "source": "XT-04",
+       "type": "applies_to",
+       "target": "C.data_importer"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F049",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "Missing concepts: \"large scale\" (Recital 91), \"anonymous information\" (Recital 26), \"legal effects or similarly significant effects\" (22(1), 35(3)(a))",
+   "problem": "Three threshold concepts drive several rules (27(2)(a), 35(3), 37(1); identifiability for Art 11/erasure-by-anonymisation; Art 22/35) but exist only inside condition labels. Without concept nodes they cannot be reused or counted. Recital-based, so minor.",
+   "evidence": "Recital 26: \"The principles of data protection should therefore not apply to anonymous information, namely information which does not relate to an identified or identifiable natural person\"",
+   "fix": {
+    "op": "add_node",
+    "details": {
+     "nodes": [
+      {
+       "id": "C.large_scale",
+       "type": "concept",
+       "articles": [
+        "27(2)(a)",
+        "35(3)(b)",
+        "35(3)(c)",
+        "37(1)(b)",
+        "37(1)(c)"
+       ],
+       "recital": 91
+      },
+      {
+       "id": "C.anonymous_information",
+       "type": "concept",
+       "articles": [
+        "4(1)"
+       ],
+       "recital": 26
+      },
+      {
+       "id": "C.legal_or_similarly_significant_effect",
+       "type": "concept",
+       "articles": [
+        "22(1)",
+        "35(3)(a)"
+       ]
+      }
+     ],
+     "edges": [
+      {
+       "source": "RA-02",
+       "type": "applies_to",
+       "target": "C.large_scale"
+      },
+      {
+       "source": "RA-06",
+       "type": "applies_to",
+       "target": "C.large_scale"
+      },
+      {
+       "source": "GP-05",
+       "type": "applies_to",
+       "target": "C.large_scale"
+      },
+      {
+       "source": "PF-10",
+       "type": "applies_to",
+       "target": "C.anonymous_information"
+      },
+      {
+       "source": "DR-16",
+       "type": "applies_to",
+       "target": "C.legal_or_similarly_significant_effect"
+      },
+      {
+       "source": "RA-02",
+       "type": "applies_to",
+       "target": "C.legal_or_similarly_significant_effect"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F050",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "Deadlines: no \"immediately\" (28(3) second subparagraph); DR-03, DR-04, DR-06, DR-08, DR-09, DR-10 carry no T.one_month [12(3)]; T.without_delay (12(4)) not used by CM-04",
+   "problem": "Deadline coverage is uneven: Art 12(3) applies to every Art 15-22 request yet only some DR rules carry T.one_month; the processor's \"immediately\" has no deadline node; CM-04 cites 12(4) but uses only T.one_month although T.without_delay lists 12(4).",
+   "evidence": "Art 28(3): \"the processor shall immediately inform the controller if, in its opinion, an instruction infringes this Regulation or other Union or Member State data protection provisions\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "add_node": [
+      {
+       "id": "T.immediately",
+       "type": "deadline",
+       "label": "Immediately",
+       "articles": [
+        "28(3)",
+        "21(3)"
+       ]
+      }
+     ],
+     "edges": [
+      {
+       "source": "GP-10",
+       "type": "due_within",
+       "target": "T.immediately",
+       "articles": [
+        "28(3)"
+       ]
+      },
+      {
+       "source": "CM-04",
+       "type": "due_within",
+       "target": "T.without_delay",
+       "articles": [
+        "12(4)"
+       ]
+      },
+      {
+       "source": "DR-03",
+       "type": "due_within",
+       "target": "T.one_month",
+       "articles": [
+        "12(3)"
+       ],
+       "note": "communication of action taken"
+      },
+      {
+       "source": "DR-04",
+       "type": "due_within",
+       "target": "T.one_month",
+       "articles": [
+        "12(3)"
+       ],
+       "note": "communication of action taken"
+      },
+      {
+       "source": "DR-06",
+       "type": "due_within",
+       "target": "T.one_month",
+       "articles": [
+        "12(3)"
+       ],
+       "note": "communication of action taken"
+      },
+      {
+       "source": "DR-10",
+       "type": "due_within",
+       "target": "T.one_month",
+       "articles": [
+        "12(3)"
+       ],
+       "note": "communication of action taken"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F051",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "GP-04 / 26(3): K.DR.joint_controller_arrangement_assigns_other_controller attached only to DR-01",
+   "problem": "Rights are exercisable against each joint controller for every right, but the condition is linked to the access rule only; the other DR rules cannot be triggered by a request to the \"wrong\" joint controller (GP-04 refines CM-02 covers facilitation, not the individual duties).",
+   "evidence": "Art 26(3): \"the data subject may exercise his or her rights under this Regulation in respect of and against each of the controllers.\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "DR-03",
+       "type": "triggered_by",
+       "target": "K.DR.joint_controller_arrangement_assigns_other_controller",
+       "articles": [
+        "26(3)"
+       ]
+      },
+      {
+       "source": "DR-04",
+       "type": "triggered_by",
+       "target": "K.DR.joint_controller_arrangement_assigns_other_controller",
+       "articles": [
+        "26(3)"
+       ]
+      },
+      {
+       "source": "DR-07",
+       "type": "triggered_by",
+       "target": "K.DR.joint_controller_arrangement_assigns_other_controller",
+       "articles": [
+        "26(3)"
+       ]
+      },
+      {
+       "source": "DR-11",
+       "type": "triggered_by",
+       "target": "K.DR.joint_controller_arrangement_assigns_other_controller",
+       "articles": [
+        "26(3)"
+       ]
+      },
+      {
+       "source": "DR-13",
+       "type": "triggered_by",
+       "target": "K.DR.joint_controller_arrangement_assigns_other_controller",
+       "articles": [
+        "26(3)"
+       ]
+      },
+      {
+       "source": "DR-14",
+       "type": "triggered_by",
+       "target": "K.DR.joint_controller_arrangement_assigns_other_controller",
+       "articles": [
+        "26(3)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F052",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "CM-07 / CM-09 / DR-01 notice-field concepts uneven: no applies_to for \"existence of rights\" (13(2)(b), 14(2)(c), 15(1)(e)) or \"right to lodge a complaint\" (13(2)(d), 14(2)(e), 15(1)(f)); C.recipient_list, C.retention_period exist",
+   "problem": "Field-level coverage of the Art 13/14/15 catalogues is partial, so a coverage count over notice fields would report retention and recipients as covered but not the rights and complaint fields, which are the ones agents most often omit.",
+   "evidence": "Art 13(2)(b): \"the existence of the right to request from the controller access to and rectification or erasure of personal data or restriction of processing concerning the data subject\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "CM-07",
+       "type": "applies_to",
+       "target": "RT.complaint",
+       "articles": [
+        "13(2)(d)"
+       ]
+      },
+      {
+       "source": "CM-09",
+       "type": "applies_to",
+       "target": "RT.complaint",
+       "articles": [
+        "14(2)(e)"
+       ]
+      },
+      {
+       "source": "DR-01",
+       "type": "applies_to",
+       "target": "RT.complaint",
+       "articles": [
+        "15(1)(f)"
+       ]
+      },
+      {
+       "source": "CM-07",
+       "type": "applies_to",
+       "target": "RT.access",
+       "articles": [
+        "13(2)(b)"
+       ]
+      },
+      {
+       "source": "CM-07",
+       "type": "applies_to",
+       "target": "RT.rectification",
+       "articles": [
+        "13(2)(b)"
+       ]
+      },
+      {
+       "source": "CM-07",
+       "type": "applies_to",
+       "target": "RT.erasure",
+       "articles": [
+        "13(2)(b)"
+       ]
+      },
+      {
+       "source": "CM-07",
+       "type": "applies_to",
+       "target": "RT.restriction",
+       "articles": [
+        "13(2)(b)"
+       ]
+      },
+      {
+       "source": "CM-07",
+       "type": "applies_to",
+       "target": "RT.object",
+       "articles": [
+        "13(2)(b)"
+       ]
+      },
+      {
+       "source": "CM-07",
+       "type": "applies_to",
+       "target": "RT.portability",
+       "articles": [
+        "13(2)(b)"
+       ]
+      },
+      {
+       "source": "CM-09",
+       "type": "applies_to",
+       "target": "RT.access",
+       "articles": [
+        "14(2)(c)"
+       ]
+      },
+      {
+       "source": "CM-09",
+       "type": "applies_to",
+       "target": "RT.rectification",
+       "articles": [
+        "14(2)(c)"
+       ]
+      },
+      {
+       "source": "CM-09",
+       "type": "applies_to",
+       "target": "RT.erasure",
+       "articles": [
+        "14(2)(c)"
+       ]
+      },
+      {
+       "source": "CM-09",
+       "type": "applies_to",
+       "target": "RT.restriction",
+       "articles": [
+        "14(2)(c)"
+       ]
+      },
+      {
+       "source": "CM-09",
+       "type": "applies_to",
+       "target": "RT.object",
+       "articles": [
+        "14(2)(c)"
+       ]
+      },
+      {
+       "source": "CM-09",
+       "type": "applies_to",
+       "target": "RT.portability",
+       "articles": [
+        "14(2)(c)"
+       ]
+      },
+      {
+       "source": "DR-01",
+       "type": "applies_to",
+       "target": "RT.access",
+       "articles": [
+        "15(1)(e)"
+       ]
+      },
+      {
+       "source": "DR-01",
+       "type": "applies_to",
+       "target": "RT.rectification",
+       "articles": [
+        "15(1)(e)"
+       ]
+      },
+      {
+       "source": "DR-01",
+       "type": "applies_to",
+       "target": "RT.erasure",
+       "articles": [
+        "15(1)(e)"
+       ]
+      },
+      {
+       "source": "DR-01",
+       "type": "applies_to",
+       "target": "RT.restriction",
+       "articles": [
+        "15(1)(e)"
+       ]
+      },
+      {
+       "source": "DR-01",
+       "type": "applies_to",
+       "target": "RT.object",
+       "articles": [
+        "15(1)(e)"
+       ]
+      },
+      {
+       "source": "DR-01",
+       "type": "applies_to",
+       "target": "RT.portability",
+       "articles": [
+        "15(1)(e)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F053",
+   "severity": "minor",
+   "category": "completeness",
+   "target": "C.data_subject (no definition text, no defined_in edge)",
+   "problem": "The data subject is defined inside Art 4(1) but the actor node carries only an articles list, unlike every other Art 4 term, so \"definitions covered\" counts 26 while the graph treats the 27th defined term as undefined.",
+   "evidence": "Art 4(1): \"'personal data' means any information relating to an identified or identifiable natural person ('data subject')\"",
+   "fix": {
+    "op": "update_node",
+    "details": {
+     "node": "C.data_subject",
+     "definition": "an identified or identifiable natural person ('data subject'); an identifiable natural person is one who can be identified, directly or indirectly",
+     "defined_in": "4(1)",
+     "add_edge": [
+      {
+       "source": "C.data_subject",
+       "type": "defined_in",
+       "target": "ART.4",
+       "at": [
+        "4(1)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F054",
+   "severity": "minor",
+   "category": "modelling",
+   "target": "Conditional requires_action edges modelled as unconditional: DR-05/DR-07/DR-11/DR-13 requires_action A.inform_refusal_with_remedies; DR-16 requires_action A.arrange_human_review; GP-02 and SB-01 requires_action A.pseudonymise_data; DR-15 requires_action A.record_objection [21(5),21(6)]",
+   "problem": "ONTOLOGY.md defines requires_action as \"complying requires this action\", but these actions are required only in a branch (refusal, choosing the human-review route, \"such as pseudonymisation\" as an example measure). A trace checker reading the edges literally would fail an agent that grants a request without sending a refusal notice or that secures data without pseudonymising.",
+   "evidence": "Art 25(1): \"implement appropriate technical and organisational measures, such as pseudonymisation, which are designed to implement data-protection principles, such as data minimisation\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "schema": "add optional `when` (condition id) on requires_action/forbids_action edges",
+     "apply": [
+      {
+       "source": "DR-05",
+       "target": "A.inform_refusal_with_remedies",
+       "when": "K.CM.controller_declines_to_act"
+      },
+      {
+       "source": "DR-07",
+       "target": "A.inform_refusal_with_remedies",
+       "when": "K.CM.controller_declines_to_act"
+      },
+      {
+       "source": "DR-11",
+       "target": "A.inform_refusal_with_remedies",
+       "when": "K.CM.controller_declines_to_act"
+      },
+      {
+       "source": "DR-13",
+       "target": "A.inform_refusal_with_remedies",
+       "when": "K.DR.compelling_legitimate_grounds_demonstrated"
+      },
+      {
+       "source": "DR-16",
+       "target": "A.arrange_human_review",
+       "note": "one compliant route; alternatively do not issue the decision"
+      },
+      {
+       "source": "GP-02",
+       "target": "A.pseudonymise_data",
+       "when": "K.GP.purpose_achievable_with_pseudonymised_data"
+      },
+      {
+       "source": "SB-01",
+       "target": "A.pseudonymise_data",
+       "when": "K.SB.high_risk_processing"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F055",
+   "severity": "minor",
+   "category": "modelling",
+   "target": "Redundant / contradictory multi-typed rule pairs: DR-12->DR-11 (refines+depends_on); RA-08->GP-13 (refines+depends_on); SB-07->CM-01 (refines+depends_on); CM-06->PF-03 (refines+tension_with); RA-01 depends_on GP-09 (reverse of GP-09 supports RA-01); tension_with DR-04<->DR-07 stored in both directions",
+   "problem": "Each pair should carry one relation. refines (\"more specific part\") and tension_with (\"pull in opposite directions\") on the same pair are contradictory; refines+depends_on and depends_on+supports(reversed) double count; tension_with is documented as symmetric so one edge suffices.",
+   "evidence": "Art 12(6): \"the controller may request the provision of additional information necessary to confirm the identity of the data subject.\"",
+   "fix": {
+    "op": "remove_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "DR-12",
+       "type": "depends_on",
+       "target": "DR-11"
+      },
+      {
+       "source": "RA-08",
+       "type": "depends_on",
+       "target": "GP-13"
+      },
+      {
+       "source": "SB-07",
+       "type": "depends_on",
+       "target": "CM-01"
+      },
+      {
+       "source": "CM-06",
+       "type": "refines",
+       "target": "PF-03"
+      },
+      {
+       "source": "RA-01",
+       "type": "depends_on",
+       "target": "GP-09"
+      },
+      {
+       "source": "DR-07",
+       "type": "tension_with",
+       "target": "DR-04"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F056",
+   "severity": "minor",
+   "category": "modelling",
+   "target": "Four distinct nodes for \"necessary for the establishment, exercise or defence of legal claims\": K.DR.legal_claims_establishment_exercise_defence (17(3)(e), 9(2)(f)), K.DR.objection_override_legal_claims (21(1)), K.DR.restricted_data_needed_for_legal_claims (18(2)), K.XT.necessary_for_legal_claims (49(1)(e)); likewise three \"required by law\" nodes (K.GP.law_requires_storage, K.GP.processing_required_by_union_or_member_state_law, K.SB.person_required_by_law_to_process)",
+   "problem": "The same statutory test is minted per article. That is defensible if the graph wants article-specific counting, but it is inconsistent with the reuse of K.PF.basis_public_task across 6(1)(e), 17(3)(b) and 20(3), and inflates the condition count. Pick one convention.",
+   "evidence": "Art 21(1): \"or for the establishment, exercise or defence of legal claims.\"",
+   "fix": {
+    "op": "merge_nodes",
+    "details": {
+     "merges": [
+      {
+       "keep": "K.DR.legal_claims_establishment_exercise_defence",
+       "drop": [
+        "K.DR.objection_override_legal_claims",
+        "K.DR.restricted_data_needed_for_legal_claims",
+        "K.XT.necessary_for_legal_claims"
+       ],
+       "articles_union": [
+        "17(3)(e)",
+        "9(2)(f)",
+        "21(1)",
+        "18(2)",
+        "49(1)(e)"
+       ]
+      },
+      {
+       "keep": "K.GP.processing_required_by_union_or_member_state_law",
+       "drop": [
+        "K.SB.person_required_by_law_to_process"
+       ],
+       "articles_union": [
+        "28(3)(a)",
+        "29",
+        "32(4)"
+       ]
+      }
+     ],
+     "alternative": "keep per-article nodes but add an `aliases`/`same_test_as` field so coverage tooling can collapse them"
+    }
+   }
+  },
+  {
+   "id": "F057",
+   "severity": "minor",
+   "category": "hygiene",
+   "target": "Actions (98), roles (7) and deadlines (10) have no grounded_in edges; T.72_hours, T.one_month, T.extension_two_months, T.without_undue_delay have no articles or quote; 47 actions have no articles field; ONTOLOGY.md claims every non-document node is anchored",
+   "problem": "The documentation promise \"Every non-document node is anchored to at least one article\" is false for 115 nodes. Deadline nodes that drive scoring (72 hours, one month) carry no provenance at all.",
+   "evidence": "Art 33(1): \"without undue delay and, where feasible, not later than 72 hours after having become aware of it, notify the personal data breach to the supervisory authority\"",
+   "fix": {
+    "op": "update_node",
+    "details": {
+     "nodes": {
+      "T.72_hours": {
+       "articles": [
+        "33(1)"
+       ],
+       "quote": "where feasible, not later than 72 hours after having become aware of it"
+      },
+      "T.one_month": {
+       "articles": [
+        "12(3)",
+        "12(4)",
+        "14(3)(a)"
+       ],
+       "quote": "in any event within one month of receipt of the request"
+      },
+      "T.extension_two_months": {
+       "articles": [
+        "12(3)"
+       ],
+       "quote": "That period may be extended by two further months where necessary"
+      },
+      "T.without_undue_delay": {
+       "articles": [
+        "12(3)",
+        "16",
+        "17(1)",
+        "33(1)",
+        "33(2)",
+        "34(1)"
+       ],
+       "quote": "without undue delay"
+      }
+     },
+     "also": "emit grounded_in edges for every action/deadline from its articles field; add articles to the 47 actions lacking them; or correct ONTOLOGY.md"
+    }
+   }
+  },
+  {
+   "id": "F058",
+   "severity": "minor",
+   "category": "hygiene",
+   "target": "T.first_communication.articles = [14(3)(b)] but used by DR-15 for 21(4)",
+   "problem": "The deadline node is shared by two provisions with different wording (\"first communication to that data subject\" vs \"first communication with the data subject\") but cites only one.",
+   "evidence": "Art 21(4): \"At the latest at the time of the first communication with the data subject, the right referred to in paragraphs 1 and 2 shall be explicitly brought to the attention\"",
+   "fix": {
+    "op": "update_node",
+    "details": {
+     "node": "T.first_communication",
+     "articles": [
+      "14(3)(b)",
+      "21(4)"
+     ]
+    }
+   }
+  },
+  {
+   "id": "F059",
+   "severity": "minor",
+   "category": "hygiene",
+   "target": "Non-resolvable article ids: \"49(1) second subparagraph\" (21 uses), \"28(3) second subparagraph\" (5), \"85-91\" (4), \"49(1) first subparagraph\", \"Recital 97\", \"Recital 84\", \"Recital 94\"",
+   "problem": "These ids do not exist in structure.json, so mechanical joins from nodes/edges to the parsed text fail for 35 references, including every XT-07 edge. Recital-based conditions (K.RA.ancillary_processing_only, K.RA.residual_high_risk_unmitigated) should say so in a dedicated field rather than in articles.",
+   "evidence": "Art 49(1): \"Where a transfer could not be based on a provision in Article 45 or 46, including the provisions on binding corporate rules, and none of the derogations\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "normalise": {
+      "49(1) second subparagraph": {
+       "articles": "49(1)",
+       "at": "subparagraph 2"
+      },
+      "49(1) first subparagraph": {
+       "articles": "49(1)",
+       "at": "subparagraph 1"
+      },
+      "28(3) second subparagraph": {
+       "articles": "28(3)",
+       "at": "subparagraph 2"
+      },
+      "85-91": [
+       "85",
+       "86",
+       "87",
+       "88",
+       "89",
+       "90",
+       "91"
+      ]
+     },
+     "recitals": "add a `recitals` field (ints) on nodes and remove Recital ids from articles; add recitals to structure.json so they resolve"
+    }
+   }
+  },
+  {
+   "id": "F060",
+   "severity": "minor",
+   "category": "hygiene",
+   "target": "Isolated legal nodes: C.processing, C.filing_system, C.restriction_of_processing, C.main_establishment, C.enterprise, C.cross_border_processing, C.supervisory_authority_concerned, C.relevant_and_reasoned_objection, C.board, C.commission, C.member_state, C.lead_supervisory_authority",
+   "problem": "Twelve legal-layer nodes have no rule-layer edge. Institutional ones (Board, Commission, Member State, SA concerned, reasoned objection) are acceptable context, but C.processing (the object of every rule), C.filing_system (material scope), C.restriction_of_processing (4(3), used by DR-07/DR-08) and C.lead_supervisory_authority / C.main_establishment (competent SA for breach notification, 33(1)/55/56) should be attached.",
+   "evidence": "Art 4(3): \"'restriction of processing' means the marking of stored personal data with the aim of limiting their processing in the future;\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "DR-07",
+       "type": "applies_to",
+       "target": "C.restriction_of_processing",
+       "articles": [
+        "18(1)",
+        "4(3)"
+       ]
+      },
+      {
+       "source": "DR-08",
+       "type": "applies_to",
+       "target": "C.restriction_of_processing",
+       "articles": [
+        "18(2)"
+       ]
+      },
+      {
+       "source": "PF-08",
+       "type": "applies_to",
+       "target": "C.processing",
+       "articles": [
+        "6(1)",
+        "4(2)"
+       ]
+      },
+      {
+       "source": "PF-01",
+       "type": "applies_to",
+       "target": "C.processing"
+      },
+      {
+       "source": "SB-03",
+       "type": "applies_to",
+       "target": "C.lead_supervisory_authority",
+       "articles": [
+        "33(1)",
+        "55",
+        "56"
+       ]
+      },
+      {
+       "source": "GP-05",
+       "type": "applies_to",
+       "target": "C.main_establishment",
+       "articles": [
+        "27(3)",
+        "4(16)"
+       ]
+      },
+      {
+       "source": "GP-11",
+       "type": "applies_to",
+       "target": "C.enterprise",
+       "articles": [
+        "30(5)",
+        "4(18)"
+       ]
+      }
+     ],
+     "note": "C.filing_system is covered by the scope rule proposed in F011"
+    }
+   }
+  },
+  {
+   "id": "F061",
+   "severity": "minor",
+   "category": "hygiene",
+   "target": "A.block_transfer (no requires_action edge); actions without performed_by: A.collect_data, A.disclose_data, A.lookup_records, A.process_for_purpose, A.record_decision, A.weaken_security_control, A.instruct_dpo, A.assign_dpo_conflicting_task",
+   "problem": "XT-01 forbids approving a transfer but never requires blocking one, so the only compliant action for a route-less transfer is unreachable from the rule; eight actions (including the most generic ones) have no operational role, so role-scoped tool exposure cannot be derived for them.",
+   "evidence": "Art 44: \"shall take place only if, subject to the other provisions of this Regulation, the conditions laid down in this Chapter are complied with by the controller and processor\"",
+   "fix": {
+    "op": "add_edge",
+    "details": {
+     "edges": [
+      {
+       "source": "XT-01",
+       "type": "requires_action",
+       "target": "A.block_transfer",
+       "articles": [
+        "44"
+       ],
+       "when": "no Chapter V route"
+      },
+      {
+       "source": "XT-05",
+       "type": "requires_action",
+       "target": "A.block_transfer",
+       "articles": [
+        "48"
+       ]
+      },
+      {
+       "source": "A.collect_data",
+       "type": "performed_by",
+       "target": "R.service_operator"
+      },
+      {
+       "source": "A.disclose_data",
+       "type": "performed_by",
+       "target": "R.service_operator"
+      },
+      {
+       "source": "A.lookup_records",
+       "type": "performed_by",
+       "target": "R.service_operator"
+      },
+      {
+       "source": "A.process_for_purpose",
+       "type": "performed_by",
+       "target": "R.service_operator"
+      },
+      {
+       "source": "A.record_decision",
+       "type": "performed_by",
+       "target": "R.compliance_operator"
+      },
+      {
+       "source": "A.weaken_security_control",
+       "type": "performed_by",
+       "target": "R.security_incident_operator"
+      },
+      {
+       "source": "A.instruct_dpo",
+       "type": "performed_by",
+       "target": "R.compliance_operator"
+      },
+      {
+       "source": "A.assign_dpo_conflicting_task",
+       "type": "performed_by",
+       "target": "R.compliance_operator"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F062",
+   "severity": "minor",
+   "category": "hygiene",
+   "target": "A.pseudonymise_data.label (\"before research/statistical or further use\") vs its use in GP-02 (25(1)) and SB-01 (32(1)(a)); C.dpo.label \"Dpo\", C.dpia.label \"Dpia\", R.dpo.label \"Dpo\"",
+   "problem": "The action label describes only the Art 89(1) use although the edges attach it as a design and security measure; three labels are un-expanded ids.",
+   "evidence": "Art 32(1)(a): \"the pseudonymisation and encryption of personal data;\"",
+   "fix": {
+    "op": "update_node",
+    "details": {
+     "nodes": {
+      "A.pseudonymise_data": {
+       "label": "Pseudonymise or encrypt personal data (design, security, research/further-use safeguard)",
+       "articles": [
+        "4(5)",
+        "25(1)",
+        "32(1)(a)",
+        "6(4)(e)",
+        "89(1)"
+       ]
+      },
+      "C.dpo": {
+       "label": "Data protection officer"
+      },
+      "C.dpia": {
+       "label": "Data protection impact assessment"
+      },
+      "R.dpo": {
+       "label": "Data protection officer (role)"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "F063",
+   "severity": "minor",
+   "category": "hygiene",
+   "target": "RA-06.articles omits 37(3) and 37(6); GP-05 lacks a condition/action for 27(4) mandate scope",
+   "problem": "The DPO rule cites 37(1),(2),(4),(5),(7) but not the single-DPO option for public bodies (37(3)) or the staff/service-contract option (37(6)); the representative rule has no node for the 27(4) requirement that the representative be mandated to be addressed by authorities and data subjects, which is what an agent handling a request to a representative needs.",
+   "evidence": "Art 27(4): \"The representative shall be mandated by the controller or processor to be addressed in addition to or instead of the controller or the processor by, in particular, supervisory authorities\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "update_node": {
+      "RA-06": {
+       "articles": [
+        "37(1)",
+        "37(2)",
+        "37(3)",
+        "37(4)",
+        "37(5)",
+        "37(6)",
+        "37(7)"
+       ]
+      }
+     },
+     "add_node": [
+      {
+       "id": "K.GP.representative_not_mandated_for_requests",
+       "type": "condition",
+       "polarity": "trigger",
+       "articles": [
+        "27(4)"
+       ],
+       "quote": "The representative shall be mandated by the controller or processor to be addressed in addition to or instead of the controller or the processor"
+      }
+     ],
+     "add_edge": [
+      {
+       "source": "GP-05",
+       "type": "triggered_by",
+       "target": "K.GP.representative_not_mandated_for_requests",
+       "articles": [
+        "27(4)"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "F064",
+   "severity": "minor",
+   "category": "hygiene",
+   "target": "ONTOLOGY.md / rule_inventory.md coverage boundary vs graph scope labels",
+   "problem": "rule_inventory.md lists Articles 8, 9 and 10 among \"External-law overlays\", yet CS-05, CS-06 and CS-07 are scope=core while CS-08/CS-09 are overlay (see F009); ONTOLOGY.md also states 7 principle nodes \"Art 5(1)(a)-(f), 5(2)\" but PF-08 (6(1)) refines PF-01 while CS-02/CS-03/CS-04/CS-05 refine PF-08 rather than implementing any principle, so \"rules per principle\" counts omit the whole consent cluster.",
+   "evidence": "Art 5(1)(a): \"processed lawfully, fairly and in a transparent manner in relation to the data subject\"",
+   "fix": {
+    "op": "other",
+    "details": {
+     "docs": "align the inventory boundary text with the graph: Arts 8-10 are core defaults with overlay-flagged exceptions",
+     "add_edge": [
+      {
+       "source": "PF-08",
+       "type": "implements",
+       "target": "P.lawfulness_fairness_transparency",
+       "articles": [
+        "5(1)(a)",
+        "6(1)"
+       ]
+      },
+      {
+       "source": "CS-01",
+       "type": "implements",
+       "target": "P.lawfulness_fairness_transparency",
+       "articles": [
+        "5(1)(a)",
+        "6(1)"
+       ]
+      },
+      {
+       "source": "CS-07",
+       "type": "implements",
+       "target": "P.lawfulness_fairness_transparency",
+       "articles": [
+        "5(1)(a)",
+        "6(1)"
+       ]
+      },
+      {
+       "source": "CS-09",
+       "type": "implements",
+       "target": "P.lawfulness_fairness_transparency",
+       "articles": [
+        "5(1)(a)",
+        "6(1)"
+       ]
+      }
+     ],
+     "note": "or document that implements is reserved for PF-01..PF-07 and compute principle coverage transitively via refines"
+    }
+   }
+  }
+ ]
+}

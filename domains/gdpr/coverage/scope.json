@@ -1,0 +1,19 @@
+{
+  "note": "Rules the current GDPR environment cannot exercise as an agent decision. Everything else in the ontology is in scope for coverage. Revisit when tools are added.",
+  "out_of_scope": {
+    "GP-01": "Organisation-wide measures and policies; no agent action in the environment.",
+    "GP-02": "Data protection by design is a system-design duty; no design or configuration tool.",
+    "GP-03": "Data protection by default needs configuration tools the environment does not have.",
+    "GP-05": "Designating an EU representative is a corporate act, not an agent decision.",
+    "GP-06": "Processor onboarding and contracts: no contract or onboarding tool yet.",
+    "GP-07": "Sub-processor engagement: no onboarding tool yet.",
+    "GP-11": "Records of processing activities: no record-editing tool.",
+    "GP-12": "Records of processing activities: no record-editing tool.",
+    "GP-13": "Cooperation with the supervisory authority is an organisational duty; no channel tool.",
+    "OL-02": "Codes of conduct and certification only as evidence; no standalone agent decision.",
+    "OL-04": "Fines and compensation are consequences, not agent actions.",
+    "OL-05": "Chapter IX specific situations depend on Member State law not supplied.",
+    "RA-06": "Designating a DPO is a corporate act.",
+    "SB-01": "Security measures need system-configuration tools the environment does not have."
+  }
+}

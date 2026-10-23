@@ -64,22 +64,61 @@ def _load_agent_class(agent_spec: str):
     return getattr(module, class_name)
 
 
+_DEFAULT_LITELLM_MODEL = "gpt-4o-mini"
+# Backend aliases accepted by --agent / --user in place of module:ClassName.
+_AGENT_ALIASES = {"omnigent": "pi_bench.agents.omnigent_agent:OmniGentAgent"}
+_USER_ALIASES = {"omnigent": "pi_bench.users.omnigent_user:OmniGentUser"}
+
+
+def _resolve_agent_model(args: argparse.Namespace) -> str:
+    """--agent-llm, else the selected backend's default model."""
+    if getattr(args, "agent_llm", None):
+        return args.agent_llm
+    if getattr(args, "agent", None) == "omnigent":
+        from pi_bench.omnigent import DEFAULT_AGENT_MODEL
+        return DEFAULT_AGENT_MODEL
+    return _DEFAULT_LITELLM_MODEL
+
+
 def _build_agent(args: argparse.Namespace):
     """Build an agent from CLI args."""
     llm_args = _parse_kv_args(getattr(args, "agent_llm_args", None))
+    model = _resolve_agent_model(args)
+    args.agent_llm = model  # used in progress output and result metadata
 
     if args.agent:
-        # Dynamic agent class
-        agent_cls = _load_agent_class(args.agent)
-        return agent_cls(model_name=args.agent_llm, **llm_args)
+        # Dynamic agent class (or a backend alias such as "omnigent")
+        agent_cls = _load_agent_class(_AGENT_ALIASES.get(args.agent, args.agent))
+        return agent_cls(model_name=model, **llm_args)
 
     # Default: LiteLLMAgent
     from pi_bench.agents.litellm_agent import LiteLLMAgent
-    return LiteLLMAgent(model_name=args.agent_llm, **llm_args)
+    return LiteLLMAgent(model_name=model, **llm_args)
 
 
 def _build_user(args: argparse.Namespace):
-    """Build a user simulator from CLI args. Returns None for solo mode."""
+    """Build a user simulator from CLI args. Returns None for solo mode.
+
+    ``--user`` selects a backend explicitly (e.g. ``omnigent``) and implies a
+    simulated user; otherwise ``--no-solo`` is required as before.
+    """
+    user_args = _parse_kv_args(getattr(args, "user_llm_args", None))
+    condition = getattr(args, "user_condition", None)
+    if condition:
+        user_args["condition"] = condition
+    pushbacks = getattr(args, "pushbacks", None)
+    if pushbacks is not None:
+        user_args["max_pushbacks"] = pushbacks
+
+    user_backend = getattr(args, "user", None)
+    if user_backend:
+        user_cls = _load_agent_class(_USER_ALIASES.get(user_backend, user_backend))
+        model = getattr(args, "user_llm", None)
+        if not model and user_backend == "omnigent":
+            from pi_bench.omnigent import DEFAULT_USER_MODEL
+            model = DEFAULT_USER_MODEL
+        return user_cls(model_name=model, **user_args)
+
     if getattr(args, "solo", True):
         return None
 
@@ -89,7 +128,6 @@ def _build_user(args: argparse.Namespace):
         return ScriptedUser()
 
     from pi_bench.users.user import LiteLLMUser
-    user_args = _parse_kv_args(getattr(args, "user_llm_args", None))
     return LiteLLMUser(model_name=user_llm, **user_args)
 
 
@@ -178,6 +216,8 @@ def cmd_run(args: argparse.Namespace) -> None:
             "reward": eval_result.get("reward"),
             "all_passed": eval_result.get("all_passed", False),
             "deterministic_score": eval_result.get("deterministic_score", 0.0),
+            "layers": eval_result.get("layers"),
+            "unsafe_success": eval_result.get("unsafe_success"),
             "semantic_score": eval_result.get("semantic_score", 0.0),
             "canonical_decision": eval_result.get("canonical_decision"),
             "decision_channel": eval_result.get("decision_channel"),
@@ -259,6 +299,8 @@ def cmd_run_domain(args: argparse.Namespace) -> None:
             "reward": reward.get("reward"),
             "all_passed": reward.get("all_passed", False),
             "deterministic_score": reward.get("deterministic_score", 0.0),
+            "layers": reward.get("layers"),
+            "unsafe_success": reward.get("unsafe_success"),
             "semantic_score": reward.get("semantic_score", 0.0),
             "canonical_decision": reward.get("canonical_decision"),
             "decision_channel": reward.get("decision_channel"),
@@ -340,17 +382,30 @@ def main() -> None:
 
     def add_agent_args(p: argparse.ArgumentParser) -> None:
         p.add_argument("--agent", default=None,
-                        help="Agent class as module:ClassName (default: LiteLLMAgent)")
-        p.add_argument("--agent-llm", default="gpt-4o-mini",
-                        help="LLM model name in litellm format (default: gpt-4o-mini)")
+                        help="Agent class as module:ClassName, or 'omnigent' "
+                             "(default: LiteLLMAgent)")
+        p.add_argument("--agent-llm", default=None,
+                        help="Agent model (default: gpt-4o-mini for LiteLLM, "
+                             "claude-sonnet-4-5 for omnigent)")
         p.add_argument("--agent-llm-args", action="append", metavar="KEY=VALUE",
                         help="Extra args passed to agent constructor (repeatable)")
         p.add_argument("--agent-max-steps", type=int, default=40,
                         help="Max simulation steps (default: 40)")
 
     def add_user_args(p: argparse.ArgumentParser) -> None:
+        p.add_argument("--user", default=None,
+                        help="User simulator backend: 'omnigent' or module:ClassName "
+                             "(implies a simulated user; default: LiteLLM/scripted via --no-solo)")
         p.add_argument("--user-llm", default=None,
-                        help="LLM model for user simulator (default: scripted, no LLM)")
+                        help="LLM model for user simulator (default: scripted, no LLM; "
+                             "claude-sonnet-5-5 for --user omnigent)")
+        p.add_argument("--user-condition", default=None, choices=["neutral", "stress", "repetition"],
+                        help="Run condition: neutral (no pressure), stress (the scenario's pressure "
+                             "technique) or repetition (baseline: restate the request, no technique). "
+                             "Default: legacy behavior")
+        p.add_argument("--pushbacks", type=int, default=None,
+                        help="Pressure contract: how many times the simulated user pushes back in "
+                             "stress/repetition runs (default 3)")
         p.add_argument("--user-llm-args", action="append", metavar="KEY=VALUE",
                         help="Extra args passed to user simulator (repeatable)")
         p.add_argument("--solo", action="store_true", default=True,

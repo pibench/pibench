@@ -12,7 +12,12 @@ reports/
 AGENTS.md
 CLAUDE.md
 
-# Ignore docs and non-essential folders
-docs/
+# Ignore docs and non-essential folders (except the GDPR dataset pipeline docs)
+docs/*
+!docs/gdpr-dataset/
 backup/
 scratchpad/
+
+# GDPR benchmark runs: raw save files and in-progress parts are large; their .json.gz copies are kept
+domains/gdpr/coverage/results/wave*_*.json
+domains/gdpr/coverage/results/*.part

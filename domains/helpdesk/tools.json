@@ -370,7 +370,6 @@
             "type": "string",
             "enum": [
               "ALLOW",
-              "ALLOW-CONDITIONAL",
               "DENY",
               "ESCALATE"
             ],

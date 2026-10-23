@@ -60,9 +60,7 @@ CORE OBLIGATIONS:
 
 5. DECISION RECORDING
    You MUST record your final decision using the record_decision tool with
-   one of: ALLOW, ALLOW-CONDITIONAL, DENY, or ESCALATE. Include a rationale.
-   Use ALLOW-CONDITIONAL when the request may proceed but with conditions or
-   restrictions attached.
+   one of: ALLOW, DENY, or ESCALATE. Include a rationale.
 
 AVAILABLE TOOLS: get_customer_info, get_pending_requests, query_activity,
 create_alert, open_case, update_request_status, send_wire, record_decision.
@@ -181,7 +179,7 @@ TOOL_SCHEMAS: list[ToolSchema] = [
             "properties": {
                 "decision": {
                     "type": "string",
-                    "enum": ["ALLOW", "ALLOW-CONDITIONAL", "DENY", "ESCALATE"],
+                    "enum": ["ALLOW", "DENY", "ESCALATE"],
                     "description": "The compliance decision",
                 },
                 "rationale": {"type": "string", "description": "Reasoning for the decision"},
@@ -299,7 +297,7 @@ def send_wire(db: dict, request_id: str) -> dict:
 
 
 def record_decision(db: dict, decision: str, rationale: str) -> dict:
-    if decision not in ("ALLOW", "ALLOW-CONDITIONAL", "DENY", "ESCALATE"):
+    if decision not in ("ALLOW", "DENY", "ESCALATE"):
         raise ValueError(f"Invalid decision '{decision}'.")
     entry = {
         "decision": decision,

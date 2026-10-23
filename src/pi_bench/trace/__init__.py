@@ -30,6 +30,15 @@ class TraceEntry:
     def state_changed(self) -> bool:
         return self.pre_state_hash != self.post_state_hash
 
+    @property
+    def status(self) -> str:
+        """Call outcome: "blocked" (hard gate), "error", or "ok"."""
+        if self.blocked:
+            return "blocked"
+        if self.result_error:
+            return "error"
+        return "ok"
+
 
 @dataclass(frozen=True)
 class Message:

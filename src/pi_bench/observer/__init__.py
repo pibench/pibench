@@ -78,7 +78,7 @@ def observed_tool_call(
         tool_name=tool_name,
         arguments=arguments or {},
         result_content=result["content"],
-        result_error=result["error"],
+        result_error=bool(result["error"] or result.get("handler_error")),
         pre_state_hash=pre_hash,
         post_state_hash=post_hash,
         requestor=requestor,

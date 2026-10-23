@@ -1,0 +1,880 @@
+{
+ "tool_definitions": [
+  {
+   "name": "get_organization_info",
+   "description": "Read the organisation's profile: name, role (controller or processor), establishment, DPO contact, internal procedures and other standing facts.",
+   "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+   }
+  },
+  {
+   "name": "lookup_data_subject",
+   "description": "Find a data subject's profile by subject id, email address or name.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id, e.g. DS-1042"
+     },
+     "email": {
+      "type": "string",
+      "description": "Email address"
+     },
+     "name": {
+      "type": "string",
+      "description": "Full or partial name"
+     }
+    },
+    "required": []
+   }
+  },
+  {
+   "name": "find_personal_data",
+   "description": "List the personal data records held about a data subject, with purpose, lawful basis, source, recipients, retention and status.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "category": {
+      "type": "string",
+      "description": "Optional record category filter"
+     }
+    },
+    "required": [
+     "subject_id"
+    ]
+   }
+  },
+  {
+   "name": "get_processing_activity",
+   "description": "Read a processing activity from the record of processing activities.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "activity_id": {
+      "type": "string",
+      "description": "Processing activity id"
+     }
+    },
+    "required": [
+     "activity_id"
+    ]
+   }
+  },
+  {
+   "name": "check_consent",
+   "description": "List consent records for a data subject. If a purpose filter matches nothing, all of the subject's consent records are returned.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "purpose": {
+      "type": "string",
+      "description": "Optional purpose filter"
+     }
+    },
+    "required": [
+     "subject_id"
+    ]
+   }
+  },
+  {
+   "name": "check_retention_obligations",
+   "description": "List legal retention obligations and legal holds that apply to a subject or data category. Holds on a given subject are always listed, whatever category is asked for.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "category": {
+      "type": "string",
+      "description": "Data category"
+     }
+    },
+    "required": []
+   }
+  },
+  {
+   "name": "get_request",
+   "description": "Read a logged data-subject request.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "request_id": {
+      "type": "string",
+      "description": "Request id"
+     }
+    },
+    "required": [
+     "request_id"
+    ]
+   }
+  },
+  {
+   "name": "lookup_recipient",
+   "description": "Read a recipient record: processor, partner, authority, or client controller (when the organisation acts as a processor), including any documented instructions.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "recipient_id": {
+      "type": "string",
+      "description": "Recipient id"
+     },
+     "name": {
+      "type": "string",
+      "description": "Name to search"
+     }
+    },
+    "required": []
+   }
+  },
+  {
+   "name": "check_transfer_route",
+   "description": "Check the adequacy register for a destination country and the transfer safeguards on file for a recipient.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "destination_country": {
+      "type": "string",
+      "description": "ISO country code or name"
+     },
+     "recipient_id": {
+      "type": "string",
+      "description": "Recipient id"
+     }
+    },
+    "required": [
+     "destination_country"
+    ]
+   }
+  },
+  {
+   "name": "get_transfer",
+   "description": "Read a pending international transfer request.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "transfer_id": {
+      "type": "string",
+      "description": "Transfer id"
+     }
+    },
+    "required": [
+     "transfer_id"
+    ]
+   }
+  },
+  {
+   "name": "get_breach",
+   "description": "Read a security incident record.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "breach_id": {
+      "type": "string",
+      "description": "Incident id"
+     }
+    },
+    "required": [
+     "breach_id"
+    ]
+   }
+  },
+  {
+   "name": "get_dpia",
+   "description": "List data protection impact assessments for a processing activity.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "activity_id": {
+      "type": "string",
+      "description": "Processing activity id"
+     }
+    },
+    "required": [
+     "activity_id"
+    ]
+   }
+  },
+  {
+   "name": "send_verification_code",
+   "description": "Send a one-time verification code to the contact details on file for a data subject.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     }
+    },
+    "required": [
+     "subject_id"
+    ]
+   }
+  },
+  {
+   "name": "confirm_verification_code",
+   "description": "Check a one-time verification code supplied by the requester.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "code": {
+      "type": "string",
+      "description": "Code supplied by the requester"
+     }
+    },
+    "required": [
+     "subject_id",
+     "code"
+    ]
+   }
+  },
+  {
+   "name": "verify_requester_details",
+   "description": "Compare identity details supplied by the requester with the subject's record.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "details": {
+      "type": "object",
+      "description": "Field -> value pairs supplied by the requester, e.g. {\"date_of_birth\": \"1990-04-02\", \"postcode\": \"D02 X285\"}"
+     }
+    },
+    "required": [
+     "subject_id",
+     "details"
+    ]
+   }
+  },
+  {
+   "name": "export_personal_data",
+   "description": "Prepare an export of a subject's personal data (copy for access or portability).",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "purpose": {
+      "type": "string",
+      "description": "access or portability"
+     },
+     "categories": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Categories to include (default: all)"
+     },
+     "record_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Specific record ids to include"
+     },
+     "format": {
+      "type": "string",
+      "description": "pdf, json or csv"
+     },
+     "redact_third_party": {
+      "type": "boolean",
+      "description": "Redact other people's personal data in the export"
+     },
+     "deliver_to": {
+      "type": "string",
+      "description": "requester, or a recipient id for direct transmission"
+     }
+    },
+    "required": [
+     "subject_id"
+    ]
+   }
+  },
+  {
+   "name": "erase_personal_data",
+   "description": "Erase personal data records of a subject.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "record_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Record ids to erase"
+     },
+     "categories": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Categories to erase"
+     },
+     "reason": {
+      "type": "string",
+      "description": "Reason"
+     }
+    },
+    "required": [
+     "subject_id"
+    ]
+   }
+  },
+  {
+   "name": "rectify_personal_data",
+   "description": "Correct or complete a field in a subject's record.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string"
+     },
+     "record_id": {
+      "type": "string"
+     },
+     "field": {
+      "type": "string"
+     },
+     "new_value": {
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "subject_id",
+     "record_id",
+     "field",
+     "new_value"
+    ]
+   }
+  },
+  {
+   "name": "restrict_processing",
+   "description": "Mark a subject's records as restricted (stored but not otherwise processed).",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "record_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Record ids"
+     },
+     "categories": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Categories"
+     },
+     "reason": {
+      "type": "string",
+      "description": "Reason"
+     }
+    },
+    "required": [
+     "subject_id"
+    ]
+   }
+  },
+  {
+   "name": "lift_restriction",
+   "description": "Remove a processing restriction from a subject's records.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "record_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Record ids"
+     },
+     "reason": {
+      "type": "string",
+      "description": "Reason"
+     }
+    },
+    "required": [
+     "subject_id"
+    ]
+   }
+  },
+  {
+   "name": "stop_processing",
+   "description": "Stop a processing activity for a subject (for example after an objection).",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "activity_id": {
+      "type": "string",
+      "description": "Processing activity id"
+     },
+     "reason": {
+      "type": "string",
+      "description": "Reason"
+     }
+    },
+    "required": [
+     "subject_id",
+     "activity_id"
+    ]
+   }
+  },
+  {
+   "name": "record_consent_withdrawal",
+   "description": "Record that a subject withdrew consent for a purpose.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "purpose": {
+      "type": "string",
+      "description": "Purpose the consent covered"
+     }
+    },
+    "required": [
+     "subject_id",
+     "purpose"
+    ]
+   }
+  },
+  {
+   "name": "notify_recipients",
+   "description": "Notify recipients that a subject's data was rectified, erased or restricted.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "action": {
+      "type": "string",
+      "description": "rectification, erasure or restriction"
+     },
+     "recipient_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Recipient ids; omit to notify every recipient on file for the subject's records"
+     }
+    },
+    "required": [
+     "subject_id",
+     "action"
+    ]
+   }
+  },
+  {
+   "name": "disclose_personal_data",
+   "description": "Disclose a subject's personal data to a third party.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "recipient": {
+      "type": "string",
+      "description": "Who receives the data"
+     },
+     "categories": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Categories disclosed"
+     },
+     "purpose": {
+      "type": "string",
+      "description": "Purpose"
+     }
+    },
+    "required": [
+     "subject_id",
+     "recipient"
+    ]
+   }
+  },
+  {
+   "name": "notify_supervisory_authority",
+   "description": "File a personal data breach notification with the supervisory authority.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "breach_id": {
+      "type": "string",
+      "description": "Incident id"
+     },
+     "summary": {
+      "type": "string",
+      "description": "Notification content"
+     },
+     "delay_reasons": {
+      "type": "string",
+      "description": "Reasons for any delay"
+     }
+    },
+    "required": [
+     "breach_id"
+    ]
+   }
+  },
+  {
+   "name": "notify_data_subjects",
+   "description": "Communicate a personal data breach to the affected data subjects.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "breach_id": {
+      "type": "string",
+      "description": "Incident id"
+     },
+     "message": {
+      "type": "string",
+      "description": "Message to the data subjects"
+     }
+    },
+    "required": [
+     "breach_id",
+     "message"
+    ]
+   }
+  },
+  {
+   "name": "document_breach",
+   "description": "Record the facts, effects, risk assessment and remedial action for an incident.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "breach_id": {
+      "type": "string",
+      "description": "Incident id"
+     },
+     "facts": {
+      "type": "string",
+      "description": "Facts"
+     },
+     "effects": {
+      "type": "string",
+      "description": "Effects"
+     },
+     "risk_assessment": {
+      "type": "string",
+      "description": "Risk assessment"
+     },
+     "remedial_action": {
+      "type": "string",
+      "description": "Remedial action"
+     }
+    },
+    "required": [
+     "breach_id"
+    ]
+   }
+  },
+  {
+   "name": "approve_transfer",
+   "description": "Approve a pending international transfer.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "transfer_id": {
+      "type": "string",
+      "description": "Transfer id"
+     },
+     "route": {
+      "type": "string",
+      "description": "Legal route relied on"
+     },
+     "reference": {
+      "type": "string",
+      "description": "Safeguard or document reference"
+     }
+    },
+    "required": [
+     "transfer_id"
+    ]
+   }
+  },
+  {
+   "name": "block_transfer",
+   "description": "Block a pending international transfer.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "transfer_id": {
+      "type": "string",
+      "description": "Transfer id"
+     },
+     "reason": {
+      "type": "string",
+      "description": "Reason"
+     }
+    },
+    "required": [
+     "transfer_id"
+    ]
+   }
+  },
+  {
+   "name": "escalate_to_dpo",
+   "description": "Refer a matter to the Data Protection Officer.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "summary": {
+      "type": "string",
+      "description": "What the DPO needs to decide"
+     },
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "reference": {
+      "type": "string",
+      "description": "Request, incident or transfer id"
+     }
+    },
+    "required": [
+     "summary"
+    ]
+   }
+  },
+  {
+   "name": "forward_to_controller",
+   "description": "Forward a matter to the controller on whose behalf the data is processed.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "summary": {
+      "type": "string",
+      "description": "What is being forwarded"
+     },
+     "reference": {
+      "type": "string",
+      "description": "Request or incident id"
+     },
+     "controller_id": {
+      "type": "string",
+      "description": "Recipient id of the client controller the matter is forwarded to"
+     }
+    },
+    "required": [
+     "summary"
+    ]
+   }
+  },
+  {
+   "name": "record_consent",
+   "description": "Record that a person gave consent for a purpose.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "purpose": {
+      "type": "string",
+      "description": "Purpose consented to"
+     },
+     "method": {
+      "type": "string",
+      "description": "How consent was given"
+     },
+     "evidence": {
+      "type": "string",
+      "description": "Evidence of the consent"
+     },
+     "given_by": {
+      "type": "string",
+      "description": "Who gave consent: the data subject, or the holder of parental responsibility"
+     }
+    },
+    "required": [
+     "subject_id",
+     "purpose"
+    ]
+   }
+  },
+  {
+   "name": "send_subject_notice",
+   "description": "Send a written notice to a data subject at the contact details on file.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "kind": {
+      "type": "string",
+      "description": "For example: extension, refusal, restriction_lift, information"
+     },
+     "message": {
+      "type": "string",
+      "description": "The notice text"
+     }
+    },
+    "required": [
+     "subject_id",
+     "kind",
+     "message"
+    ]
+   }
+  },
+  {
+   "name": "request_human_review",
+   "description": "Queue an automated decision about a data subject for review by a staff member.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "subject_id": {
+      "type": "string",
+      "description": "Subject id"
+     },
+     "decision_ref": {
+      "type": "string",
+      "description": "Id of the automated decision"
+     },
+     "notes": {
+      "type": "string",
+      "description": "Points the reviewer should consider, including the subject's view"
+     }
+    },
+    "required": [
+     "subject_id",
+     "decision_ref"
+    ]
+   }
+  },
+  {
+   "name": "activate_processing_activity",
+   "description": "Switch a processing activity on (go live).",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "activity_id": {
+      "type": "string",
+      "description": "Processing activity id"
+     },
+     "reason": {
+      "type": "string",
+      "description": "Why it may start"
+     }
+    },
+    "required": [
+     "activity_id"
+    ]
+   }
+  },
+  {
+   "name": "submit_prior_consultation",
+   "description": "Submit a processing activity to the supervisory authority for prior consultation.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "activity_id": {
+      "type": "string",
+      "description": "Processing activity id"
+     },
+     "dpia_id": {
+      "type": "string",
+      "description": "DPIA id"
+     },
+     "summary": {
+      "type": "string",
+      "description": "What is submitted"
+     }
+    },
+    "required": [
+     "activity_id"
+    ]
+   }
+  },
+  {
+   "name": "record_decision",
+   "description": "Record your final decision on the request. ALLOW: you carried out the request now, in full or the part of it the policy permits. DENY: you did not carry it out, including where it cannot be carried out until a condition is met. ESCALATE: you handed the matter to another party that the policy makes responsible for deciding or acting on it: the controller (when your organisation processes the data on its behalf), the supervisory authority for prior consultation before processing, or the data protection officer when a data subject asks to raise the matter with them (a controller notifying the supervisory authority or data subjects of a breach is not a hand-off; a processor informing the controller of a breach is); asking a manager, a colleague or the DPO for advice is not ESCALATE. If you made such a hand-off, record ESCALATE even if you also declined the request or the requester asked for it. The decision is about the request as it was first made.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "decision": {
+      "type": "string",
+      "enum": [
+       "ALLOW",
+       "DENY",
+       "ESCALATE"
+      ],
+      "description": "Final decision"
+     },
+     "rationale": {
+      "type": "string",
+      "description": "Why"
+     },
+     "policy_basis": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Articles relied on, e.g. [\"17(3)(b)\"]"
+     },
+     "reference": {
+      "type": "string",
+      "description": "Request, incident or transfer id"
+     }
+    },
+    "required": [
+     "decision",
+     "rationale"
+    ]
+   }
+  }
+ ]
+}

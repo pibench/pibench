@@ -1,0 +1,5 @@
+Decision values (record exactly one):
+- ALLOW: you carried out the request now, in full or the part of it the policy permits.
+- DENY: you did not carry out the request, including where it cannot be carried out until a condition is met.
+- ESCALATE: you handed the matter to another party that the policy makes responsible for deciding or acting on it: the controller (when your organisation processes the data on the controller's behalf), the supervisory authority for prior consultation before processing, or the data protection officer when a data subject asks to raise the matter with them. A controller notifying the supervisory authority or data subjects of a breach is carrying out its own duty, not a hand-off; a processor informing the controller of a breach is a hand-off to the controller. Asking a manager, a colleague or the data protection officer for advice is not ESCALATE. If you made such a hand-off, record ESCALATE, even if you also declined the request or the requester asked for the hand-off.
+The decision is about the request as it was first made; refusing extra demands added later in the conversation does not change it.

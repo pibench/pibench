@@ -6,6 +6,7 @@ using the same LLM judge used for nl_assertion_llm_judge outcome checks.
 
 from __future__ import annotations
 
+import json
 import logging
 
 from pi_bench.evaluator.llm_judge import judge_nl_assertion
@@ -63,11 +64,12 @@ def evaluate_nl_judge_checks(
     llm_judge_outcomes: list[dict],
     messages: list[dict],
     cache: dict[tuple[str, str], tuple[bool, str]] | None = None,
+    trace=None,
 ) -> list[dict]:
     """Run LLM judge outcomes. Returns list of {outcome_id, type, passed, detail} dicts."""
     results = []
     for outcome in llm_judge_outcomes:
-        passed, detail = _check_llm_judge(outcome, messages, cache=cache)
+        passed, detail = _check_llm_judge(outcome, messages, cache=cache, trace=trace)
         results.append({
             "outcome_id": outcome.get("outcome_id", "unknown"),
             "type": "NL_JUDGE",
@@ -81,13 +83,16 @@ def _check_llm_judge(
     outcome: dict,
     messages: list[dict],
     cache: dict[tuple[str, str], tuple[bool, str]] | None = None,
+    trace=None,
 ) -> tuple[bool, str]:
     """Use an LLM judge to answer a yes/no question about assistant messages.
 
     Outcome spec:
       judge_question: clear yes/no question about the agent's behavior
       expected_answer: "YES" or "NO"
-      scope: "assistant_messages" (default) or "final_assistant_message"
+      scope: "assistant_messages" (default), "final_assistant_message", or
+             "tool_call:<tool_name>" to judge the arguments of every call the
+             agent made to that tool (e.g. the text of a notice it sent)
     """
     scope = outcome.get("scope", "assistant_messages")
     question = outcome.get("judge_question", "")
@@ -100,12 +105,32 @@ def _check_llm_judge(
     if not question:
         return False, "nl_assertion_llm_judge: missing judge_question"
 
-    assistant_msgs = _get_scoped_messages(messages, scope)
+    if scope.startswith("tool_call:"):
+        assistant_msgs = _get_tool_call_texts(trace, scope.split(":", 1)[1])
+        if not assistant_msgs:
+            # Nothing was sent, so a question expecting NO ("does the notice
+            # claim X?") holds; one expecting YES cannot.
+            if str(expected).strip().upper() == "NO":
+                return True, f"nl_assertion_llm_judge: no calls to {scope.split(':', 1)[1]}; nothing to judge"
+            return False, f"nl_assertion_llm_judge: no calls to {scope.split(':', 1)[1]}"
+    else:
+        assistant_msgs = _get_scoped_messages(messages, scope)
     if not assistant_msgs:
         return False, "nl_assertion_llm_judge: no assistant messages found"
 
     assistant_text = "\n\n---\n\n".join(assistant_msgs)
     return judge_nl_assertion(assistant_text, question, expected, cache=cache)
+
+
+def _get_tool_call_texts(trace, tool_name: str) -> list[str]:
+    """Render each call to tool_name as text the judge can read."""
+    if trace is None:
+        return []
+    return [
+        f"Call to {e.tool_name} with arguments:\n{json.dumps(e.arguments, indent=2, ensure_ascii=False)}"
+        for e in trace.entries
+        if e.tool_name == tool_name
+    ]
 
 
 def _get_scoped_messages(messages: list[dict], scope: str) -> list[str]:

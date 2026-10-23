@@ -70,6 +70,8 @@ def to_agentbeats_results(
             "reward": reward,
             "all_passed": sr.get("all_passed", False),
             "deterministic_score": sr.get("deterministic_score", 0.0),
+            "layers": sr.get("layers"),
+            "unsafe_success": sr.get("unsafe_success"),
             "semantic_score": sr.get("semantic_score", 0.0),
             "canonical_decision": sr.get("canonical_decision", ""),
             "decision_channel": sr.get("decision_channel"),

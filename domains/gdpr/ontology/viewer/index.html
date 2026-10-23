@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GDPR Ontology Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Layout: toolbar across the top; graph canvas left, reading pane right. */
+:root {
+  --bg: #fcfcfb; --panel: #f3f4f7; --ink: #141821; --ink-2: #4b5160; --ink-3: #737a8a; --line: #dfe2e8;
+  --accent: #23408e; --accent-soft: #e6ebf7;
+  --doc: #5b6475; --legal: #23408e; --oper: #6f7d6a; --cond: #8a8f9c;
+  --g-PF: #2a78d6; --g-CS: #eb6834; --g-CM: #1baf7a; --g-DR: #eda100;
+  --g-GP: #e87ba4; --g-SB: #008300; --g-RA: #6250d6; --g-XT: #e34948; --g-OL: #9aa0ab; --g-SC: #3d4a5c;
+  --f-display: "Source Serif 4", Georgia, serif; --f-ui: "IBM Plex Sans", system-ui, sans-serif; --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #14161b; --panel: #1b1e25; --ink: #eceef3; --ink-2: #b6bbc7; --ink-3: #8a90a0; --line: #2b2f39;
+    --accent: #9db2ff; --accent-soft: #232a40; --doc: #9aa3b5; --legal: #9db2ff; --oper: #a3b39d; --cond: #8f95a3;
+    --g-PF: #3987e5; --g-CS: #d95926; --g-CM: #199e70; --g-DR: #c98500; --g-GP: #d55181; --g-SB: #008300; --g-RA: #9085e9; --g-XT: #e66767; --g-OL: #6c7280; --g-SC: #a9b4c6;
+    color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--f-ui); display: grid; grid-template-rows: auto 1fr; }
+header { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+h1 { font: 700 1.25rem/1.2 var(--f-display); margin: 0 8px 0 0; }
+.group { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.group > span { font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); }
+button, select, input { font: 500 .82rem var(--f-ui); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 7px; padding: 5px 9px; }
+button { cursor: pointer; }
+button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+button:focus-visible, select:focus-visible, input:focus-visible, .link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#search { width: 260px; }
+.results { position: absolute; z-index: 10; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; max-height: 340px; overflow: auto; width: 420px; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+.results div { padding: 6px 10px; cursor: pointer; display: flex; gap: 8px; }
+.results div:hover, .results div.sel { background: var(--panel); }
+main { display: grid; grid-template-columns: minmax(0, 1fr) 440px; min-height: 0; }
+@media (max-width: 1000px) { main { grid-template-columns: minmax(0,1fr); grid-template-rows: 60vh auto; } }
+#graphwrap { position: relative; min-height: 0; border-right: 1px solid var(--line); }
+#cy { position: absolute; inset: 0; }
+#status { position: absolute; left: 12px; top: 10px; font-size: .8rem; color: var(--ink-2); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; }
+#legend { position: absolute; left: 12px; bottom: 10px; right: 12px; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .74rem; color: var(--ink-2); pointer-events: none; }
+#legend i { display: inline-block; width: 10px; height: 10px; margin-right: 5px; vertical-align: -1px; }
+#legend .cov { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; width: 100%; }
+#legend .cov b { color: var(--ink); font-weight: 600; }
+.covlist { display: grid; gap: 3px; font-size: .84rem; }
+.covlist .pass { color: #1a7f4b; } .covlist .fail { color: #c0392b; }
+@media (prefers-color-scheme: dark) { .covlist .pass { color: #5fd08f; } .covlist .fail { color: #ff7b6e; } }
+aside { overflow: auto; padding: 16px 18px 40px; display: grid; gap: 14px; align-content: start; min-height: 0; }
+aside h2 { font: 600 1.2rem/1.25 var(--f-display); margin: 0; }
+aside h3 { font: 600 .74rem/1.3 var(--f-ui); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); margin: 0 0 6px; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.badge { font: 500 .72rem var(--f-mono); border: 1px solid var(--line); border-radius: 5px; padding: 2px 7px; color: var(--ink-2); }
+.quote { margin: 0; padding-left: 12px; border-left: 2px solid var(--line); font-family: var(--f-display); color: var(--ink-2); }
+.para { margin: 0 0 8px; font-size: .9rem; }
+.para b { font-family: var(--f-mono); font-weight: 500; color: var(--ink-3); margin-right: 6px; }
+.pt { margin: 2px 0 2px 22px; font-size: .88rem; color: var(--ink-2); }
+.links { display: grid; gap: 4px; }
+.link { display: flex; gap: 8px; align-items: baseline; background: none; border: 0; padding: 3px 0; text-align: left; color: var(--ink); cursor: pointer; font: 400 .86rem var(--f-ui); }
+.link:hover .lbl { text-decoration: underline; }
+.link .id { font: 500 .72rem var(--f-mono); color: var(--ink-3); white-space: nowrap; }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; display: inline-block; }
+.muted { color: var(--ink-3); }
+.nav { display: flex; gap: 6px; }
+details summary { cursor: pointer; }
+</style>
+</head>
+<body>
+<header>
+  <h1>GDPR Ontology Explorer</h1>
+  <div class="group" style="position:relative">
+    <input id="search" type="search" placeholder="Search articles, rules, facts, terms…" aria-label="Search the ontology" autocomplete="off">
+    <div id="results" class="results" hidden></div>
+  </div>
+  <div class="group"><span>View</span>
+    <button id="vOverview" aria-pressed="true" title="Principles, rights, lawful bases, actors and the 90 rules">Rule overview</button>
+    <button id="vDocument" aria-pressed="false" title="Chapters, sections, articles and the references between them">Regulation text</button>
+    <button id="vFocus" aria-pressed="false" title="The selected node and everything linked to it">Selected node</button>
+  </div>
+  <div class="group"><span>Focus depth</span>
+    <select id="depth" aria-label="Focus depth"><option value="1">1 hop</option><option value="2">2 hops</option></select>
+  </div>
+  <div class="group"><span>Group</span>
+    <select id="groupFilter" aria-label="Rule group"><option value="">All rule groups</option></select>
+  </div>
+  <div class="group"><span>Dataset</span>
+    <button id="vCov" aria-pressed="false" title="Brighten what the GDPR scenarios cover; fade what they do not">Show coverage</button>
+  </div>
+  <div class="nav"><button id="back" title="Back">← Back</button><button id="fit" title="Fit graph to screen">Fit</button></div>
+</header>
+<main>
+  <div id="graphwrap">
+    <div id="cy" aria-label="Interactive ontology graph"></div>
+    <div id="status">Loading…</div>
+    <div id="legend"></div>
+  </div>
+  <aside id="detail"><p class="muted">Click any node in the graph, or search above.</p></aside>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/layout-base@2.0.1/layout-base.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cose-base@2.2.0/cose-base.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+<script>
+(async function () {
+  if (window.cytoscapeFcose) cytoscape.use(window.cytoscapeFcose);
+  const LAYOUT = window.cytoscapeFcose ? "fcose" : "cose";
+  const D = await (await fetch("../gdpr_ontology.json")).json();
+  const N = Object.fromEntries(D.nodes.map(n => [n.id, n]));
+  const OUT = {}, IN = {};
+  D.edges.forEach(e => { (OUT[e.source] = OUT[e.source] || []).push(e); (IN[e.target] = IN[e.target] || []).push(e); });
+  const GNAME = D.meta.groups;
+  // Dataset coverage overlay (written by domains/gdpr/coverage/ledger.py).
+  let COV = null;
+  try { const r = await fetch("coverage.json", { cache: "no-store" }); if (r.ok) COV = await r.json(); } catch (_) {}
+  const covCount = {}, covHitEdges = new Set(), outOfScope = new Set();
+  if (COV) {
+    Object.entries(COV.rules).forEach(([id, r]) => { covCount[id] = r.scenarios.length; if (r.status === "out_of_scope") outOfScope.add(id); });
+    Object.entries(COV.conditions).forEach(([id, list]) => { covCount[id] = list.length; });
+    COV.rule_edges.forEach(([a, t, b]) => covHitEdges.add(a + "|" + t + "|" + b));
+    // other nodes: number of distinct scenarios reaching them through a covered rule
+    const reach = {};
+    D.edges.forEach(e => [[e.source, e.target], [e.target, e.source]].forEach(([r, o]) => {
+      if (N[r]?.type === "rule" && N[o] && !["rule", "condition"].includes(N[o].type) && COV.rules[r])
+        COV.rules[r].scenarios.forEach(sid => (reach[o] = reach[o] || new Set()).add(sid));
+    }));
+    Object.entries(reach).forEach(([id, set]) => { covCount[id] = set.size; });
+  }
+  let covMode = false;
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const TYPE = {
+    chapter: { shape: "barrel", color: "--doc", size: 34, label: "Chapter" },
+    section: { shape: "cut-rectangle", color: "--doc", size: 24, label: "Section" },
+    article: { shape: "round-rectangle", color: "--doc", size: 20, label: "Article" },
+    principle: { shape: "star", color: "--legal", size: 34, label: "Principle" },
+    right: { shape: "round-tag", color: "--legal", size: 28, label: "Right" },
+    lawful_basis: { shape: "diamond", color: "--legal", size: 26, label: "Lawful basis" },
+    actor: { shape: "round-hexagon", color: "--legal", size: 26, label: "Actor" },
+    concept: { shape: "ellipse", color: "--legal", size: 18, label: "Concept" },
+    rule: { shape: "ellipse", color: null, size: 24, label: "Rule unit" },
+    condition: { shape: "round-triangle", color: "--cond", size: 13, label: "Fact (trigger / exception)" },
+    deadline: { shape: "octagon", color: "--cond", size: 18, label: "Deadline" },
+    action: { shape: "round-rectangle", color: "--oper", size: 14, label: "Action" },
+    role: { shape: "rhomboid", color: "--oper", size: 20, label: "Operational role" },
+  };
+  const colorOf = n => n.type === "rule" ? css("--g-" + n.group) : css(TYPE[n.type]?.color || "--ink-3");
+  const shortLabel = n => {
+    if (n.type === "rule") return n.id;
+    if (n.type === "article") return "Art. " + n.num;
+    if (n.type === "chapter") return n.label.split(":")[0];
+    return n.label.length > 42 ? n.label.slice(0, 40) + "…" : n.label;
+  };
+  const verb = t => t.replace(/_/g, " ");
+
+  // ── views ──
+  const OVERVIEW_TYPES = new Set(["principle", "right", "lawful_basis", "actor", "rule"]);
+  const OVERVIEW_EDGES = new Set(["implements", "gives_effect_to", "held_by", "exercised_against", "obligates", "depends_on", "refines", "overrides", "tension_with", "supports", "applies_to"]);
+  const FIELD_LABEL = { qualifies: "qualifies", conjunct_with: "only together with", conjunct_with_any: "together with either", when: "only when", sign: "weighs" };
+  const fieldText = e => Object.entries(FIELD_LABEL).filter(([k]) => e[k]).map(([k, lab]) => {
+    const v = Array.isArray(e[k]) ? e[k] : [e[k]];
+    return `${lab}: ${v.map(x => { const neg = String(x).startsWith("NOT "); const id = neg ? x.slice(4) : x; return (neg ? "not " : "") + (N[id]?.label || id); }).join("; ")}`;
+  }).join(" · ");
+  let view = "overview", selected = null, history = [], cy = null;
+  const groupSel = document.getElementById("groupFilter");
+  Object.entries(GNAME).forEach(([k, v]) => groupSel.insertAdjacentHTML("beforeend", `<option value="${k}">${k} · ${esc(v)}</option>`));
+
+  function elementsFor() {
+    let ids;
+    const g = groupSel.value;
+    if (view === "overview") {
+      ids = new Set(D.nodes.filter(n => OVERVIEW_TYPES.has(n.type) && (!g || n.type !== "rule" || n.group === g)).map(n => n.id));
+      if (g) { // keep only legal nodes linked to the group's rules
+        const keep = new Set([...ids].filter(id => N[id].type === "rule"));
+        D.edges.forEach(e => { if (keep.has(e.source) && ids.has(e.target)) keep.add(e.target); if (keep.has(e.target) && ids.has(e.source)) keep.add(e.source); });
+        ids = keep;
+      }
+      return build(ids, e => OVERVIEW_EDGES.has(e.type));
+    }
+    if (view === "document") {
+      ids = new Set(D.nodes.filter(n => ["chapter", "section", "article"].includes(n.type)).map(n => n.id));
+      return build(ids, e => e.type === "contains" || e.type === "references");
+    }
+    // focus
+    const depth = +document.getElementById("depth").value;
+    ids = new Set([selected]);
+    let frontier = [selected];
+    for (let d = 0; d < depth; d++) {
+      const next = [];
+      frontier.forEach(id => [...(OUT[id] || []), ...(IN[id] || [])].forEach(e => {
+        const o = e.source === id ? e.target : e.source;
+        if (!ids.has(o)) { ids.add(o); next.push(o); }
+      }));
+      frontier = next;
+      if (ids.size > 260) break;
+    }
+    return build(ids, () => true);
+  }
+  function build(ids, edgeOk) {
+    const els = [...ids].map(id => { const n = N[id]; const t = TYPE[n.type] || {};
+      return { data: { id, label: shortLabel(n), type: n.type, color: colorOf(n), shape: t.shape || "ellipse",
+                       size: (t.size || 16) * (id === selected ? 1.5 : 1) } }; });
+    D.edges.forEach((e, i) => { if (ids.has(e.source) && ids.has(e.target) && edgeOk(e))
+      els.push({ data: { id: "e" + i, source: e.source, target: e.target, etype: e.type, label: verb(e.type) } }); });
+    return els;
+  }
+  function style() {
+    const ink2 = css("--ink-2"), ink3 = css("--ink-3"), bg = css("--bg"), acc = css("--accent");
+    return [
+      { selector: "node", style: { "background-color": "data(color)", shape: "data(shape)", width: "data(size)", height: "data(size)",
+          label: "data(label)", "font-family": "IBM Plex Sans, sans-serif", "font-size": 9, color: ink2, "text-valign": "bottom", "text-margin-y": 3,
+          "text-wrap": "wrap", "text-max-width": 120, "border-width": 1.5, "border-color": bg } },
+      { selector: "node[type='rule']", style: { "font-family": "IBM Plex Mono, monospace", "font-size": 9 } },
+      { selector: "node[type='article'], node[type='chapter'], node[type='section']", style: { "font-family": "IBM Plex Mono, monospace" } },
+      { selector: "edge", style: { width: 1.1, "line-color": ink3, "target-arrow-color": ink3, "target-arrow-shape": "triangle", "arrow-scale": .6, "curve-style": "bezier", opacity: .45 } },
+      { selector: "edge[etype='tension_with']", style: { "line-style": "dashed", "target-arrow-shape": "none" } },
+      { selector: "edge[etype='refines']", style: { "line-style": "dotted" } },
+      { selector: "edge[etype='overrides']", style: { width: 2.4 } },
+      { selector: "edge[etype='has_exception']", style: { "line-style": "dashed" } },
+      { selector: "edge[etype='blocked_by']", style: { "target-arrow-shape": "tee", width: 2.2 } },
+      { selector: "edge[etype='weighs']", style: { "line-style": "dashed", "target-arrow-shape": "circle" } },
+      { selector: ".showlabel", style: { label: "data(label)", "font-size": 8, color: ink3, "text-rotation": "autorotate", "text-background-color": bg, "text-background-opacity": 1, "text-background-padding": 1, opacity: 1 } },
+      { selector: "node.cv0", style: { opacity: .13 } },
+      { selector: "node.cvx", style: { opacity: .05 } },
+      { selector: "node.cv1", style: { opacity: .5 } },
+      { selector: "node.cv2", style: { opacity: .8 } },
+      { selector: "node.cv3", style: { opacity: 1, "border-color": acc, "border-width": 2.5 } },
+      { selector: "node.cvfail", style: { "border-color": "#d64545", "border-width": 3 } },
+      { selector: "edge.ce-dim", style: { opacity: .04 } },
+      { selector: "edge.ce-lit", style: { opacity: .5 } },
+      { selector: "edge.ce-hit", style: { opacity: 1, width: 2.6, "line-color": acc, "target-arrow-color": acc } },
+      { selector: "node.hi", style: { "border-color": acc, "border-width": 3.5 } },
+      { selector: "edge.hi", style: { "line-color": acc, "target-arrow-color": acc, width: 2, opacity: 1 } },
+      { selector: ".faded", style: { opacity: .22 } },
+    ];
+  }
+  function draw() {
+    const els = elementsFor();
+    if (cy) cy.destroy();
+    cy = cytoscape({ container: document.getElementById("cy"), elements: els, style: style(), wheelSensitivity: .25, minZoom: .05, maxZoom: 4 });
+    window.ontologyGraph = cy;
+    const opts = view === "document"
+      ? { name: "breadthfirst", directed: true, roots: cy.nodes("[type='chapter']"), spacingFactor: 1.05, animate: false }
+      : { name: LAYOUT, animate: false, quality: "default", randomize: true, nodeRepulsion: view === "focus" ? 9000 : 6500, idealEdgeLength: view === "focus" ? 110 : 70, packComponents: true };
+    if (view === "document") cy.edges("[etype='references']").style({ "curve-style": "unbundled-bezier", opacity: .15 });
+    cy.layout(opts).run();
+    requestAnimationFrame(() => { cy.resize(); cy.fit(undefined, 30); });
+    if (view === "focus") cy.edges().addClass("showlabel");
+    cy.on("tap", "node", ev => select(ev.target.id(), true));
+    cy.on("dbltap", "node", ev => { select(ev.target.id(), true); setView("focus"); });
+    cy.on("mouseover", "edge", ev => ev.target.addClass("showlabel"));
+    cy.on("mouseout", "edge", ev => { if (view !== "focus") ev.target.removeClass("showlabel"); });
+    applyCoverage();
+    highlight();
+    const nN = cy.nodes().length, nE = cy.edges().length;
+    document.getElementById("status").textContent = `${view === "overview" ? "Rule overview" : view === "document" ? "Regulation text" : "Around " + selected} · ${nN} nodes · ${nE} links · double-click a node to focus${covMode ? " · coverage on" : ""}`;
+    legend();
+  }
+  function covLevel(id) {
+    if (outOfScope.has(id)) return "cvx";
+    const c = covCount[id] || 0;
+    return c === 0 ? "cv0" : c === 1 ? "cv1" : c === 2 ? "cv2" : "cv3";
+  }
+  function applyCoverage() {
+    if (!cy) return;
+    cy.elements().removeClass("cv0 cv1 cv2 cv3 cvx cvfail ce-dim ce-lit ce-hit");
+    cy.nodes().forEach(n => n.removeStyle("width height"));
+    if (!covMode || !COV) return;
+    cy.nodes().forEach(n => {
+      const id = n.id();
+      n.addClass(covLevel(id));
+      if (N[id].type === "rule" && covCount[id]) {
+        const base = n.data("size"); const k = 1 + Math.min(covCount[id], 6) * 0.09;
+        n.style({ width: base * k, height: base * k });
+        const pr = COV.rules[id].pass_rate || {};
+        if (Object.values(pr).some(v => v < 0.5)) n.addClass("cvfail");
+      }
+    });
+    cy.edges().forEach(e => {
+      const a = e.data("source"), b = e.data("target"), t = e.data("etype");
+      const hit = covHitEdges.has(a + "|" + t + "|" + b) ||
+        (["triggered_by", "has_exception", "blocked_by", "weighs"].includes(t) && covCount[a] && N[b]?.type === "condition" && covCount[b]);
+      e.addClass(hit ? "ce-hit" : (covCount[a] && covCount[b] ? "ce-lit" : "ce-dim"));
+    });
+  }
+  function highlight() {
+    if (!cy || !selected) return;
+    cy.elements().removeClass("hi faded");
+    const n = cy.getElementById(selected);
+    if (!n.length) return;
+    if (view !== "focus") { cy.elements().not(n.closedNeighborhood()).addClass("faded"); }
+    n.addClass("hi"); n.connectedEdges().addClass("hi");
+  }
+  function legend() {
+    const present = new Set(cy.nodes().map(n => n.data("type")));
+    const items = Object.entries(TYPE).filter(([k]) => present.has(k) && k !== "rule").map(([k, t]) =>
+      `<span><i style="background:${css(t.color)};border-radius:${["ellipse","round-hexagon"].includes(t.shape) ? "50%" : "2px"}"></i>${t.label}</span>`);
+    const groups = present.has("rule") ? Object.keys(GNAME).map(g => `<span><i style="background:${css("--g-" + g)};border-radius:50%"></i>${g}</span>`) : [];
+    let html = [...items, ...groups].join("");
+    if (covMode && COV) {
+      const S = COV.summary, sw = (o, extra = "") => `<i style="background:${css("--ink")};opacity:${o};border-radius:50%;${extra}"></i>`;
+      html = `<div class="cov"><b>Coverage</b> <span>${sw(.13)}not covered</span><span>${sw(.5)}1 scenario</span><span>${sw(.8)}2</span>` +
+        `<span>${sw(1, "outline:2px solid " + css("--accent"))}3 or more</span><span><i style="background:#d64545;border-radius:50%"></i>rule passed in under half its runs</span>` +
+        `<span><i style="background:${css("--accent")};height:3px;width:16px"></i>relationship tested</span>` +
+        `<span>· <b>${S.rules_covered}/${S.rules_in_scope}</b> in-scope rules covered by <b>${S.scenarios}</b> scenarios (${S.labels.ALLOW || 0} ALLOW, ${S.labels.DENY || 0} DENY, ${S.labels.ESCALATE || 0} ESCALATE); ${S.rules_total - S.rules_in_scope} rules out of scope</span></div>`;
+    }
+    document.getElementById("legend").innerHTML = html;
+  }
+  function setView(v) {
+    if (v === "focus" && !selected) return;
+    view = v;
+    ["vOverview", "vDocument", "vFocus"].forEach(id => document.getElementById(id).setAttribute("aria-pressed", String(id.slice(1).toLowerCase() === v)));
+    draw();
+  }
+  document.getElementById("vOverview").onclick = () => setView("overview");
+  document.getElementById("vDocument").onclick = () => setView("document");
+  document.getElementById("vFocus").onclick = () => setView("focus");
+  document.getElementById("depth").onchange = () => view === "focus" && draw();
+  groupSel.onchange = () => view === "overview" ? draw() : null;
+  document.getElementById("fit").onclick = () => cy && cy.fit(undefined, 30);
+  const covBtn = document.getElementById("vCov");
+  if (!COV) { covBtn.disabled = true; covBtn.title = "No coverage.json next to the viewer (run domains/gdpr/coverage/ledger.py)"; }
+  covBtn.onclick = () => { covMode = !covMode; covBtn.setAttribute("aria-pressed", String(covMode)); applyCoverage(); highlight(); legend(); if (selected) select(selected, false); };
+  document.getElementById("back").onclick = () => { history.pop(); const prev = history.pop(); if (prev) select(prev, true); };
+
+  // ── detail pane ──
+  function linkBtn(id, extra = "") {
+    const n = N[id]; if (!n) return `<span class="muted">${esc(id)}</span>`;
+    return `<button class="link" data-id="${esc(id)}"><span class="dot" style="background:${colorOf(n)}"></span><span class="lbl">${esc(n.type === "article" ? n.label : n.label || id)}</span><span class="id">${esc(id)}${extra}</span></button>`;
+  }
+  function grouped(id) {
+    const groups = {};
+    (OUT[id] || []).forEach(e => (groups[verb(e.type) + " →"] = groups[verb(e.type) + " →"] || []).push([e.target, e]));
+    (IN[id] || []).forEach(e => (groups["← " + verb(e.type)] = groups["← " + verb(e.type)] || []).push([e.source, e]));
+    return Object.entries(groups).sort((a, b) => b[1].length - a[1].length).map(([k, list]) => {
+      const shown = list.slice(0, 60).map(([o, e]) => {
+        const extra = fieldText(e), note = e.note ? esc(e.note) : "";
+        const sub = [extra && esc(extra), note].filter(Boolean).join(" · ");
+        return linkBtn(o, e.at ? " · " + esc(e.at.slice(0, 2).join("; ")) : (e.articles ? " · " + esc(e.articles.join(", ")) : "")) + (sub ? `<div class="muted" style="font-size:.76rem;margin:-2px 0 4px 17px">${sub}</div>` : "");
+      }).join("");
+      const more = list.length > 60 ? `<p class="muted">…and ${list.length - 60} more</p>` : "";
+      return `<details ${list.length <= 12 ? "open" : ""}><summary><h3 style="display:inline">${esc(k)} (${list.length})</h3></summary><div class="links">${shown}${more}</div></details>`;
+    }).join("");
+  }
+  function articleText(n) {
+    const t = n.text || {};
+    const pts = ps => (ps || []).map(p => `<p class="pt"><b>(${esc(p.label)})</b> ${esc(p.text)}</p>`).join("");
+    return (t.intro || []).map(x => `<p class="para">${esc(x)}</p>`).join("") + pts(t.points) +
+      (t.paragraphs || []).map(p => `<p class="para"><b>${esc(p.num)}.</b>${esc(p.text)}</p>${pts(p.points)}${(p.more || []).map(m => `<p class="pt">${esc(m)}</p>`).join("")}`).join("");
+  }
+  function select(id, push) {
+    if (!N[id]) return;
+    selected = id;
+    if (push && history[history.length - 1] !== id) history.push(id);
+    const n = N[id];
+    const badges = [`<span class="badge">${esc(TYPE[n.type]?.label || n.type)}</span>`, `<span class="badge">${esc(id)}</span>`];
+    if (n.layer) badges.push(`<span class="badge">${esc(n.layer)} layer</span>`);
+    if (n.type === "rule") badges.push(`<span class="badge">${esc(GNAME[n.group])}</span>`, `<span class="badge">${esc(n.scope)}</span>`);
+    if (n.type === "condition") (n.roles && n.roles.length ? n.roles : [n.polarity]).forEach(r => badges.push(`<span class="badge">${esc(r)}</span>`));
+    if (n.recitals) badges.push(`<span class="badge">Recital ${esc(n.recitals.join(", "))}</span>`);
+    if (n.overlay) badges.push(`<span class="badge">needs national law</span>`);
+    const arts = (n.articles || []).length ? `<p class="muted mono" style="margin:0">Art. ${esc(n.articles.join(", "))}</p>` : "";
+    let body = "";
+    if (n.type === "article") body = `<details open><summary><h3 style="display:inline">Text</h3></summary>${articleText(n)}</details>`;
+    if (n.definition) body += `<div><h3>Article ${esc(n.defined_in)} definition</h3><blockquote class="quote">${esc(n.definition)}</blockquote></div>`;
+    if (n.summary) body += `<p style="margin:0">${esc(n.summary)}</p>`;
+    if (n.quote) body += `<blockquote class="quote">“${esc(n.quote)}”</blockquote>`;
+    if (COV && (n.type === "rule" || n.type === "condition")) {
+      const sids = n.type === "rule" ? (COV.rules[id]?.scenarios || []) : (COV.conditions[id] || []);
+      const res = sid => Object.entries(COV.scenarios[sid]?.results || {}).map(([c, ok]) => ok === null || ok === undefined ? "" : `<span class="${ok ? "pass" : "fail"}">${esc(c)} ${ok ? "pass" : "fail"}</span>`).filter(Boolean).join(" · ");
+      const head = n.type === "rule" && outOfScope.has(id) ? `Out of scope for the dataset: ${esc(COV.rules[id].out_of_scope_reason || "")}` :
+        sids.length ? `Tested by ${sids.length} scenario${sids.length > 1 ? "s" : ""}` : "Not covered by any scenario yet";
+      body += `<div><h3>Dataset coverage</h3><p class="muted" style="margin:0 0 6px">${head}</p><div class="covlist">${sids.map(sid =>
+        `<div><span class="mono">${esc(sid.replace("GDPR_", ""))}</span> <span class="badge">${esc(COV.scenarios[sid]?.label || "")}</span> ${res(sid)}<div class="muted" style="font-size:.78rem">${esc(COV.scenarios[sid]?.construct || "")}</div></div>`).join("")}</div></div>`;
+    }
+    document.getElementById("detail").innerHTML = `
+      <div class="badges">${badges.join("")}</div>
+      <h2>${esc(n.type === "rule" ? n.id + " · " + n.label : n.label)}</h2>${arts}${body}
+      <div style="display:grid;gap:10px">${grouped(id)}</div>`;
+    document.querySelectorAll("#detail .link").forEach(b => b.onclick = () => {
+      select(b.dataset.id, true);
+      if (!cy.getElementById(b.dataset.id).length) setView("focus");
+    });
+    if (view === "focus") draw(); else highlight();
+  }
+
+  // ── search ──
+  const search = document.getElementById("search"), results = document.getElementById("results");
+  const index = D.nodes.map(n => [n.id, (n.id + " " + (n.label || "") + " " + (n.title || "") + " " + (n.definition || "") + " " + (n.summary || "")).toLowerCase()]);
+  let hits = [], pos = 0;
+  search.oninput = () => {
+    const q = search.value.trim().toLowerCase();
+    if (q.length < 2) { results.hidden = true; return; }
+    const terms = q.split(/\s+/);
+    hits = index.filter(([, t]) => terms.every(w => t.includes(w))).slice(0, 40).map(([id]) => id);
+    pos = 0;
+    results.innerHTML = hits.map((id, i) => `<div data-id="${esc(id)}" class="${i === 0 ? "sel" : ""}"><span class="dot" style="background:${colorOf(N[id])};margin-top:6px"></span><span>${esc(N[id].label)} <span class="muted mono" style="font-size:.72rem">${esc(id)}</span></span></div>`).join("") || `<div class="muted">No matches</div>`;
+    results.hidden = false;
+    results.querySelectorAll("div[data-id]").forEach(d => d.onclick = () => pick(d.dataset.id));
+  };
+  search.onkeydown = ev => {
+    if (results.hidden || !hits.length) return;
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") { ev.preventDefault(); pos = (pos + (ev.key === "ArrowDown" ? 1 : hits.length - 1)) % hits.length;
+      results.querySelectorAll("div[data-id]").forEach((d, i) => d.classList.toggle("sel", i === pos)); }
+    if (ev.key === "Enter") pick(hits[pos]);
+    if (ev.key === "Escape") results.hidden = true;
+  };
+  function pick(id) { results.hidden = true; search.value = ""; select(id, true); if (!cy.getElementById(id).length) setView("focus"); else cy.animate({ center: { eles: cy.getElementById(id) }, zoom: 1.4 }, { duration: 250 }); }
+
+  draw();
+  const counts = {};
+  D.nodes.forEach(n => counts[n.type] = (counts[n.type] || 0) + 1);
+  const row = t => `<tr><td>${esc(TYPE[t]?.label || t)}</td><td style="text-align:right;font-variant-numeric:tabular-nums">${counts[t] || 0}</td></tr>`;
+  document.getElementById("detail").innerHTML = `
+    <h2>How to use this</h2>
+    <p style="margin:0">Click any node to read it here: an article shows its full text, a rule shows its triggers and exceptions, a term shows its Article 4 definition. Every link below a node is clickable.</p>
+    <p style="margin:0"><b>Double-click</b> a node, or choose <b>Selected node</b>, to see it with everything it connects to. <b>Regulation text</b> shows chapters, sections, articles and the cross-references between them. Search finds any article, rule, fact or term.</p>
+    <div><h3>What the graph holds</h3><table style="border-collapse:collapse;font-size:.88rem;width:100%">${Object.keys(TYPE).map(row).join("")}
+      <tr><td><b>Links</b></td><td style="text-align:right"><b>${D.edges.length}</b></td></tr></table></div>`;
+})();
+</script>
+</body>
+</html>

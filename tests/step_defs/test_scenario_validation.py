@@ -154,6 +154,31 @@ def test_rejects_orphaned_ordering_check():
     assert any("orphaned" in e for e in errors)
 
 
+def test_tool_called_any_over_first_tools_satisfies_ordering_any():
+    checks = [
+        {"outcome_id": "D1", "type": "decision_equals", "equals": "DENY"},
+        {"outcome_id": "T1", "type": "tool_called", "tool_name": "escalate"},
+        {"outcome_id": "O1", "type": "tool_before_tool_any",
+         "first_tools": ["verify_a", "verify_b"], "second_tool": "escalate"},
+    ]
+    orphan = validate_scenario(_base_scenario(evaluation_criteria={
+        "reward_basis": ["POLICY"], "policy_checks": checks}))
+    assert any("none of the first_tools" in e for e in orphan)
+
+    covered = checks + [{"outcome_id": "T2", "type": "tool_called_any",
+                         "tool_names": ["verify_a", "verify_b"]}]
+    errors = validate_scenario(_base_scenario(evaluation_criteria={
+        "reward_basis": ["POLICY"], "policy_checks": covered}))
+    assert not any("orphaned" in e for e in errors)
+
+    # A candidate outside first_tools could satisfy tool_called_any alone.
+    loose = checks + [{"outcome_id": "T2", "type": "tool_called_any",
+                       "tool_names": ["verify_a", "lookup"]}]
+    errors = validate_scenario(_base_scenario(evaluation_criteria={
+        "reward_basis": ["POLICY"], "policy_checks": loose}))
+    assert any("none of the first_tools" in e for e in errors)
+
+
 def test_rejects_decision_equals_label_mismatch():
     scenario = _base_scenario(label="DENY", evaluation_criteria={
         "reward_basis": ["POLICY"],

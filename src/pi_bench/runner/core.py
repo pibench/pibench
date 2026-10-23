@@ -325,6 +325,8 @@ def _run_one(
     sim["reward"] = reward_info.get("reward")
     sim["all_passed"] = reward_info.get("all_passed")
     sim["deterministic_score"] = reward_info.get("deterministic_score")
+    sim["layers"] = reward_info.get("layers")
+    sim["unsafe_success"] = reward_info.get("unsafe_success")
     sim["semantic_score"] = reward_info.get("semantic_score")
     sim["outcome_results"] = reward_info.get("outcome_results", [])
     sim["dimensions"] = reward_info.get("dimensions", {})
